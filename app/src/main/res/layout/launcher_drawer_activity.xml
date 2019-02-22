@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:fitsSystemWindows="false">
+
+    <android.support.v4.widget.DrawerLayout
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:id="@+id/drawer_layout"
+        android:fitsSystemWindows="false">
+
+        <RelativeLayout
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/dream_overlay"
+                android:visibility="gone"
+                android:elevation="9dp"/>
+
+            <include layout="@layout/toolbar"/>
+
+            <FrameLayout
+                android:layout_height="fill_parent"
+                android:layout_width="match_parent"
+                android:layout_below="@+id/toolbar"
+                android:background="@color/VeryLight"/>
+
+            <FrameLayout
+                android:layout_height="fill_parent"
+                android:layout_width="match_parent"
+                android:layout_below="@+id/toolbar"
+                android:background="@color/OffWhite"
+                android:id="@+id/container"
+                android:elevation="4dp">
+
+                <ListView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@id/android:list"/>
+            </FrameLayout>
+
+            <com.melnykov.fab.FloatingActionButton
+                android:id="@+id/fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:layout_gravity="bottom|right"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:elevation="10dp"
+                android:src="@drawable/ic_play_arrow_white_36dp"
+                fab:fab_colorNormal="@color/fab_primary"
+                fab:fab_colorPressed="@color/fab_primary_pressed"
+                fab:fab_colorRipple="@color/fab_ripple"
+                android:stateListAnimator="@anim/raise"
+                android:visibility="gone"
+                android:transitionName="fab"/>
+        </RelativeLayout>
+
+        <fragment
+            android:id="@+id/navigation_drawer"
+            android:layout_width="@dimen/navigation_drawer_width"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:name="com.beatonma.orbitalslivewallpaper.NavigationDrawerFragment"
+            tools:layout="@layout/fragment_navigation_drawer"
+            android:elevation="16dp"
+            android:fitsSystemWindows="true"/>
+    </android.support.v4.widget.DrawerLayout>
+</LinearLayout>

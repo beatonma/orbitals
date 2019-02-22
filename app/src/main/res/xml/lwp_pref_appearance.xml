@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:list="http://schemas.android.com/apk/res-auto"
+    android:summary="@string/pref_appearance_title_summ"
+    android:title="@string/dream_appearance" >
+
+    <PreferenceCategory android:title="@string/pref_appearance_background_title" >
+        <net.margaritov.preference.colorpicker.ColorPickerPreference
+            android:defaultValue="0"
+            android:key="pref_color_background"
+            android:summary="@string/pref_color_background_summ"
+            android:title="@string/pref_color_background" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="pref_color_background_image"
+            android:summary="@string/pref_color_background_image_summ"
+            android:title="@string/pref_color_background_image" />
+
+        <Preference
+            android:title="@string/pref_background_image_file"
+            android:summary="@string/pref_background_image_file_summ"
+            android:key="pref_background_image_file" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/pref_color_title" >
+        <!--<net.margaritov.preference.colorpicker.ColorPickerPreference
+            android:defaultValue="0"
+            android:key="pref_color_background"
+            android:summary="@string/pref_color_background_summ"
+            android:title="@string/pref_color_background" />-->
+
+        <com.beatonma.orbitalslivewallpaper.MultiSelectListPreference
+            list:entries="@array/pref_color_color_entries"
+            list:entryValues="@array/pref_color_color_entryvalues"
+            android:key="pref_color_objectcolors"
+            android:summary="@string/pref_color_colortheme_summ"
+            android:title="@string/pref_color_colortheme" />
+
+        <com.beatonma.orbitalslivewallpaper.NiceNumberDialogPreference
+            android:key="pref_color_alpha"
+            android:summary="@string/pref_color_alpha_summ"
+            android:title="@string/pref_color_alpha" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="pref_color_dark"
+            android:summary="@string/pref_color_dark_summ"
+            android:title="@string/pref_color_dark" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="pref_color_desaturate"
+            android:summary="@string/pref_color_desaturate_summ"
+            android:title="@string/pref_color_desaturate" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/pref_appearance_shapes_title" >
+        <com.beatonma.orbitalslivewallpaper.ListPreference
+            list:defaultValue="1.0"
+            list:entries="@array/pref_render_size_entries"
+            list:entryValues="@array/pref_render_size_entryvalues"
+            android:key="pref_render_size"
+            android:summary="@string/pref_render_size_summ"
+            android:title="@string/pref_render_size" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="pref_render_wireframe"
+            android:summary="@string/pref_render_wireframe_summ"
+            android:title="@string/pref_render_wireframe" />
+
+        <com.beatonma.orbitalslivewallpaper.NiceNumberDialogPreference
+            android:key="pref_render_wireframewidth"
+            android:summary="@string/pref_render_wireframewidth_summ"
+            android:title="@string/pref_render_wireframewidth" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/pref_outlines_title">
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="pref_render_outlines"
+            android:summary="@string/pref_render_outlines_summ"
+            android:title="@string/pref_render_outlines" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="pref_outlines_custom_color"
+            android:summary="@string/pref_outlines_custom_color_summ"
+            android:title="@string/pref_outlines_custom_color" />
+
+        <net.margaritov.preference.colorpicker.ColorPickerPreference
+            android:defaultValue="0"
+            android:key="pref_color_outline"
+            android:summary="@string/pref_color_outline_summ"
+            android:title="@string/pref_color_outline" />
+    </PreferenceCategory>
+</PreferenceScreen>

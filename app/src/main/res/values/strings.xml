@@ -1,0 +1,494 @@
+<resources>
+
+    <string name="app_author">Michael Beaton</string>
+    <string name="app_name">Orbitals LWP &amp; Daydream</string>
+    <string name="app_name_root">Orbitals</string>
+    <string name="app_version_code">16</string>
+    <string name="app_version">1.1.6</string>
+    <string name="wallpaper_description">Orbitals LWP</string>
+    <string name="wallpaper_settings">Orbitals Live Wallpaper</string>
+    <string name="system_settings">System settings</string>
+    <string name="service_title">Orbitals</string>
+    
+    <string-array name="launcher_array">
+        <item>Live Wallpaper settings</item>
+        <item>Daydream settings</item>
+        <item>Start Daydream</item>
+    </string-array>
+    <string-array name="navigation_array">
+        <item>Live Wallpaper settings</item>
+        <item>Daydream settings</item>
+    </string-array>
+    <string name="launcher_list_title">Settings</string>
+
+    <string name="navigation_drawer_open">Open</string>
+    <string name="navigation_drawer_close">Close</string>
+
+    <string-array name="dream_sections">
+        <item>Daydream</item>
+        <item>Appearance</item>
+        <item>Visual Aids</item>
+        <item>Systems</item>
+        <item>Physics</item>
+        <item>Time</item>
+        <item>Notifications</item>
+        <item>Performance</item>
+        <item>Experiments</item>
+    </string-array>
+
+    <string-array name="lwp_sections">
+        <item>Live Wallpaper</item>
+        <item>Appearance</item>
+        <item>Lock Screen</item>
+        <item>Visual Aids</item>
+        <item>Systems</item>
+        <item>Physics</item>
+        <item>Notifications</item>
+        <item>Performance</item>
+        <item>Experiments</item>
+    </string-array>
+    
+    <string name="dream_description">Orbitals Dream</string>
+    <string name="dream_settings">Orbitals Dream</string>
+    <string name="dream_appearance">Appearance</string>
+    <string name="pref_daydream_bright">Bright screen</string>
+    <string name="pref_daydream_bright_summ">Prevent the screen from dimming after a few seconds of inactivity.</string>
+    <string name="pref_daydream_interactive">Interactive</string>
+    <string name="pref_daydream_interactive_summ">Respond to screen touches. If disabled, touching the screen exits the daydream.</string>
+    <string name="pref_daydream_fullscreen">Immersive</string>
+    <string name="pref_daydream_fullscreen_summ">Enable immersive mode to hide system bars. Requires Android 4.4 or higher.</string>
+    <string name="pref_time_title">Time</string>
+    <string name="pref_time_title_summ">Show the time.</string>
+    <string name="pref_time_show_title">Show time</string>
+    <string name="pref_time_show_summ">Display current time on top of daydream.</string>
+    <string name="pref_time_24hr_title">24-hour format</string>
+    <string name="pref_time_24hr_summ">e.g. Enabled = 15:31, Disabled = 3:31pm</string>
+    <string name="pref_time_outline">Outline only</string>
+    <string name="pref_time_outline_summ">Show text outline.</string>
+    <string name="pref_time_color">Colour</string>
+    <string name="pref_time_color_summ">Time text colour.</string>
+    <string name="pref_time_size">Size</string>
+    <string name="pref_time_size_summ">Time text size.</string>
+    <string name="pref_time_rotation">Rotation</string>
+    <string name="pref_time_rotation_summ">Override device orientation.</string>
+    <string-array name="pref_time_rotation_entries">
+        <item>0°</item>
+        <item>90°</item>
+        <item>180°</item>
+        <item>270°</item>
+    </string-array>
+    <string-array name="pref_time_rotation_entryValues">
+        <item>0</item>
+        <item>90</item>
+        <item>180</item>
+        <item>270</item>
+    </string-array>
+    
+    <string-array name="empty_array">
+        <item>0</item>
+    </string-array>
+    
+    <string name="pref_title">Options</string>
+    
+    <string name="pref_performance_title">Performance</string>
+    <string name="pref_performance_title_summ">Tweaks to keep the animation smooth.</string>
+    <string name="pref_performance_title_daydream_summ">Tweaks for animation and interactivity.</string>
+    <string name="pref_performance_maxobjects">Object limit</string>
+    <string name="pref_performance_maxobjects_summ">Maximum number of objects to generate automatically. Touching the screen can still add more.</string>
+    <string name="pref_performance_framerate_summ">Frames per second</string>
+    <string name="pref_performance_framerate">Target frame rate.</string>
+    
+    <string name="pref_appearance_title">Appearance - Wallpaper</string>
+    <string name="pref_appearance_title_summ">Colours and shapes.</string>
+    <string name="pref_appearance_shapes_title">Object shapes</string>
+    
+    <string name="pref_render_title">Visual aids</string>
+    <string name="pref_render_title_summ">Markers to help understand why things move as they do.</string>
+    <string name="pref_render_accArrows">Acceleration arrows</string>
+    <string name="pref_render_accArrows_summ">Visualises the changing acceleration of each object.</string>
+    <string name="pref_render_trace">Dot trails</string>
+    <string name="pref_render_trace_summ">Objects leave a trail of dots as they travel.</string>
+    <string name="pref_render_dialog_trace_length">Dot trail length</string>
+    <string name="pref_render_dialog_trace_length_summ">How long the dot trail for each object should be.</string>
+    <string name="pref_render_outlines">Outlines</string>
+    <string name="pref_render_outlines_summ">Show a thin outline around each object. Has no effect in wireframe mode.</string>
+    <string name="pref_render_wireframe">Wireframe</string>
+    <string name="pref_render_wireframe_summ">Only show the outline of each object.</string>
+    <string name="pref_render_wireframewidth">Wireframe/Outline thickness</string>
+    <string name="pref_render_wireframewidth_summ">How thick the lines should be.</string>
+    <string name="pref_render_size">Size</string>
+    <string name="pref_render_size_summ">Make objects bigger or smaller.</string>
+    <string-array name="pref_render_size_entries">
+        <item>Tiny</item>
+        <item>Small</item>
+        <item>Normal</item>
+        <item>Large</item>
+        <item>Huge</item>
+    </string-array>
+    <string-array name="pref_render_size_entryvalues">
+        <item>0.5</item>
+        <item>0.75</item>
+        <item>1.0</item>
+        <item>1.5</item>
+        <item>2.0</item>
+    </string-array>
+    
+    
+    <string name="pref_color_title">Object colours</string>
+    <string name="pref_color_title_summ">Objects, background and transparency.</string>
+    <string name="pref_color_colortheme">Hue</string>
+    <string name="pref_color_colortheme_summ">Approximate colour of generated objects.</string>
+    <string-array name="pref_color_color_entries">
+        <item>Any</item>
+        <item>Greyish</item>
+        <item>Reddish</item>
+        <item>Orangish</item>
+        <item>Yellowish</item>
+        <item>Greenish</item>
+        <item>Bluish</item>
+        <item>Purplish</item>
+        <item>Pinkish</item>
+    </string-array>
+    <string-array name="pref_color_color_entryvalues">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+    </string-array>
+    <string name="color_picker_default_title">Background Colour</string>
+    <string name="pref_color_background">Colour</string>
+    <string name="pref_color_background_summ">Background colour.</string>
+    <string name="dialog_color_picker">Choose a colour.</string>
+    <string name="press_color_to_apply">Press colour to apply.</string>
+    <string name="pref_color_dark">Dark</string>
+    <string name="pref_color_dark_summ">Generate darker colours for objects.</string>
+    <string name="pref_color_desaturate">Desaturate</string>
+    <string name="pref_color_desaturate_summ">Generate softer colours.</string>
+    <string name="pref_color_alpha">Transparency</string>
+    <string name="pref_color_alpha_summ">Choose the alpha value for object colours. Zero is invisible, 255 is fully opaque.</string>
+    <string name="pref_color_batterylevel">Colour objects by battery level</string>
+    <string name="pref_color_batterylevel_summ">Change object colours depending on battery charge level.</string>
+    <string name="pref_color_batterylevel_level">Choose battery level colours</string>
+    <string name="pref_color_batterylevel_level_summ"></string>
+    <string name="pref_color_battery_high">&gt;80%</string>
+    <string name="pref_color_battery_medhigh">&gt;50%</string>
+    <string name="pref_color_battery_medlow">&gt;20%</string>
+    <string name="pref_color_battery_low">&lt;20%</string>
+    <string name="pref_outlines_title">Object outlines</string>
+    <string name="pref_outlines_custom_color">Use custom colour.</string>
+    <string name="pref_outlines_custom_color_summ">If disabled, background colour is used.</string>
+    <string name="pref_color_outline">Custom colour</string>
+    <string name="pref_color_outline_summ">Choose a colour for object outlines.</string>
+    <string name="pref_color_background_image">Use custom image</string>
+    <string name="pref_color_background_image_summ">Use a custom background image.</string>
+    <string name="pref_appearance_background_title">Background</string>
+    <string name="pref_background_image_file">Choose image</string>
+    <string name="pref_background_image_file_summ">Pick a file.</string>
+
+    
+    <string name="pref_lockscreen_title">Appearance - Lock screen</string>
+    <string name="pref_lockscreen_title_summ">Choose a different look when your device is locked.</string>
+    <string name="pref_lockscreen_wireframe">Wireframe</string>
+    <string name="pref_lockscreen_wireframe_summ">Only show the outline of each object.</string>
+    <string name="pref_lockscreen_wireframewidth">Wireframe/Outline thickness</string>
+    <string name="pref_lockscreen_wireframewidth_summ">How thick the lines should be.</string>
+    <string name="pref_lockscreen_alpha">Object transparency.</string>
+    <string name="pref_lockscreen_alpha_summ">Choose the alpha value for object colours. Zero is invisible, 255 is fully opaque.</string>
+    <string name="pref_lockscreen_dark">Dark</string>
+    <string name="pref_lockscreen_dark_summ">Darker colours.</string>
+    <string name="pref_lockscreen_desaturate">Desaturate</string>
+    <string name="pref_lockscreen_desaturate_summ">Softer colours.</string>
+    <string name="pref_lockscreen_blur">Blur</string>
+    <string name="pref_lockscreen_blur_summ">No edges.</string>
+    <string name="pref_lockscreen_color_title">Colour</string>
+    <string name="pref_lockscreen_color_colortheme">Objects</string>
+    <string name="pref_lockscreen_color_colortheme_summ">Approximate colour of generated objects.</string>
+    <string name="pref_lockscreen_color_background">Background</string>
+    <string name="pref_lockscreen_color_background_summ">Background colour.</string>
+    <string name="pref_lockscreen_size">Size</string>
+    <string name="pref_lockscreen_size_summ">Make objects bigger or smaller.</string>
+    <string name="pref_lockscreen_outlines">Outlines</string>
+    <string name="pref_lockscreen_outlines_summ">Show a thin outline around each object in the background colour. Has no effect in wireframe mode.</string>
+    <string name="pref_lockscreen_outlines_custom_color">Use custom colour</string>
+    <string name="pref_lockscreen_outlines_custom_color_summ">If disabled, background colour is used.</string>
+    <string name="pref_lockscreen_outlines_color">Custom colour</string>
+    <string name="pref_lockscreen_outlines_color_summ">Choose a colour for object outlines.</string>
+    
+    
+    <string name="pref_systems_title">System generation</string>
+    <string name="pref_systems_title_summ">Which systems should appear automatically, and what should happen when you touch the screen.</string>
+    <string name="pref_systems_cell">Cellular</string>
+    <string name="pref_systems_cell_summ">Objects are arranged in a triangular mesh.</string>
+    <string name="pref_systems_random">Random</string>
+    <string name="pref_systems_random_summ">Objects are placed at random with random velocities.</string>
+    <string name="pref_systems_star">Planetary</string>
+    <string name="pref_systems_star_summ">A large object orbited by several smaller ones.</string>
+    <string name="pref_systems_poly">Polygonal</string>
+    <string name="pref_systems_poly_summ">Objects are arranged at points of a regular polygon and start orbiting the system centre.</string>
+    <string name="pref_systems_streamer">Streamer</string>
+    <string name="pref_systems_streamer_summ">Objects are ejected in one direction from a single point.</string>
+    <string name="pref_systems_touch">Touch</string>
+    <string name="pref_systems_touch_summ">Generate this system when the screen is touched.</string>
+    <string-array name="pref_systems_touch_entries">
+        <item>None</item>
+        <item>Any</item>
+        <item>Cellular</item>
+        <item>Planetary</item>
+        <item>Polygonal</item>
+        <item>Random</item>
+    </string-array>
+    <string-array name="pref_systems_touch_entryvalues">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+
+    
+    <string name="pref_physics_title">Physics</string>
+    <string name="pref_physics_title_summ">Collision and gravity tweaks.</string>
+    <string name="pref_physics_gravity">Gravitational constant</string>
+    <string name="pref_physics_gravity_summ">Gravity strength multiplier - default is 1.0.</string>
+    <string name="pref_physics_antigravity">Antigravity</string>
+    <string name="pref_physics_antigravity_summ">Fall upwards.</string>
+    <string name="pref_physics_collision">Collision style</string>
+    <string name="pref_physics_collision_summ">How objects should behave when colliding.</string>
+    <string-array name="pref_physics_collision_entries">
+        <item>Simple</item>
+        <item>Merge</item>
+        <item>None</item>
+    </string-array>
+    <string-array name="pref_physics_collision_entryvalues">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+    <string name="pref_physics_border_bounce">Border bounce</string>
+    <string name="pref_physics_border_bounce_summ">Objects bounce back when they reach the edge of the screen.</string>
+
+    <string-array name="pref_notify_speed_entries">
+        <item>Slow</item>
+        <item>Medium</item>
+        <item>Fast</item>
+    </string-array>
+    <string-array name="pref_notify_speed_entryvalues">
+        <item>1</item>
+        <item>3</item>
+        <item>5</item>
+    </string-array>
+    <string name="pref_notify_title">Notification pulse</string>
+    <string name="pref_notify_summ">Change object colours when you have notifications.</string>
+    <string name="pref_notify_pulse">Notification pulse</string>
+    <string name="pref_notify_pulse_summ">Enable notification extension integration.</string>
+    <string name="pref_notify_download">Download extension</string>
+    <string name="pref_notify_download_summ">Notification pulse requires an extension to work. Click here see the extension on the Play Store.</string>
+    <string name="pref_notify_speed">Pulse frequency</string>
+    <string name="pref_notify_speed_summ">How quickly the colours should change.</string>
+    <string name="pref_notify_clear">Clear all</string>
+    <string name="pref_notify_clear_summ">If something has gone wrong, this will reset the active colour pulses.</string>
+    <string name="open_notify_extension">Open extension</string>
+    <string name="open_notify_extension_summ">Change your settings.</string>
+    
+    <string name="pref_experimental_title">Experimental</string>
+    <string name="pref_experimental_summ">May be buggy.</string>
+    <string name="pref_experimental_centreofmass">Show centre of mass</string>
+    <string name="pref_experimental_centreofmass_summ">Centre the display on the centre of mass.\n
+        <li>- Why it\'s and experiment: Heavy, fast moving objects can send the viewpoint flying off in one direction which looks odd as objects continue to spawn.\n</li>
+        <li>- Recommended use: Turn collisions off to minimise likelihood of getting heavy, fast moving objects.</li></string>
+    <string name="pref_experimental_pixelate">Bitcrush</string>
+    <string name="pref_experimental_pixelate_summ">Show objects as low fidelity approximations.\n
+        <li>- Why it\'s an experiment: Needs optimising - performance falls off quickly with increasing object population.</li>\n
+        <li>- Recommended use: Set a low frame rate (under Performance in the settings) - it adds to the rudimentary feel. Probably better in Daydream mode?</li></string>
+    <string name="pref_experimental_3d">Z-axis</string>
+    <string name="pref_experimental_3d_summ">Simulate a 3rd dimension.\n
+        <li>- Why it\'s an experiment: Not yet implemented.</li>\n
+        <li>- Recommended use: Implement it.</li></string>
+    <string name="pref_experimental_shadow">Drop shadows</string>
+    <string name="pref_experimental_shadow_summ">Render shadows beneath objects.\n
+    <li>- Why it\'s an experiment: Significant performance cost.</li>\n
+    <li>- Recommended use: Keep your object limit low.</li></string>
+    <string name="pref_experimental_drip">Drip</string>
+    <string name="pref_experimental_drip_summ">Objects draw their path to a persistent canvas.\n
+    <li>- Why it\'s an experiment: Definitely needs tweaking.</li></string>
+    
+    <string name="pref_about_title">About</string>
+    <string name="pref_about_title_summ"></string>
+    <string name="pref_about_licensing">Licensing</string>
+    <string name="pref_about_licensing_title">Notice for package <i>net.margaritov.preference.colorpicker</i></string>
+    <string name="pref_about_licensing_text">/*
+ * Copyright &#169; 2011 Sergey Margaritov &amp; Daniel Nilsson\n
+ *\n
+ * Licensed under the Apache License, Version 2.0 (the "License");\n
+ * you may not use this file except in compliance with the License.\n
+ * You may obtain a copy of the License at\n
+ *\n
+ *      <a href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a>\n
+ *\n
+ * Unless required by applicable law or agreed to in writing, software\n
+ * distributed under the License is distributed on an "AS IS" BASIS,\n
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n
+ * See the License for the specific language governing permissions and\n
+ * limitations under the License.\n
+ */</string>
+    <string name="pref_about_changelog">Change log</string>
+    <string name="pref_about_changelog_text">
+        <b>1.4.8</b> (28 March 2016):\n
+        <li>Fixed midnight time formatting in 12-hour mode.</li>\n
+        \n\n
+
+        <b>1.4.7</b> (27 November 2015):\n
+        <li>Implemented user request: new option to rotate the clock in daydream mode.</li>\n
+        <li>Fixed weird background colour on dialog buttons.</li>\n
+        \n\n
+
+        <b>1.4.6</b> (10 June 2015):\n
+        <li>Added support for <a href="https://play.google.com/store/apps/details?id=com.beatonma.formclockwidget">FORM Clock Widget</a>. The widget can now colour itself based on the colours you have chosen in your Orbitals LWP settings.\n
+            - (Requires FORM Clock Widget 1.2.2 or higher)</li>\n
+        \n\n
+        <b>1.4.5</b> (12 March 2015):\n
+        <li>Promoted background images from the \'Experimental\' menu to the \'Appearance\' menu.</li>\n
+        <li>New experiment: \'Drip\' style rendering.\n
+        - Objects paint their paths to canvas as they move, giving an effect similar to my other LWP &amp; daydream, Drip.</li>\n
+        <li>Bug fix: Removed overlapping animation when opening settings app.</li>\n
+        \n\n
+        <b>1.4.4.1</b> (11 February 2015):\n
+        <li>Quick bug fix.</li>\n
+        \n\n
+        <b>1.4.4</b> (10 February 2015):\n
+        <li>Custom background images!\n
+            - Currently under \'Experiments\'.\n
+            - Ticking the checkbox will open a file picker and then let you crop your chosen image.\n
+            - Currently only JPG and PNG files are supported.\n
+            - Images are centered on screen. Small images will be scaled up if necessary.\n
+            - If you want to choose a new image, untick and re-tick the option.\n
+            - This is a temporary arrangement and will be replaced with a nicer setup soon.</li>\n
+        <li>Bug fix: Spawning rate is now constant regardless of how many system types are enabled.</li>\n
+        <li>Settings menus:\n
+            - Bug fix: Settings menu icons no longer invisible after device rotation.\n
+            - Bug fix: No more weird double ripples.\n
+            - Minor layout and animation tweaks.</li>\n
+        \n\n
+        <b>1.4.3</b> (03 February 2015):\n
+        <li>Minor animation tweaks and an animation-related bug fix.</li>\n
+        \n\n
+        <b>1.4.2</b> (03 February 2015):\n
+        <li>Minor animation tweaks.</li>\n
+        <li>Bug fix (sort of): FAB should no longer cover anything in Daydream settings.</li>\n
+        <li>Added shadow experiment for Daydreams:\n
+            - If enabled, performance will take a major hit!\n
+            - Try lowering your object limit for a better frame rate.</li>\n
+        \n\n
+        <b>1.4.1</b> (26 January 2015):\n
+        <li>Split layout for wide devices or landscape use.</li>\n
+        \n\n
+        <b>1.4.0</b> (23 January 2015):\n
+        <li>Fully materialised settings! (For Android 4.2 and greater only - stuff gets prettier as version number increases! Older versions (4.1 and below) still use the old version of the settings.)</li>\n
+        <li>Bug fix: trace lines now works properly when \'Show centre of mass\' is enabled.</li>\n
+        <li>Better (I think?) colour morphing for collisions and notifications.</li>\n
+        <li>I think everything has been tested but this was a big rewrite so please let me know if I broke something!</li>\n
+    \n\n
+        <b>1.3.2</b> (12 January 2015):\n
+        <li>Bug fix: \'Start Daydream\' button should no longer cause a crash on Samsung devices. It still doesn\'t work - Samsung do something different from AOSP - but it should now fail gracefully.</li>\n
+    \n\n
+        <b>1.3.1</b> (10 January 2015):\n
+        <li>Bug fix: Stopped pulsing in random colours when no notifications are active.</li>\n
+        <li>Finally added streamers to LWP. They have been available in daydreams for ages but I forgot to copy them across!</li>\n
+    \n\n
+        <b>1.3</b> (09 January 2015):\n
+        <li>Added support for an extension app that makes LWP &amp; Daydream objects pulse in different colours when you receive notifications.\n
+            - Apps and colours are chosen in extension app.\n
+            - Once you have installed the extension, go to the new Notification Pulse settings page and enable it.\n
+            - Remember to allow notification access for Orbitals Notification Extension in system settings!</li>\n
+    \n\n
+        <b>1.2.1</b> (06 January 2015):\n
+        <li>Added some more time settings. You can now choose the text colour and size, and choose between filled or outline-only text.</li>\n
+    \n\n
+        <b>1.2</b> (05 January 2015):\n
+        <li>Basic material settings theme on Lollipop.</li>\n
+        <li>Added option to show current time on Daydream:\n
+            - Consider this a beta option for now and please let me know if something doesn\'t look right.\n
+            - Choose between 24 and 12 hour formats.\n
+            - Displayed time slowly moves up and down a bit to avoid upsetting amoled displays.\n
+            - Further options likely to follow.</li>\n
+    \n\n
+        <b>1.1.6</b> (06 October 2014):\n
+        <li>Added option to choose a separate colour for object outlines (by request!). Find it at the bottom of the \'Appearance\' menus.</li>\n
+        <li>Camera movement when using \'Show centre of mass\' experiment should now be smoother.</li>\n
+    \n\n
+        <b>1.1.5</b> (05 August 2014):\n
+        <li>Added particle streamers to Daydreams:\n
+            - Shoot a stream of objects in one direction.\n
+            - Enable/disable random generation in the \'System generation\' menu.\n
+            - Swipe to make your own at will. Length of swipe changes the average speed of objects as they exit the singularity!\n</li>
+        <li>Added some more variability to the size of the central object in generated star systems.</li>\n
+        <li>Fixed a bug so the target frame rate you choose under \'Performance\' should now be accurate.</li>\n
+        <li>You can now access Wallpaper and Daydream settings from your app launcher, under \'Orbitals LWP\'. This was added to enable access to Daydream settings for Android 4.2 users as the normal method doesn\'t appear to work...</li>\n
+    \n\n
+        <b>1.1.4</b> (14 April 2014):\n
+        <li>Fixed a bug preventing chosen background colour being set properly in Daydream mode.</li>\n
+    \n\n
+        <b>1.1.3</b> (25 March 2014):\n
+        <li>New \'Bitcrush\' experiment. If enabled, objects will be displayed as low-fidelity approximations.</li>\n
+    \n\n
+        <b>1.1.2</b> (21 March 2014):\n
+        <li>Option to change object colours depending on battery charge level. (Currently only implemented for the main LWP - if set, lockscreen colours will obey main settings.)</li>\n
+        <li>New \'Experimental\' features menu:\n
+            - (Here be dragons! More accurately, here be features that may break.)\n
+            - Centre view on the centre of mass.</li>\n
+    \n\n
+        <b>1.1.1</b> (11 February 2014):\n
+        <li>Options to toggle daydream interactivity and screen dimming.</li>\n
+        <li>If interactivity is enabled you can exit the daydream just by holding your finger down in one spot for half a second - no need to pull up system bars.</li>\n
+    \n\n
+        <b>1.1.0</b> (07 February 2014):\n
+        <li>Daydream mode!\n
+            - Enable it under Settings > Display > Daydream (requires Android 4.2 Jellybean or above).\n
+            - Daydream settings are chosen separately from wallpaper and lockscreen but include all the same options.\n
+            - Displays in full screen immersive mode - swipe in from the top or bottom to make your status bar/ navigation bar visible again (requires Android 4.4 Kitkat or above).</li>\n
+    \n\n
+        <b>1.0.5</b> (06 February 2014):\n
+        <li>Multiple object colour options can now be chosen - e.g. you can choose red, orange and yellow instead of just red. (GingerBread devices are still limited to single colours, I\'m afraid.)</li>\n
+        <li>Due to the above alteration your colour settings have probably reset to the default \'all\' setting. Apologies for the inconvenience of re-choosing your colours but I hope the ability to choose more than one is worth it.</li>\n
+        <li>Minor fixes for pre-Honeycomb Android versions.</li>\n
+    \n\n
+        <b>1.0.4</b> (03 February 2014):\n
+        <li>Object size preference.</li>\n
+        <li>All colour, size and object style options can now be chosen independently for the main screen and lock screen.</li>\n
+        <li>Size and colour option differences melt into one another when the device becomes locked or unlocked.</li>\n
+        <li>Re-reorganised options menu.</li>\n
+    \n\n
+        <b>1.0.3</b> (22 January 2014):\n
+        <li>Collision options:\n
+            - Simple (immediate destruction of smaller object),\n
+            - Merge (gradual mass transfer to larger object),\n
+            - and None (no collisions, acceleration softened when objects are very close).</li>\n
+        <li>Option to change line thickness for wire frames.</li>\n
+        <li>Added this changelog-viewing dialog.</li>\n
+    \n\n
+        <b>1.0.2</b> (21 January 2014):\n
+        <li>Object transparency options.</li>\n
+        <li>Wire frame option to show objects as just their outline.</li>\n
+        <li>Lock screen options! You can now choose to change things like colour saturation, brightness or transparency of objects when your device is locked. More are in the works!</li>\n
+        <li>Reorganised options menu. Categories now have their own screens as the all-in-one menu was getting a bit long and cumbersome.</li>\n
+    \n\n
+        <b>1.0.1</b> (17 January 2014):\n
+        <li>Option to generate softer/desaturated colours</li>\n
+        <li>Collisions now gradually transfer mass and size to larger object instead of immediately destroying the smaller object. (This will be an option soon.)</li>\n
+        <li>Options to change the strength and direction (antigravity!) of gravity.</li>\n
+        <li>Option to choose preferred frame rate.</li>\n
+        <li>A couple of small visual tweaks.</li>\n
+    \n\n
+        <b>1.0</b> (16 January 2014):\n
+        <li>First release!</li>\n
+</string>
+<string name="pref_about_community">Google+ Community</string>
+<string name="pref_about_community_summ">Share you favourite settings, request features, or see what\'s coming soon.</string>
+
+</resources>

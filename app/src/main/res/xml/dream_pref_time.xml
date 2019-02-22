@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Time settings -->
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:list="http://schemas.android.com/apk/res-auto"
+	android:summary="@string/pref_time_title_summ"
+	android:title="@string/pref_time_title">
+	<CheckBoxPreference
+		android:defaultValue="false"
+		android:key="pref_time_show"
+		android:title="@string/pref_time_show_title"
+		android:summary="@string/pref_time_show_summ" />
+	<CheckBoxPreference
+		android:defaultValue="true"
+		android:key="pref_time_24hr"
+		android:title="@string/pref_time_24hr_title"
+		android:summary="@string/pref_time_24hr_summ" />
+	<CheckBoxPreference
+		android:defaultValue="false"
+		android:key="pref_time_outline"
+		android:title="@string/pref_time_outline"
+		android:summary="@string/pref_time_outline_summ" />
+	<net.margaritov.preference.colorpicker.ColorPickerPreference
+		android:defaultValue="-1"
+		android:key="pref_time_color"
+		android:summary="@string/pref_time_color_summ"
+		android:title="@string/pref_time_color" />
+	<com.beatonma.orbitalslivewallpaper.ListPreference
+        list:defaultValue="1.0"
+		list:entries="@array/pref_render_size_entries"
+		list:entryValues="@array/pref_render_size_entryvalues"
+		android:key="pref_time_size"
+		android:summary="@string/pref_time_size_summ"
+		android:title="@string/pref_time_size" />
+	<com.beatonma.orbitalslivewallpaper.ListPreference
+		list:defaultValue="0"
+		list:entries="@array/pref_time_rotation_entries"
+		list:entryValues="@array/pref_time_rotation_entryValues"
+		android:key="pref_time_rotation"
+		android:summary="@string/pref_time_rotation_summ"
+		android:title="@string/pref_time_rotation"/>
+
+    <PreferenceCategory
+        android:title="\n"
+        android:summary="\n\n" />
+</PreferenceScreen>

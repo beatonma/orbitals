@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Physics settings -->
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:list="http://schemas.android.com/apk/res-auto"
+	android:summary="@string/pref_physics_title_summ"
+	android:title="@string/pref_physics_title" >
+
+	<com.beatonma.orbitalslivewallpaper.ListPreference
+		list:defaultValue="1"
+		list:entries="@array/pref_physics_collision_entries"
+		list:entryValues="@array/pref_physics_collision_entryvalues"
+		android:key="pref_physics_collision"
+		android:summary="@string/pref_physics_collision_summ"
+		android:title="@string/pref_physics_collision" />
+
+	<com.beatonma.orbitalslivewallpaper.NiceNumberDialogPreference
+		android:key="pref_physics_gravity"
+		android:summary="@string/pref_physics_gravity_summ"
+		android:title="@string/pref_physics_gravity" />
+
+	<CheckBoxPreference
+		android:defaultValue="false"
+		android:key="pref_physics_antigravity"
+		android:summary="@string/pref_physics_antigravity_summ"
+		android:title="@string/pref_physics_antigravity" />
+
+	<CheckBoxPreference
+		android:defaultValue="false"
+		android:key="pref_physics_border_bounce"
+		android:summary="@string/pref_physics_border_bounce_summ"
+		android:title="@string/pref_physics_border_bounce" />
+</PreferenceScreen>

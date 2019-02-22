@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:transitionName="dialog_licensing">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbarStyle="outsideInset" >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/pref_about_licensing_text"
+            android:padding="24dp"
+            android:textColorLink="@color/Accent"
+            android:id="@+id/licensing_body_textview"
+            android:autoText="false" />
+    </ScrollView>
+
+</LinearLayout>
