@@ -1,14 +1,14 @@
 <resources>
 
     <string name="app_author">Michael Beaton</string>
-    <string name="app_name">Orbitals LWP &amp; Daydream</string>
-    <string name="app_name_root">Orbitals</string>
+    <string name="app_name">[2021]Orbitals LWP &amp; Daydream</string>
+    <string name="app_name_root">[2021]Orbitals</string>
     <string name="app_version_code">16</string>
     <string name="app_version">1.1.6</string>
-    <string name="wallpaper_description">Orbitals LWP</string>
+    <string name="wallpaper_description">[2021]Orbitals LWP</string>
     <string name="wallpaper_settings">Orbitals Live Wallpaper</string>
     <string name="system_settings">System settings</string>
-    <string name="service_title">Orbitals</string>
+    <string name="service_title">[2021]Orbitals</string>
     
     <string-array name="launcher_array">
         <item>Live Wallpaper settings</item>

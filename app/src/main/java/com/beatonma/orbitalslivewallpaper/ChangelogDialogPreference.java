@@ -10,8 +10,8 @@ public class ChangelogDialogPreference extends DialogPreference {
 	public ChangelogDialogPreference(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		// TODO Auto-generated constructor stub
-		setDialogLayoutResource(R.layout.changelog);
-		setNegativeButtonText("");
+//		setDialogLayoutResource(R.layout.changelog);
+//		setNegativeButtonText("");
 	}
 
 	@Override

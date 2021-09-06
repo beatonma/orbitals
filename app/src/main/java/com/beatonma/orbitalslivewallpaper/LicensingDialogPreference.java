@@ -9,8 +9,8 @@ public class LicensingDialogPreference extends DialogPreference {
 
 	public LicensingDialogPreference(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		setDialogLayoutResource(R.layout.licensing_dialog);
-		setNegativeButtonText("");
+//		setDialogLayoutResource(R.layout.licensing_dialog);
+//		setNegativeButtonText("");
 	}
 
 	@Override

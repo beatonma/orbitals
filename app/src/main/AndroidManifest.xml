@@ -67,9 +67,9 @@
             android:label="@string/dream_settings" />
         <activity
             android:name=".DreamPassthroughActivity" />
-        <activity
-            android:name="com.soundcloud.android.crop.CropImageActivity"
-            android:theme="@style/CropActivityTheme"/>
+<!--        <activity-->
+<!--            android:name="com.soundcloud.android.crop.CropImageActivity"-->
+<!--            android:theme="@style/CropActivityTheme"/>-->
 
         <activity android:name="LauncherNav" >
             <intent-filter>

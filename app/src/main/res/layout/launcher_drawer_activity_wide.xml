@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:fitsSystemWindows="false">
 
-    <android.support.v4.widget.DrawerLayout
+    <androidx.drawerlayout.widget.DrawerLayout
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:id="@+id/drawer_layout"
@@ -49,7 +49,7 @@
                         <ListView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:id="@id/android:list"/>
+                            android:id="@android:id/list"/>
                     </FrameLayout>
                 </FrameLayout>
 
@@ -61,23 +61,23 @@
                     android:id="@+id/wide_container"/>
             </LinearLayout>
 
-            <com.melnykov.fab.FloatingActionButton
-                android:id="@+id/fab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:layout_gravity="bottom|right"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentBottom="true"
-                android:elevation="2dp"
-                android:src="@drawable/ic_play_arrow_white_36dp"
-                fab:fab_colorNormal="@color/fab_primary"
-                fab:fab_colorPressed="@color/fab_primary_pressed"
-                fab:fab_colorRipple="@color/fab_ripple"
-                android:stateListAnimator="@anim/raise"
-                android:visibility="gone"
-                android:transitionName="fab"/>
+<!--            <com.melnykov.fab.FloatingActionButton-->
+<!--                android:id="@+id/fab"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_margin="16dp"-->
+<!--                android:layout_gravity="bottom|right"-->
+<!--                android:layout_alignParentEnd="true"-->
+<!--                android:layout_alignParentRight="true"-->
+<!--                android:layout_alignParentBottom="true"-->
+<!--                android:elevation="2dp"-->
+<!--                android:src="@drawable/ic_play_arrow_white_36dp"-->
+<!--                fab:fab_colorNormal="@color/fab_primary"-->
+<!--                fab:fab_colorPressed="@color/fab_primary_pressed"-->
+<!--                fab:fab_colorRipple="@color/fab_ripple"-->
+<!--                android:stateListAnimator="@anim/raise"-->
+<!--                android:visibility="gone"-->
+<!--                android:transitionName="fab"/>-->
         </RelativeLayout>
 
         <fragment
@@ -89,5 +89,5 @@
             tools:layout="@layout/fragment_navigation_drawer"
             android:elevation="16dp"
             android:fitsSystemWindows="true"/>
-    </android.support.v4.widget.DrawerLayout>
+    </androidx.drawerlayout.widget.DrawerLayout>
 </LinearLayout>

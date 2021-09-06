@@ -1766,16 +1766,6 @@ public class LwpService extends WallpaperService {
                                     p.setAlpha(getAlpha());
 
                                     pixelate(c, e, p);
-
-                                    //show outline for debugging
-//								p.setColor(e.getColor());
-//								p.setStyle(Paint.Style.STROKE);
-//								p.setStrokeWidth(wireFrameWidth);
-//								p.setAlpha(30);
-//
-//								c.drawCircle((float) (e.getX() + scrollOffset)
-//										* ff, (float) e.getY() * ff,
-//										(float) e.getRadius() * ff, p);
                                 }
                                 else if (wireFrame) {
                                     p.setColor(e.getColor());
@@ -1831,7 +1821,7 @@ public class LwpService extends WallpaperService {
 					} // ENTITY LOOP ENDS HERE
 
                     if (pathing) { // Draw thin layer of background color so paths gradually fade away
-                        if (pathingOverlayDelay > 5) {
+                        if (pathingOverlayDelay > 0) {
                             pathingPaint.setAlpha(1);
                             pathingCanvas.drawColor(pathingPaint.getColor());
                             pathingPaint.setAlpha(255);

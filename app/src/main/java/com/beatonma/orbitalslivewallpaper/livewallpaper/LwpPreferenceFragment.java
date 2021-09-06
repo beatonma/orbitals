@@ -14,16 +14,16 @@ import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+
+import androidx.appcompat.widget.Toolbar;
 
 import com.beatonma.orbitalslivewallpaper.ImageUtils;
 import com.beatonma.orbitalslivewallpaper.LauncherNav;
 import com.beatonma.orbitalslivewallpaper.R;
 import com.beatonma.orbitalslivewallpaper.Utils;
-import com.soundcloud.android.crop.Crop;
 
 import java.io.File;
 import java.util.Random;
@@ -64,16 +64,14 @@ public class LwpPreferenceFragment extends PreferenceFragment {
         if (getArguments() != null) {
             section = getArguments().getInt(SECTION, 0);
             ((LauncherNav) getActivity()).setSection(section);
-        }
-        else {
+        } else {
             Log.d(TAG, "No arguments available.");
         }
 
         try {
             LauncherNav activity = (LauncherNav) getActivity();
             activity.updateToolbarText();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             Log.e(TAG, "Couldn't update toolbar text: " + e.toString());
         }
 
@@ -133,8 +131,7 @@ public class LwpPreferenceFragment extends PreferenceFragment {
                 } else {
                     ((LauncherNav) getActivity()).getNavDrawerFragment().lockDrawer();
                 }
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 Log.e(TAG, "Navigation drawer is unavailable.");
             }
 
@@ -147,12 +144,10 @@ public class LwpPreferenceFragment extends PreferenceFragment {
             } catch (Exception e) {
                 Log.e(TAG, "Error updating toolbar icon: " + e.toString());
             }
-        }
-        else {
+        } else {
             try {
                 ((LauncherNav) getActivity()).getNavDrawerFragment().unlockDrawer();
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
 
             }
         }
@@ -169,12 +164,10 @@ public class LwpPreferenceFragment extends PreferenceFragment {
                             //int section = ((LwpPreferenceFragment) fragmentManager.findFragmentByTag("LwpPreferenceFragment")).getSection();
 
                             ((LauncherNav) getActivity()).getNavDrawerFragment().openDrawer();
-                        }
-                        catch (Exception e) {
+                        } catch (Exception e) {
                             Log.e(TAG, "Error getting preference fragment: " + e.toString());
                         }
-                    }
-                    else {
+                    } else {
                         Log.d(TAG, "Back arrow clicked.");
                         try {
                             FragmentManager fragmentManager = getFragmentManager();
@@ -186,20 +179,17 @@ public class LwpPreferenceFragment extends PreferenceFragment {
                                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                                         .replace(R.id.container, LwpPreferenceFragment.newInstance(0), "LwpPreferenceFragment")
                                         .commit();
-                            }
-                            else {
+                            } else {
                                 // User is at top level
                                 ((LauncherNav) getActivity()).getNavDrawerFragment().openDrawer();
                             }
-                        }
-                        catch (Exception e) {
+                        } catch (Exception e) {
                             Log.e(TAG, "Error getting preference fragment: " + e.toString());
                         }
                     }
                 }
             });
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             Log.e(TAG, "Error handling hamburger/arrow touch event: " + e.toString());
         }
     }
@@ -320,12 +310,10 @@ public class LwpPreferenceFragment extends PreferenceFragment {
                 download.setSummary(getString(R.string.open_notify_extension_summ));
                 PackageManager pm = getActivity().getPackageManager();
                 download.setIntent(pm.getLaunchIntentForPackage("com.beatonma.orbitalsnotificationextension"));
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 Log.e(TAG, "Couldn't get launch intent.");
             }
-        }
-        else {
+        } else {
             Log.d(TAG, "Notify extension is not installed.");
             PreferenceScreen ps = getPreferenceScreen();
             ps.removePreference(findPreference("pref_notify_pulse"));
@@ -360,16 +348,14 @@ public class LwpPreferenceFragment extends PreferenceFragment {
                     i.setType("*/*");
                     i.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
                     i.addCategory(Intent.CATEGORY_OPENABLE);
-                }
-                else {
+                } else {
                     i = new Intent();
                     i.setType("image/jpeg|image/png");
                     i.setAction(Intent.ACTION_GET_CONTENT);
                 }
                 try {
                     startActivityForResult(i, FILE_PICKED);
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     Toast.makeText(getActivity(), "Error: Can't find a file picker. Please install a file explorer.", Toast.LENGTH_LONG).show();
                     Log.e(TAG, "Error opening file picker: " + e.toString());
                 }
@@ -391,8 +377,7 @@ public class LwpPreferenceFragment extends PreferenceFragment {
                         i.setType("*/*");
                         i.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
                         i.addCategory(Intent.CATEGORY_OPENABLE);
-                    }
-                    else {
+                    } else {
                         //Toast.makeText(getActivity(), "Currently only supported on Kitkat and above.", Toast.LENGTH_SHORT).show();
                         i = new Intent();
                         //i.setType("image*//*");
@@ -401,8 +386,7 @@ public class LwpPreferenceFragment extends PreferenceFragment {
                     }
                     try {
                         startActivityForResult(i, FILE_PICKED);
-                    }
-                    catch (Exception e) {
+                    } catch (Exception e) {
                         Toast.makeText(getActivity(), "Error: Can't find a file picker. Please install a file explorer.", Toast.LENGTH_LONG).show();
                         Log.e(TAG, "Error opening file picker: " + e.toString());
                     }
@@ -414,38 +398,37 @@ public class LwpPreferenceFragment extends PreferenceFragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
-        Uri uri = null;
-        ImageUtils imageUtils = new ImageUtils(context, "lwp");
-
-        if (requestCode == FILE_PICKED) {
-            if (resultData != null) {
-                uri = resultData.getData();
-                imageUtils.copyFileFromUri(uri);
-
-                File oldFile = new File(getString("background_file"));
-                try {
-                    Log.d(TAG, "Deleting old file: " + oldFile.toString());
-                    oldFile.delete();
-                }
-                catch (Exception e) {
-                    Log.e(TAG, "Couldn't delete old file: " + e.toString());
-                }
-
-                File temp = new File(context.getCacheDir() + File.separator + "lwp_bg_image");
-                Uri tempUri = Uri.fromFile(temp);
-
-                String filename = context.getCacheDir() + File.separator + "lwp_bg_image" + new Random().nextInt();
-                saveString("background_file", filename);
-
-                File file = new File(filename);
-                Uri cachedFile = Uri.fromFile(file);
-
-                Log.d(TAG, "Crop input=" + tempUri + "; output=" + cachedFile);
-                saveBoolean("updated_background", true);
-
-                new Crop(tempUri).output(cachedFile).start(getActivity());
-            }
-        }
+//        Uri uri = null;
+//        ImageUtils imageUtils = new ImageUtils(context, "lwp");
+//
+//        if (requestCode == FILE_PICKED) {
+//            if (resultData != null) {
+//                uri = resultData.getData();
+//                imageUtils.copyFileFromUri(uri);
+//
+//                File oldFile = new File(getString("background_file"));
+//                try {
+//                    Log.d(TAG, "Deleting old file: " + oldFile.toString());
+//                    oldFile.delete();
+//                } catch (Exception e) {
+//                    Log.e(TAG, "Couldn't delete old file: " + e.toString());
+//                }
+//
+//                File temp = new File(context.getCacheDir() + File.separator + "lwp_bg_image");
+//                Uri tempUri = Uri.fromFile(temp);
+//
+//                String filename = context.getCacheDir() + File.separator + "lwp_bg_image" + new Random().nextInt();
+//                saveString("background_file", filename);
+//
+//                File file = new File(filename);
+//                Uri cachedFile = Uri.fromFile(file);
+//
+//                Log.d(TAG, "Crop input=" + tempUri + "; output=" + cachedFile);
+//                saveBoolean("updated_background", true);
+//
+////                new Crop(tempUri).output(cachedFile).start(getActivity());
+//            }
+//        }
         /*else if (requestCode == Crop.REQUEST_CROP && resultCode == getActivity().RESULT_OK) {
             Log.d(TAG, "Cropped image received. Processing in background...");
             uri = resultData.getData();

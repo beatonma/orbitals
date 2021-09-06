@@ -8,15 +8,11 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -25,16 +21,17 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.beatonma.orbitalslivewallpaper.dream.DreamPreferenceFragment;
 import com.beatonma.orbitalslivewallpaper.dream.DreamView;
 import com.beatonma.orbitalslivewallpaper.livewallpaper.LwpPreferenceFragment;
-import com.melnykov.fab.FloatingActionButton;
-import com.soundcloud.android.crop.Crop;
 
 /**
  * Created by Michael on 12/11/2014.
  */
-public class LauncherNav extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+public class LauncherNav extends AppCompatActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks {
     private static final String TAG = "LauncherNav";
     private static final String LWP_SECTION = "lwp_section";
     private static final String DREAM_SECTION = "dream_section";
@@ -53,7 +50,7 @@ public class LauncherNav extends ActionBarActivity implements NavigationDrawerFr
     Utils utils;
 
     // Hold information for FAB animation
-    FabContainer fabContainer;
+//    FabContainer fabContainer;
 
     //boolean firstRun = false;
 
@@ -92,7 +89,7 @@ public class LauncherNav extends ActionBarActivity implements NavigationDrawerFr
             // Set up the drawer.
             mNavigationDrawerFragment.setUp(
                     R.id.navigation_drawer,
-                    (DrawerLayout) findViewById(R.id.drawer_layout));
+                    findViewById(R.id.drawer_layout));
 
             // Load correct section if loaded from an intent - used for getting to dream settings from system settings
             if (getIntent() != null) {
@@ -217,34 +214,37 @@ public class LauncherNav extends ActionBarActivity implements NavigationDrawerFr
         super.onDestroy();
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
-        ImageUtils imageUtils;
-        if (nav == 0) {
-            imageUtils = new ImageUtils(context, "lwp");
-        }
-        else {
-            imageUtils = new ImageUtils(context, "dream");
-        }
-        //ImageUtils imageUtils = new ImageUtils(context);
-        Uri uri = null;
-        if (resultData != null) {
-            uri = resultData.getData();
-        }
-        if (uri == null) {
-            uri = Uri.parse(imageUtils.cachedImage);
-        }
-
-        if (requestCode == Crop.REQUEST_CROP && resultCode == Activity.RESULT_OK) {
-            Log.d(TAG, "Cropped image received. Processing in background...");
-            if (uri != null) {
-                imageUtils.processBackgroundImage(uri);
-            }
-            else {
-                Log.e(TAG, "Received cropped image uri is null.");
-            }
-        }
-    }
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
+//        ImageUtils imageUtils;
+//        if (nav == 0) {
+//            imageUtils = new ImageUtils(context, "lwp");
+//        }
+//        else {
+//            imageUtils = new ImageUtils(context, "dream");
+//        }
+//        //ImageUtils imageUtils = new ImageUtils(context);
+//        Uri uri = null;
+//        if (resultData != null) {
+//            uri = resultData.getData();
+//        }
+//        if (uri == null) {
+//            uri = Uri.parse(imageUtils.cachedImage);
+//        }
+//
+//        if (requestCode == Crop.REQUEST_CROP && resultCode == Activity.RESULT_OK) {
+//            Log.d(TAG, "Cropped image received. Processing in background...");
+//            if (uri != null) {
+//                imageUtils.processBackgroundImage(uri);
+//            }
+//            else {
+//                Log.e(TAG, "Received cropped image uri is null.");
+//            }
+//        }
+//        else {
+//            super.onActivityResult(requestCode, resultCode, resultData);
+//        }
+//    }
 
     /**
      * Navigation drawer stuff
@@ -340,45 +340,45 @@ public class LauncherNav extends ActionBarActivity implements NavigationDrawerFr
     }
 
     private void updateFab(int position) {
-        try {
-            FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-            fabContainer = new FabContainer();
-            switch (position) {
-                case 0:
-                    fab.hide();
-                    break;
-                case 1:
-                    fab.setVisibility(View.VISIBLE);
-                    fab.show();
-                    fab.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            try {
-                                if (fabContainer.hasMoved) {
-                                    if (utils.isLollipop()) {
-                                        removeDreamOverlay();
-                                    }
-                                }
-                                else {
-                                    moveFabToCenter(v);
-                                    Intent i = new Intent(Intent.ACTION_MAIN);
-                                    i.setClassName("com.android.systemui", "com.android.systemui.Somnambulator");
-                                    startActivity(i);
-                                }
-                            } catch (Exception e) {
-                                Log.e(TAG, "Couldn't start daydream: " + e.toString());
-                                Toast.makeText(context, "Couldn't start daydream - please try starting it from your system display menu.", Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    });
-                    break;
-                default:
-                    break;
-            }
-        }
-        catch (Exception e) {
-            Log.e(TAG, "Error updating toolbar: " + e.toString());
-        }
+//        try {
+//            FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+//            fabContainer = new FabContainer();
+//            switch (position) {
+//                case 0:
+//                    fab.hide();
+//                    break;
+//                case 1:
+//                    fab.setVisibility(View.VISIBLE);
+//                    fab.show();
+//                    fab.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            try {
+//                                if (fabContainer.hasMoved) {
+//                                    if (utils.isLollipop()) {
+//                                        removeDreamOverlay();
+//                                    }
+//                                }
+//                                else {
+//                                    moveFabToCenter(v);
+//                                    Intent i = new Intent(Intent.ACTION_MAIN);
+//                                    i.setClassName("com.android.systemui", "com.android.systemui.Somnambulator");
+//                                    startActivity(i);
+//                                }
+//                            } catch (Exception e) {
+//                                Log.e(TAG, "Couldn't start daydream: " + e.toString());
+//                                Toast.makeText(context, "Couldn't start daydream - please try starting it from your system display menu.", Toast.LENGTH_LONG).show();
+//                            }
+//                        }
+//                    });
+//                    break;
+//                default:
+//                    break;
+//            }
+//        }
+//        catch (Exception e) {
+//            Log.e(TAG, "Error updating toolbar: " + e.toString());
+//        }
     }
 
     public void updateToolbarText(final String root, final String newText) {
@@ -628,7 +628,7 @@ public class LauncherNav extends ActionBarActivity implements NavigationDrawerFr
             }, 1000);
         }
 
-        fabContainer.hasMoved = true;
+//        fabContainer.hasMoved = true;
     }
 
     public void moveFabBack(View v) {
@@ -636,8 +636,8 @@ public class LauncherNav extends ActionBarActivity implements NavigationDrawerFr
         Log.d(TAG, "moveFabBack isLollipop=" + utils.isLollipop());
         if (utils.isLollipop()) {
             v.animate()
-                    .translationX(-fabContainer.x)
-                    .translationY(-fabContainer.y)
+//                    .translationX(-fabContainer.x)
+//                    .translationY(-fabContainer.y)
                     .scaleXBy(-2f)
                     .scaleYBy(-2f)
                     .setInterpolator(new AccelerateDecelerateInterpolator())
@@ -645,14 +645,14 @@ public class LauncherNav extends ActionBarActivity implements NavigationDrawerFr
         }
         else {
             v.animate()
-                    .translationX(-fabContainer.x)
-                    .translationY(-fabContainer.y)
+//                    .translationX(-fabContainer.x)
+//                    .translationY(-fabContainer.y)
                     .scaleXBy(-2f)
                     .scaleYBy(-2f)
                     .setInterpolator(new AccelerateDecelerateInterpolator())
                     .setDuration(300);
         }
-        fabContainer.hasMoved = false;
+//        fabContainer.hasMoved = false;
     }
 
     public void revealDreamOverlay() {
@@ -700,20 +700,20 @@ public class LauncherNav extends ActionBarActivity implements NavigationDrawerFr
         int initialRadius = overlay.getWidth();
 
         // create the animation (the final radius is zero)
-        Animator anim = ViewAnimationUtils.createCircularReveal(overlay, cx, cy, initialRadius, 0);
+//        Animator anim = ViewAnimationUtils.createCircularReveal(overlay, cx, cy, initialRadius, 0);
 
         // make the view invisible when the animation is done
-        anim.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                overlay.setVisibility(View.GONE);
-                moveFabBack(findViewById(R.id.fab));
-            }
-        });
+//        anim.addListener(new AnimatorListenerAdapter() {
+//            @Override
+//            public void onAnimationEnd(Animator animation) {
+//                super.onAnimationEnd(animation);
+//                overlay.setVisibility(View.GONE);
+//                moveFabBack(findViewById(R.id.fab));
+//            }
+//        });
 
         // start the animation
-        anim.start();
+//        anim.start();
     }
 
     // Slide fragment off screen, replace and slide back into position
@@ -772,18 +772,18 @@ public class LauncherNav extends ActionBarActivity implements NavigationDrawerFr
         return mNavigationDrawerFragment;
     }
 
-    public FloatingActionButton getFab() {
-        return fabContainer.fab;
-    }
-
-    private class FabContainer {
-        FloatingActionButton fab;
-        int x;
-        int y;
-        boolean hasMoved = false;
-
-        public void FabContainer(FloatingActionButton fab) {
-            this.fab = fab;
-        }
-    }
+//    public FloatingActionButton getFab() {
+//        return fabContainer.fab;
+//    }
+//
+//    private class FabContainer {
+//        FloatingActionButton fab;
+//        int x;
+//        int y;
+//        boolean hasMoved = false;
+//
+//        public void FabContainer(FloatingActionButton fab) {
+//            this.fab = fab;
+//        }
+//    }
 }

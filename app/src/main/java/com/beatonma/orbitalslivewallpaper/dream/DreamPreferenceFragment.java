@@ -1,12 +1,10 @@
 package com.beatonma.orbitalslivewallpaper.dream;
 
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,19 +12,14 @@ import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Toast;
 
-import com.beatonma.orbitalslivewallpaper.ImageUtils;
 import com.beatonma.orbitalslivewallpaper.LauncherNav;
 import com.beatonma.orbitalslivewallpaper.R;
 import com.beatonma.orbitalslivewallpaper.Utils;
-import com.soundcloud.android.crop.Crop;
-
-import java.io.File;
 
 /**
  * Created by Michael on 19/01/2015.
@@ -64,16 +57,14 @@ public class DreamPreferenceFragment extends PreferenceFragment {
         if (getArguments() != null) {
             section = getArguments().getInt(SECTION, 0);
             ((LauncherNav) getActivity()).setSection(section);
-        }
-        else {
+        } else {
             Log.d(TAG, "No arguments available.");
         }
 
         try {
             LauncherNav activity = (LauncherNav) getActivity();
             activity.updateToolbarText();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             Log.e(TAG, "Couldn't update toolbar text: " + e.toString());
         }
 
@@ -133,8 +124,7 @@ public class DreamPreferenceFragment extends PreferenceFragment {
                 } else {
                     ((LauncherNav) getActivity()).getNavDrawerFragment().lockDrawer();
                 }
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 Log.e(TAG, "Navigation drawer is unavailable.");
             }
 
@@ -147,63 +137,61 @@ public class DreamPreferenceFragment extends PreferenceFragment {
             } catch (Exception e) {
                 Log.e(TAG, "Error updating toolbar icon: " + e.toString());
             }
-        }
-        else {
+        } else {
             try {
                 ((LauncherNav) getActivity()).getNavDrawerFragment().unlockDrawer();
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
 
             }
         }
 
         // Handle clicks on toolbar burger/arrow.
-        try {
-            Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
-            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (utils.isWide()) {
-                        try {
-                            FragmentManager fragmentManager = getFragmentManager();
-                            int section = ((DreamPreferenceFragment) fragmentManager.findFragmentByTag("DreamPreferenceFragment")).getSection();
-
-                            Log.d(TAG, "Current section: " + section);
-                            ((LauncherNav) getActivity()).getNavDrawerFragment().openDrawer();
-                        }
-                        catch (Exception e) {
-                            Log.e(TAG, "Error getting preference fragment: " + e.toString());
-                        }
-                    }
-                    else {
-                        Log.d(TAG, "Back arrow clicked.");
-                        try {
-                            FragmentManager fragmentManager = getFragmentManager();
-                            int section = ((DreamPreferenceFragment) fragmentManager.findFragmentByTag("DreamPreferenceFragment")).getSection();
-
-                            Log.d(TAG, "Current section: " + section);
-                            if (section != 0) {
-                                // User is in a subsection
-                                fragmentManager.beginTransaction()
-                                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                                        .replace(R.id.container, DreamPreferenceFragment.newInstance(0), "DreamPreferenceFragment")
-                                        .commit();
-                            }
-                            else {
-                                // User is at top level
-                                ((LauncherNav) getActivity()).getNavDrawerFragment().openDrawer();
-                            }
-                        }
-                        catch (Exception e) {
-                            Log.e(TAG, "Error getting preference fragment: " + e.toString());
-                        }
-                    }
-                }
-            });
-        }
-        catch (Exception e) {
-            Log.e(TAG, "Error handling hamburger/arrow touch event: " + e.toString());
-        }
+//        try {
+//            Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+//            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    if (utils.isWide()) {
+//                        try {
+//                            FragmentManager fragmentManager = getFragmentManager();
+//                            int section = ((DreamPreferenceFragment) fragmentManager.findFragmentByTag("DreamPreferenceFragment")).getSection();
+//
+//                            Log.d(TAG, "Current section: " + section);
+//                            ((LauncherNav) getActivity()).getNavDrawerFragment().openDrawer();
+//                        }
+//                        catch (Exception e) {
+//                            Log.e(TAG, "Error getting preference fragment: " + e.toString());
+//                        }
+//                    }
+//                    else {
+//                        Log.d(TAG, "Back arrow clicked.");
+//                        try {
+//                            FragmentManager fragmentManager = getFragmentManager();
+//                            int section = ((DreamPreferenceFragment) fragmentManager.findFragmentByTag("DreamPreferenceFragment")).getSection();
+//
+//                            Log.d(TAG, "Current section: " + section);
+//                            if (section != 0) {
+//                                // User is in a subsection
+//                                fragmentManager.beginTransaction()
+//                                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+//                                        .replace(R.id.container, DreamPreferenceFragment.newInstance(0), "DreamPreferenceFragment")
+//                                        .commit();
+//                            }
+//                            else {
+//                                // User is at top level
+//                                ((LauncherNav) getActivity()).getNavDrawerFragment().openDrawer();
+//                            }
+//                        }
+//                        catch (Exception e) {
+//                            Log.e(TAG, "Error getting preference fragment: " + e.toString());
+//                        }
+//                    }
+//                }
+//            });
+//        }
+//        catch (Exception e) {
+//            Log.e(TAG, "Error handling hamburger/arrow touch event: " + e.toString());
+//        }
     }
 
     public void setUpMainPrefs() {
@@ -322,12 +310,10 @@ public class DreamPreferenceFragment extends PreferenceFragment {
                 download.setSummary(getString(R.string.open_notify_extension_summ));
                 PackageManager pm = getActivity().getPackageManager();
                 download.setIntent(pm.getLaunchIntentForPackage("com.beatonma.orbitalsnotificationextension"));
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 Log.e(TAG, "Couldn't get launch intent.");
             }
-        }
-        else {
+        } else {
             Log.d(TAG, "Notify extension is not installed.");
             PreferenceScreen ps = getPreferenceScreen();
             ps.removePreference(findPreference("pref_notify_pulse"));
@@ -351,7 +337,7 @@ public class DreamPreferenceFragment extends PreferenceFragment {
     }
 
     // Slide fragment off screen, replace and slide back into position
-    private void animateFragment(final int container, final int newSection ) {
+    private void animateFragment(final int container, final int newSection) {
         final View v = getActivity().findViewById(R.id.container);
         int xDest = -v.getWidth();
 
@@ -389,16 +375,14 @@ public class DreamPreferenceFragment extends PreferenceFragment {
                     i.setType("*/*");
                     i.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
                     i.addCategory(Intent.CATEGORY_OPENABLE);
-                }
-                else {
+                } else {
                     i = new Intent();
                     i.setType("image/jpeg|image/png");
                     i.setAction(Intent.ACTION_GET_CONTENT);
                 }
                 try {
                     startActivityForResult(i, FILE_PICKED);
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     Toast.makeText(getActivity(), "Error: Can't find a file picker. Please install a file explorer.", Toast.LENGTH_LONG).show();
                     Log.e(TAG, "Error opening file picker: " + e.toString());
                 }
@@ -420,8 +404,7 @@ public class DreamPreferenceFragment extends PreferenceFragment {
                         i.setType("*/*");
                         i.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
                         i.addCategory(Intent.CATEGORY_OPENABLE);
-                    }
-                    else {
+                    } else {
                         //Toast.makeText(getActivity(), "Currently only supported on Kitkat and above.", Toast.LENGTH_SHORT).show();
                         i = new Intent();
                         //i.setType("image*//*");
@@ -430,8 +413,7 @@ public class DreamPreferenceFragment extends PreferenceFragment {
                     }
                     try {
                         startActivityForResult(i, FILE_PICKED);
-                    }
-                    catch (Exception e) {
+                    } catch (Exception e) {
                         Toast.makeText(getActivity(), "Error: Can't find a file picker. Please install a file explorer.", Toast.LENGTH_LONG).show();
                         Log.e(TAG, "Error opening file picker: " + e.toString());
                     }
@@ -443,25 +425,25 @@ public class DreamPreferenceFragment extends PreferenceFragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
-        Uri uri = null;
-        ImageUtils imageUtils = new ImageUtils(context, "dream");
-
-        if (requestCode == FILE_PICKED) {
-            if (resultData != null) {
-                uri = resultData.getData();
-                imageUtils.copyFileFromUri(uri);
-
-                File file = new File(context.getCacheDir() + File.separator + "dream_bg_image");
-                Uri cachedFile = Uri.fromFile(file);
-
-                new Crop(cachedFile).output(cachedFile).start(getActivity());
-            }
-        }
-        else if (requestCode == Crop.REQUEST_CROP && resultCode == getActivity().RESULT_OK) {
-            Log.d(TAG, "Cropped image received. Processing in background...");
-            uri = resultData.getData();
-            imageUtils.processBackgroundImage(uri);
-        }
+//        Uri uri = null;
+//        ImageUtils imageUtils = new ImageUtils(context, "dream");
+//
+//        if (requestCode == FILE_PICKED) {
+//            if (resultData != null) {
+//                uri = resultData.getData();
+//                imageUtils.copyFileFromUri(uri);
+//
+//                File file = new File(context.getCacheDir() + File.separator + "dream_bg_image");
+//                Uri cachedFile = Uri.fromFile(file);
+//
+//                new Crop(cachedFile).output(cachedFile).start(getActivity());
+//            }
+//        }
+//        else if (requestCode == Crop.REQUEST_CROP && resultCode == getActivity().RESULT_OK) {
+//            Log.d(TAG, "Cropped image received. Processing in background...");
+//            uri = resultData.getData();
+//            imageUtils.processBackgroundImage(uri);
+//        }
     }
 
     private void setSharedPreference(String key, String value) {

@@ -9,8 +9,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 
-import com.afollestad.materialdialogs.MaterialDialog;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -21,9 +19,9 @@ import java.util.Set;
  * Created by Michael on 20/01/2015.
  */
 public class MultiSelectListPreference extends Preference {
-    private final static String TAG = "MultiSelectListPreference";
-    String [] entries;
-    String [] entryValues;
+    private final static String TAG = "MultiSelectListPref";
+    String[] entries;
+    String[] entryValues;
     Integer[] preselection;
 
     Context context;
@@ -46,8 +44,7 @@ public class MultiSelectListPreference extends Preference {
 
             int idEntryValues = a.getResourceId(R.styleable.ListPreference_entryValues, 0);
             entryValues = resources.getStringArray(idEntryValues);
-        }
-        finally {
+        } finally {
             a.recycle();
         }
     }
@@ -60,7 +57,7 @@ public class MultiSelectListPreference extends Preference {
     @Override
     public void onClick() {
         String title = (String) getTitle();
-        String [] selected = getPreference(getKey());
+        String[] selected = getPreference(getKey());
 
         ArrayList<Integer> chosen = new ArrayList<Integer>();
         List v = Arrays.asList(entryValues);
@@ -77,24 +74,24 @@ public class MultiSelectListPreference extends Preference {
 
         preselection = chosen.toArray(new Integer[chosen.size()]);
 
-        new MaterialDialog.Builder(context)
-                .title(title)
-                .items(entries)
-                .itemsCallbackMultiChoice(preselection, new MaterialDialog.ListCallbackMultiChoice() {
-                    @Override
-                    public boolean onSelection(MaterialDialog dialog, Integer[] which, CharSequence[] text) {
-                        Set<String> results = new HashSet<String>();
-                        for (Integer i : which) {
-                            results.add(String.valueOf(i));
-                        }
-                        Log.d(TAG, "Selected:" + results.toString());
-                        updatePreference(results);
-                        return true;
-                    }
-                })
-                .btnSelector(R.drawable.dialog_button_selector)
-                .positiveText("OK")
-                .show();
+//        new MaterialDialog.Builder(context)
+//                .title(title)
+//                .items(entries)
+//                .itemsCallbackMultiChoice(preselection, new MaterialDialog.ListCallbackMultiChoice() {
+//                    @Override
+//                    public boolean onSelection(MaterialDialog dialog, Integer[] which, CharSequence[] text) {
+//                        Set<String> results = new HashSet<String>();
+//                        for (Integer i : which) {
+//                            results.add(String.valueOf(i));
+//                        }
+//                        Log.d(TAG, "Selected:" + results.toString());
+//                        updatePreference(results);
+//                        return true;
+//                    }
+//                })
+//                .btnSelector(R.drawable.dialog_button_selector)
+//                .positiveText("OK")
+//                .show();
     }
 
     private void updatePreference(Set<String> s) {
@@ -108,8 +105,7 @@ public class MultiSelectListPreference extends Preference {
         String[] result = {""};
         if (sp != null) {
             result = sp.getStringSet(key, new HashSet<String>()).toArray(new String[]{});
-        }
-        else {
+        } else {
             Log.e(TAG, "Shared preferences = null");
         }
         return result;

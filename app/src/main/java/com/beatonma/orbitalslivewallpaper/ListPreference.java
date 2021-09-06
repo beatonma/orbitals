@@ -9,8 +9,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 
-import com.afollestad.materialdialogs.MaterialDialog;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -19,8 +17,8 @@ import java.util.List;
  */
 public class ListPreference extends Preference {
     private final static String TAG = "ListPreference";
-    String [] entries;
-    String [] entryValues;
+    String[] entries;
+    String[] entryValues;
     String defaultValue = "-1";
 
     Context context;
@@ -49,8 +47,7 @@ public class ListPreference extends Preference {
             }
 
             defaultValue = a.getString(R.styleable.ListPreference_defaultValue);
-        }
-        finally {
+        } finally {
             a.recycle();
         }
     }
@@ -70,31 +67,29 @@ public class ListPreference extends Preference {
         List v = Arrays.asList(entryValues);
         if (v.contains(selected)) {
             preselection = v.indexOf(selected);
-        }
-        else if (v.contains(defaultValue)) {
+        } else if (v.contains(defaultValue)) {
             preselection = v.indexOf(defaultValue);
             Log.d(TAG, "defaultValue found");
-        }
-        else {
+        } else {
             Log.d(TAG, "Couldn't find " + defaultValue);
             preselection = 0;
         }
 
         Log.d(TAG, "defaultValue = " + defaultValue + "; preselection = " + preselection);
 
-        new MaterialDialog.Builder(context)
-                .title(title)
-                .items(entries)
-                .itemsCallbackSingleChoice(preselection, new MaterialDialog.ListCallbackSingleChoice() {
-                    @Override
-                    public boolean onSelection(MaterialDialog dialog, View v, int which, CharSequence text) {
-                        updatePreference(entryValues[which]);
-                        return true;
-                    }
-                })
-                .btnSelector(R.drawable.dialog_button_selector)
-                .positiveText("OK")
-                .show();
+//        new MaterialDialog.Builder(context)
+//                .title(title)
+//                .items(entries)
+//                .itemsCallbackSingleChoice(preselection, new MaterialDialog.ListCallbackSingleChoice() {
+//                    @Override
+//                    public boolean onSelection(MaterialDialog dialog, View v, int which, CharSequence text) {
+//                        updatePreference(entryValues[which]);
+//                        return true;
+//                    }
+//                })
+//                .btnSelector(R.drawable.dialog_button_selector)
+//                .positiveText("OK")
+//                .show();
     }
 
     private void updatePreference(String s) {
@@ -108,8 +103,7 @@ public class ListPreference extends Preference {
         String result = "-1";
         if (sp != null) {
             result = sp.getString(key, "-1");
-        }
-        else {
+        } else {
             Log.e(TAG, "Shared preferences = null");
         }
         return result;

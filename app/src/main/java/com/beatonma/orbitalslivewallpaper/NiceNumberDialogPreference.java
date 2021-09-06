@@ -7,18 +7,16 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 
-import com.afollestad.materialdialogs.MaterialDialog;
-
 import net.simonvt.numberpicker.NumberPicker;
 
 /**
  * Created by Michael on 21/01/2015.
  */
 public class NiceNumberDialogPreference extends Preference {
-    private final static String TAG = "NiceNumberDialogPreference";
-    private final static String NUMS[] = { "0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8",
+    private final static String TAG = "NiceNumberDiaPref";
+    private final static String NUMS[] = {"0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8",
             "0.9", "1.0", "2.0", "3.0", "4.0", "5.0", "6.0", "7.0", "8.0",
-            "9.0", "10.0" };
+            "9.0", "10.0"};
 
     Context context;
     private int currentNumber = 0;
@@ -37,32 +35,32 @@ public class NiceNumberDialogPreference extends Preference {
     public void onClick() {
         String title = (String) getTitle();
         boolean wrapInScrollView = true;
-        MaterialDialog dialog = new MaterialDialog.Builder(context)
-                .title(title)
-                .customView(R.layout.nice_number_picker, wrapInScrollView)
-                .callback(new MaterialDialog.ButtonCallback() {
-                    @Override
-                    public void onPositive(MaterialDialog dialog) {
-                        //updatePreference(currentNumber);
-                        int newValue = ((NumberPicker) dialog.findViewById(R.id.numberPicker)).getValue();
-                        Log.d(TAG, "newValue=" + newValue);
-                        updatePreference(newValue);
-                    }
-                })
-                .btnSelector(R.drawable.dialog_button_selector)
-                .positiveText("OK")
-                .build();
+//        MaterialDialog dialog = new MaterialDialog.Builder(context)
+//                .title(title)
+//                .customView(R.layout.nice_number_picker, wrapInScrollView)
+//                .callback(new MaterialDialog.ButtonCallback() {
+//                    @Override
+//                    public void onPositive(MaterialDialog dialog) {
+//                        //updatePreference(currentNumber);
+//                        int newValue = ((NumberPicker) dialog.findViewById(R.id.numberPicker)).getValue();
+//                        Log.d(TAG, "newValue=" + newValue);
+//                        updatePreference(newValue);
+//                    }
+//                })
+//                .btnSelector(R.drawable.dialog_button_selector)
+//                .positiveText("OK")
+//                .build();
+//
+//        dialog.show();
 
-        dialog.show();
-
-        NumberPicker np = (NumberPicker) dialog.findViewById(R.id.numberPicker);
-        initNumberPicker(np);
-        np.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                currentNumber = newVal;
-            }
-        });
+//        NumberPicker np = (NumberPicker) dialog.findViewById(R.id.numberPicker);
+//        initNumberPicker(np);
+//        np.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+//            @Override
+//            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+//                currentNumber = newVal;
+//            }
+//        });
     }
 
     private void initNumberPicker(NumberPicker numberPicker) {
@@ -110,8 +108,7 @@ public class NiceNumberDialogPreference extends Preference {
         int result = 0;
         if (sp != null) {
             result = sp.getInt(key, n);
-        }
-        else {
+        } else {
             Log.e(TAG, "Shared preferences = null");
         }
         return result;
