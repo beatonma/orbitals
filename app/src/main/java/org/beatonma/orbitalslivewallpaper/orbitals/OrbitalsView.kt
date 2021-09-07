@@ -1,23 +1,22 @@
 package org.beatonma.orbitalslivewallpaper.orbitals
 
 import android.content.Context
-import android.graphics.*
+import android.graphics.Canvas
+import android.graphics.Color
 import android.util.AttributeSet
 import android.view.View
 import org.beatonma.orbitalslivewallpaper.orbitals.options.Options
-import kotlin.math.max
 
 class OrbitalsView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
     private val persistent: Boolean = true
-    private val fadePersistence: Boolean = true
-    private val persistentCanvas: Canvas = Canvas()
-    private var bitmap: Bitmap? = null
-    private val persistentPaint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val options = Options()
-    private val backgroundColor = options.visualOptions.colorOptions.backgroundColor
+    private val persistence = Persistence(
+        fade = true,
+        backgroundColor = options.visualOptions.colorOptions.backgroundColor
+    )
 
     private val renderer = AndroidOrbitalsRenderer(options)
 
@@ -28,12 +27,7 @@ class OrbitalsView @JvmOverloads constructor(
     }
 
     private fun reset() {
-        bitmap?.recycle()
-        if (persistent) {
-            bitmap = Bitmap.createBitmap(max(1, width), max(1, height), Bitmap.Config.RGBA_F16)
-            persistentCanvas.setBitmap(bitmap)
-            persistentCanvas.drawColor(backgroundColor)
-        }
+        persistence.reset(width, height)
 
         renderer.reset()
         renderer.addBodies()
@@ -45,9 +39,9 @@ class OrbitalsView @JvmOverloads constructor(
             height = h
         }
 
-        reset()
-
         super.onSizeChanged(w, h, oldw, oldh)
+
+        reset()
     }
 
     override fun onDraw(canvas: Canvas?) {
@@ -56,26 +50,14 @@ class OrbitalsView @JvmOverloads constructor(
         renderer.tick()
 
         if (canvas != null) {
-            val bm = bitmap
-            if (persistent && bm != null) {
-                drawPersistent(canvas, bm)
+            if (persistent) {
+                persistence.draw(renderer, canvas)
             } else {
                 renderer.draw(canvas)
             }
         }
 
         postInvalidateOnAnimation()
-    }
-
-    private fun drawPersistent(canvas: Canvas, bitmap: Bitmap) {
-        renderer.drawBackground(canvas)
-
-        if (fadePersistence) {
-            persistentCanvas.drawColor(backgroundColor.withAlpha(5), BlendMode.DST_OUT)
-        }
-        renderer.drawForeground(persistentCanvas)
-
-        canvas.drawBitmap(bitmap, 0f, 0f, persistentPaint)
     }
 
     override fun onAttachedToWindow() {
@@ -85,10 +67,6 @@ class OrbitalsView @JvmOverloads constructor(
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        bitmap?.recycle()
-        bitmap = null
+        persistence.recycle()
     }
 }
-
-private fun Int.withAlpha(alpha: Int): Int =
-    Color.argb(alpha, Color.red(this), Color.green(this), Color.blue(this))

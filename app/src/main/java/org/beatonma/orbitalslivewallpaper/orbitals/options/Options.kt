@@ -17,7 +17,7 @@ data class PhysicsOptions(
     val maxEntities: Int = 30,
     val systemGenerators: List<SystemGenerator> = listOf(
         SystemGenerator.StarSystem,
-        SystemGenerator.Randomized
+//        SystemGenerator.Randomized,
     ),
     val G: Float = 6.647f,
     val gravityMultiplier: Float = 1f,
@@ -67,20 +67,20 @@ enum class SystemGenerator {
     private fun generateStarSystem(width: Int, height: Int): List<Body> {
         val sun = FixedBody(
             label = "center",
-            mass = 10000.kg,
+            mass = largeMass(),
             radius = 50.metres,
-            position = Position(.5f * width, .5f * height),
+            position = Position(.8f * width, .3f * height),
         )
 
         val minDistance = (min(width, height) * .1f).metres
         val maxDistance = (min(width, height) * .9f).metres
 
-        return listOf(sun) + (1..10).map {
+        return listOf(sun) + (1..Random.nextInt(2, 10)).map {
             satelliteOf(sun, anyDistance(minDistance, maxDistance))
         }
     }
 
-    fun generateRandom(width: Int, height: Int): List<Body> {
+    private fun generateRandom(width: Int, height: Int): List<Body> {
         return (1..Random.nextInt(2, 10)).map {
             InertialBody(
                 label = "random[$it]",
