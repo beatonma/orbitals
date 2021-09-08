@@ -1,1 +1,4 @@
 *.gitbundle
+build/
+.idea/
+.gradle/
