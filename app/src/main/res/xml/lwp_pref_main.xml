@@ -15,12 +15,12 @@
         android:title="@string/pref_appearance_title"
         android:key="lwp_appearance"/>
 
-	<!-- Lockscreen appearance settings -->
-	<Preference
-		android:summary="@string/pref_lockscreen_title_summ"
-		android:title="@string/pref_lockscreen_title"
-		android:key="lwp_lockscreen_appearance"/>
-		
+    <!-- Lockscreen appearance settings -->
+    <Preference
+        android:summary="@string/pref_lockscreen_title_summ"
+        android:title="@string/pref_lockscreen_title"
+        android:key="lwp_lockscreen_appearance"/>
+
     <!-- Visual Aids settings -->
     <Preference
         android:summary="@string/pref_render_title_summ"

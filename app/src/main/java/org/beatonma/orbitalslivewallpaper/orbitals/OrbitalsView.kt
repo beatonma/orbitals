@@ -2,61 +2,52 @@ package org.beatonma.orbitalslivewallpaper.orbitals
 
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Color
 import android.util.AttributeSet
 import android.view.View
 import org.beatonma.orbitalslivewallpaper.orbitals.options.Options
+import org.beatonma.orbitalslivewallpaper.orbitals.renderer.AndroidOrbitalsRenderer
+import org.beatonma.orbitalslivewallpaper.orbitals.renderer.TrailRenderer
 
 class OrbitalsView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
-    private val persistent: Boolean = true
     private val options = Options()
-    private val persistence = Persistence(
-        fade = true,
-        backgroundColor = options.visualOptions.colorOptions.backgroundColor
+    private val renderEngine = OrbitalsRenderEngine<Canvas>(
+        renderers = listOf(
+            TrailRenderer(15),
+            AndroidOrbitalsRenderer(options.visualOptions),
+        ),
+        options = options,
     )
-
-    private val renderer = AndroidOrbitalsRenderer(options)
 
     init {
         setOnClickListener {
-            reset()
+            renderEngine.engine.addBodies()
         }
     }
 
     private fun reset() {
-        persistence.reset(width, height)
-
-        renderer.reset()
-        renderer.addBodies()
+        renderEngine.reset()
+        renderEngine.engine.addBodies()
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
-        with(renderer) {
-            width = w
-            height = h
+        if (w != oldw && h != oldh) {
+            renderEngine.onSizeChanged(w, h)
+            reset()
         }
 
         super.onSizeChanged(w, h, oldw, oldh)
-
-        reset()
     }
 
     override fun onDraw(canvas: Canvas?) {
-        super.onDraw(canvas)
+        timeIt(maxMillis = 15, label = "OrbitalsView.onDraw") {
 
-        renderer.tick()
-
-        if (canvas != null) {
-            if (persistent) {
-                persistence.draw(renderer, canvas)
-            } else {
-                renderer.draw(canvas)
+            if (canvas != null) {
+                renderEngine.update(canvas)
             }
         }
-
         postInvalidateOnAnimation()
     }
 
@@ -67,6 +58,6 @@ class OrbitalsView @JvmOverloads constructor(
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        persistence.recycle()
+        renderEngine.recycle()
     }
 }

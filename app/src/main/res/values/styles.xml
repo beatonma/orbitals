@@ -51,7 +51,7 @@
     </style>
 
     <!-- Number Picker -->
-	<style name="NPWidget">
+    <style name="NPWidget">
         <item name="android:textAppearance">?android:attr/textAppearance</item>
     </style>
 
@@ -67,7 +67,7 @@
         <item name="internalMaxHeight">180dip</item>
         <item name="virtualButtonPressedDrawable">?attr/selectableItemBackground</item>
     </style>
-	<!-- End number picker -->
+    <!-- End number picker -->
 
     <color name="Black">#000000</color>
     <color name="White">#FFFFFF</color>

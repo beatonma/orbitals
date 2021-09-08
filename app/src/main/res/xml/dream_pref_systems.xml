@@ -3,41 +3,41 @@
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:list="http://schemas.android.com/apk/res-auto"
-	android:summary="@string/pref_systems_title_summ"
-	android:title="@string/pref_systems_title" >
-	<CheckBoxPreference
-		android:defaultValue="true"
-		android:key="pref_systems_cell"
-		android:summary="@string/pref_systems_cell_summ"
-		android:title="@string/pref_systems_cell" />
-	<CheckBoxPreference
-		android:defaultValue="true"
-		android:key="pref_systems_star"
-		android:summary="@string/pref_systems_star_summ"
-		android:title="@string/pref_systems_star" />
-	<CheckBoxPreference
-		android:defaultValue="true"
-		android:key="pref_systems_poly"
-		android:summary="@string/pref_systems_poly_summ"
-		android:title="@string/pref_systems_poly" />
-	<CheckBoxPreference
-		android:defaultValue="true"
-		android:key="pref_systems_random"
-		android:summary="@string/pref_systems_random_summ"
-		android:title="@string/pref_systems_random" />
-	<CheckBoxPreference
-		android:defaultValue="true"
-		android:key="pref_systems_streamer"
-		android:summary="@string/pref_systems_streamer_summ"
-		android:title="@string/pref_systems_streamer" />
+    android:summary="@string/pref_systems_title_summ"
+    android:title="@string/pref_systems_title" >
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="pref_systems_cell"
+        android:summary="@string/pref_systems_cell_summ"
+        android:title="@string/pref_systems_cell" />
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="pref_systems_star"
+        android:summary="@string/pref_systems_star_summ"
+        android:title="@string/pref_systems_star" />
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="pref_systems_poly"
+        android:summary="@string/pref_systems_poly_summ"
+        android:title="@string/pref_systems_poly" />
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="pref_systems_random"
+        android:summary="@string/pref_systems_random_summ"
+        android:title="@string/pref_systems_random" />
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="pref_systems_streamer"
+        android:summary="@string/pref_systems_streamer_summ"
+        android:title="@string/pref_systems_streamer" />
 
-	<com.beatonma.orbitalslivewallpaper.ListPreference
+    <org.beatonma.orbitalslivewallpaper.old.ListPreference
         list:defaultValue="3"
-		list:entries="@array/pref_systems_touch_entries"
-		list:entryValues="@array/pref_systems_touch_entryvalues"
-		android:key="pref_systems_touch"
-		android:summary="@string/pref_systems_touch_summ"
-		android:title="@string/pref_systems_touch" />
+        list:entries="@array/pref_systems_touch_entries"
+        list:entryValues="@array/pref_systems_touch_entryvalues"
+        android:key="pref_systems_touch"
+        android:summary="@string/pref_systems_touch_summ"
+        android:title="@string/pref_systems_touch" />
 
     <PreferenceCategory
         android:title="\n"

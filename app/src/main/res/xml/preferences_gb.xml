@@ -21,7 +21,7 @@
                     android:summary="@string/pref_color_colortheme_summ"
                     android:title="@string/pref_color_colortheme" />
 
-                <com.beatonma.orbitalslivewallpaper.NumberDialogPreference
+                <org.beatonma.orbitalslivewallpaper.old.NumberDialogPreference
                     android:key="pref_color_alpha"
                     android:summary="@string/pref_color_alpha_summ"
                     android:title="@string/pref_color_alpha" />
@@ -58,7 +58,7 @@
                     android:summary="@string/pref_render_outlines_summ"
                     android:title="@string/pref_render_outlines" />
 
-                <com.beatonma.orbitalslivewallpaper.NumberDialogPreference
+                <org.beatonma.orbitalslivewallpaper.old.NumberDialogPreference
                     android:key="pref_render_wireframewidth"
                     android:summary="@string/pref_render_wireframewidth_summ"
                     android:title="@string/pref_render_wireframewidth" />
@@ -82,7 +82,7 @@
                     android:summary="@string/pref_lockscreen_color_colortheme_summ"
                     android:title="@string/pref_lockscreen_color_colortheme" />
 
-                <com.beatonma.orbitalslivewallpaper.NumberDialogPreference
+                <org.beatonma.orbitalslivewallpaper.old.NumberDialogPreference
                     android:key="pref_lockscreen_alpha"
                     android:summary="@string/pref_lockscreen_alpha_summ"
                     android:title="@string/pref_lockscreen_alpha" />
@@ -119,7 +119,7 @@
                     android:summary="@string/pref_lockscreen_outlines_summ"
                     android:title="@string/pref_lockscreen_outlines" />
 
-                <com.beatonma.orbitalslivewallpaper.NumberDialogPreference
+                <org.beatonma.orbitalslivewallpaper.old.NumberDialogPreference
                     android:key="pref_lockscreen_wireframewidth"
                     android:summary="@string/pref_lockscreen_wireframewidth_summ"
                     android:title="@string/pref_lockscreen_wireframewidth" />
@@ -139,7 +139,7 @@
                 android:summary="@string/pref_render_trace_summ"
                 android:title="@string/pref_render_trace" />
 
-            <com.beatonma.orbitalslivewallpaper.NumberDialogPreference
+            <org.beatonma.orbitalslivewallpaper.old.NumberDialogPreference
                 android:dependency="pref_render_trace"
                 android:key="pref_render_dialog_trace_length"
                 android:summary="@string/pref_render_dialog_trace_length_summ"
@@ -180,7 +180,7 @@
         <PreferenceScreen
             android:summary="@string/pref_physics_title_summ"
             android:title="@string/pref_physics_title" >
-            <com.beatonma.orbitalslivewallpaper.NumberDialogPreference
+            <org.beatonma.orbitalslivewallpaper.old.NumberDialogPreference
                 android:key="pref_physics_gravity"
                 android:summary="@string/pref_physics_gravity_summ"
                 android:title="@string/pref_physics_gravity" />
@@ -202,11 +202,11 @@
         <PreferenceScreen
             android:summary="@string/pref_performance_title_summ"
             android:title="@string/pref_performance_title" >
-            <com.beatonma.orbitalslivewallpaper.NumberDialogPreference
+            <org.beatonma.orbitalslivewallpaper.old.NumberDialogPreference
                 android:key="pref_performance_maxobjects"
                 android:summary="@string/pref_performance_maxobjects_summ"
                 android:title="@string/pref_performance_maxobjects" />
-            <com.beatonma.orbitalslivewallpaper.NumberDialogPreference
+            <org.beatonma.orbitalslivewallpaper.old.NumberDialogPreference
                 android:key="pref_performance_framerate"
                 android:summary="@string/pref_performance_framerate_summ"
                 android:title="@string/pref_performance_framerate" />
@@ -215,11 +215,11 @@
     <PreferenceCategory
         android:summary="@string/pref_about_title_summ"
         android:title="@string/pref_about_title" >
-        <com.beatonma.orbitalslivewallpaper.LicensingDialogPreference
+        <org.beatonma.orbitalslivewallpaper.old.LicensingDialogPreference
             android:key="pref_about_licensing"
             android:title="@string/pref_about_licensing" />
         
-        <com.beatonma.orbitalslivewallpaper.ChangelogDialogPreference
+        <org.beatonma.orbitalslivewallpaper.old.ChangelogDialogPreference
             android:key="pref_about_changelog"
             android:title="@string/pref_about_changelog" />
         

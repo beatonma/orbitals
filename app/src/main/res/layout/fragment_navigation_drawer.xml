@@ -1,120 +1,85 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:preview="http://schemas.android.com/apk/res-auto"
-    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:orientation="vertical"
+    android:layout_height="match_parent"
+    android:background="@color/White"
+    android:clickable="true"
     android:elevation="16dp"
-    android:background="@color/White" >
+    android:orientation="vertical">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/navigation_drawer_preview_height"
         android:background="@color/Primary"
-        android:elevation="4dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:stateListAnimator="@anim/raise">
-        <com.beatonma.orbitalslivewallpaper.dream.DreamView
-            android:layout_width="fill_parent"
-            android:layout_height="@dimen/navigation_drawer_preview_height"
-            android:layout_alignParentTop="true"
-            android:id="@+id/preview"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
-            preview:isPreview="true" />
-    </LinearLayout>
-    
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="160dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:background="@drawable/preview_selector"
-        android:elevation="8dp"
-        android:clickable="true"
-        android:stateListAnimator="@anim/raise"/>
+        android:elevation="4dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/navigation_drawer_preview_height"
-        android:text="@string/app_name_root"
-        android:id="@+id/text_overlay"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:elevation="9dp"
-        android:textColor="@color/White"
-        android:textSize="36sp"
-        android:gravity="left|bottom"
-        android:layout_marginLeft="16dp"
-        android:paddingBottom="8dp" />
+        <org.beatonma.orbitalslivewallpaper.old.dream.DreamView
+            android:id="@+id/preview"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/navigation_drawer_preview_height"
+            android:background="@color/Primary"
+            android:elevation="4dp"
+            preview:isPreview="true" />
+
+        <TextView
+            android:id="@+id/text_overlay"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/navigation_drawer_preview_height"
+            android:gravity="bottom|start"
+            android:layout_marginStart="16dp"
+            android:paddingBottom="8dp"
+            android:text="@string/app_name_root"
+            android:textColor="@color/White"
+            android:textSize="36sp" />
+    </FrameLayout>
+
 
     <ListView
-        android:layout_height="fill_parent"
-        android:layout_width="match_parent"
         android:id="@+id/navigation_listview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/White"
         android:choiceMode="singleChoice"
         android:divider="@android:color/transparent"
         android:dividerHeight="0dp"
-        tools:context=".NavigationDrawerFragment"
-        android:background="@color/White"
         android:drawSelectorOnTop="true"
-        android:layout_marginTop="@dimen/navigation_drawer_preview_height"
-        android:layout_above="@+id/links"/>
+        tools:context="org.beatonma.orbitalslivewallpaper.old.NavigationDrawerFragment" />
+
+    <org.beatonma.orbitalslivewallpaper.orbitals.OrbitalsView
+        android:id="@+id/orbitals"
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:background="#444444" />
 
     <LinearLayout
+        android:id="@+id/links"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:id="@+id/links"
         android:elevation="16dp"
-        android:layout_alignParentBottom="true" >
+        android:orientation="vertical">
 
         <View
+            android:id="@+id/nav_divider"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="?android:attr/listDivider"
-            android:id="@+id/nav_divider"/>
+            android:background="?android:attr/listDivider" />
 
         <TextView
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:text="@string/pref_about_changelog"
             android:id="@+id/text_about_changelog"
-            android:textAppearance="?android:attr/textAppearanceListItemSmall"
-            android:gravity="center_vertical"
-            android:paddingStart="?android:attr/listPreferredItemPaddingStart"
-            android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
-            android:paddingLeft="?android:attr/listPreferredItemPaddingStart"
-            android:paddingRight="?android:attr/listPreferredItemPaddingEnd"
-            android:background="@drawable/navigation_drawer_list_item_selector"
-            android:minHeight="?android:attr/listPreferredItemHeightSmall"
-            android:textColor="@drawable/navigation_drawer_list_item_text_selector"
-            android:textAllCaps="true"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:textSize="14sp"/>
-
-        <TextView
-            android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:text="@string/pref_about_community"
-            android:id="@+id/text_about_community"
-            android:textAppearance="?android:attr/textAppearanceListItemSmall"
-            android:gravity="center_vertical"
-            android:paddingStart="?android:attr/listPreferredItemPaddingStart"
-            android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
-            android:paddingLeft="?android:attr/listPreferredItemPaddingStart"
-            android:paddingRight="?android:attr/listPreferredItemPaddingEnd"
+            android:layout_height="wrap_content"
             android:background="@drawable/navigation_drawer_list_item_selector"
+            android:gravity="center_vertical"
             android:minHeight="?android:attr/listPreferredItemHeightSmall"
-            android:textColor="@drawable/navigation_drawer_list_item_text_selector"
-            android:textAllCaps="true"
+            android:paddingStart="?android:attr/listPreferredItemPaddingStart"
             android:paddingTop="8dp"
+            android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
             android:paddingBottom="8dp"
+            android:text="@string/pref_about_changelog"
+            android:textAllCaps="true"
+            android:textAppearance="?android:attr/textAppearanceListItemSmall"
+            android:textColor="@drawable/navigation_drawer_list_item_text_selector"
             android:textSize="14sp" />
     </LinearLayout>
-</RelativeLayout>
+</LinearLayout>

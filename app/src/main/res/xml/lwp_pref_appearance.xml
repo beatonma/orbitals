@@ -31,14 +31,14 @@
             android:summary="@string/pref_color_background_summ"
             android:title="@string/pref_color_background" />-->
 
-        <com.beatonma.orbitalslivewallpaper.MultiSelectListPreference
+        <org.beatonma.orbitalslivewallpaper.old.MultiSelectListPreference
             list:entries="@array/pref_color_color_entries"
             list:entryValues="@array/pref_color_color_entryvalues"
             android:key="pref_color_objectcolors"
             android:summary="@string/pref_color_colortheme_summ"
             android:title="@string/pref_color_colortheme" />
 
-        <com.beatonma.orbitalslivewallpaper.NiceNumberDialogPreference
+        <org.beatonma.orbitalslivewallpaper.old.NiceNumberDialogPreference
             android:key="pref_color_alpha"
             android:summary="@string/pref_color_alpha_summ"
             android:title="@string/pref_color_alpha" />
@@ -55,7 +55,7 @@
             android:title="@string/pref_color_desaturate" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_appearance_shapes_title" >
-        <com.beatonma.orbitalslivewallpaper.ListPreference
+        <org.beatonma.orbitalslivewallpaper.old.ListPreference
             list:defaultValue="1.0"
             list:entries="@array/pref_render_size_entries"
             list:entryValues="@array/pref_render_size_entryvalues"
@@ -69,7 +69,7 @@
             android:summary="@string/pref_render_wireframe_summ"
             android:title="@string/pref_render_wireframe" />
 
-        <com.beatonma.orbitalslivewallpaper.NiceNumberDialogPreference
+        <org.beatonma.orbitalslivewallpaper.old.NiceNumberDialogPreference
             android:key="pref_render_wireframewidth"
             android:summary="@string/pref_render_wireframewidth_summ"
             android:title="@string/pref_render_wireframewidth" />

@@ -3,31 +3,31 @@
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:list="http://schemas.android.com/apk/res-auto"
-	android:summary="@string/pref_notify_summ"
-	android:title="@string/pref_notify_title">
+    android:summary="@string/pref_notify_summ"
+    android:title="@string/pref_notify_title">
 
-	<Preference
-		android:title="@string/pref_notify_download"
-		android:summary="@string/pref_notify_download_summ"
+    <Preference
+        android:title="@string/pref_notify_download"
+        android:summary="@string/pref_notify_download_summ"
         android:key="notify_download">
-		<intent
-			android:action="android.intent.action.VIEW"
-			android:data="https://play.google.com/store/apps/details?id=com.beatonma.orbitalsnotificationextension" />
-	</Preference>
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="https://play.google.com/store/apps/details?id=com.beatonma.orbitalsnotificationextension" />
+    </Preference>
 
-	<CheckBoxPreference
-		android:defaultValue="false"
-		android:key="pref_notify_pulse"
-		android:summary="@string/pref_notify_pulse_summ"
-		android:title="@string/pref_notify_pulse" />
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="pref_notify_pulse"
+        android:summary="@string/pref_notify_pulse_summ"
+        android:title="@string/pref_notify_pulse" />
 
-	<com.beatonma.orbitalslivewallpaper.ListPreference
+    <org.beatonma.orbitalslivewallpaper.old.ListPreference
         list:defaultValue="3"
-		list:entries="@array/pref_notify_speed_entries"
-		list:entryValues="@array/pref_notify_speed_entryvalues"
-		android:key="pref_notify_speed"
-		android:summary="@string/pref_notify_speed_summ"
-		android:title="@string/pref_notify_speed" />
+        list:entries="@array/pref_notify_speed_entries"
+        list:entryValues="@array/pref_notify_speed_entryvalues"
+        android:key="pref_notify_speed"
+        android:summary="@string/pref_notify_speed_summ"
+        android:title="@string/pref_notify_speed" />
 
     <PreferenceCategory
         android:title="\n"

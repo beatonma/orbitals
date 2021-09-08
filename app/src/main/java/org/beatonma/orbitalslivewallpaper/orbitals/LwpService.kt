@@ -7,6 +7,7 @@ import android.view.MotionEvent
 import android.view.SurfaceHolder
 import org.beatonma.orbitalslivewallpaper.info
 import org.beatonma.orbitalslivewallpaper.orbitals.options.Options
+import org.beatonma.orbitalslivewallpaper.orbitals.renderer.AndroidOrbitalsRenderer
 import org.beatonma.orbitalslivewallpaper.warn
 
 private const val FPS = 60
@@ -16,12 +17,7 @@ class LwpService : WallpaperService() {
     override fun onCreateEngine() = LwpEngine()
 
     inner class LwpEngine : Engine() {
-        private val persistent: Boolean = false
-        private val options = Options()
-        private val renderer: AndroidOrbitalsRenderer = AndroidOrbitalsRenderer(options)
-        private val width: Int get() = renderer.width
-        private val height: Int get() = renderer.height
-
+        private val options: Options = Options()
         private val handler: Handler = Handler(mainLooper)
         private val drawRunnable: Runnable = Runnable(this@LwpEngine::draw)
         private var visible = true
@@ -33,9 +29,12 @@ class LwpService : WallpaperService() {
                 }
             }
 
-        private val persistence = Persistence(
-            fade = true,
-            backgroundColor = options.visualOptions.colorOptions.backgroundColor
+        private val renderEngine = OrbitalsRenderEngine<Canvas>(
+            renderers = listOf(
+//                TrailRenderer(30),
+                AndroidOrbitalsRenderer(options.visualOptions),
+            ),
+            options = options,
         )
 
 
@@ -48,16 +47,15 @@ class LwpService : WallpaperService() {
         }
 
         override fun onTouchEvent(event: MotionEvent?) {
-            super.onTouchEvent(event)
-
-            reset()
+            when (event?.action) {
+                MotionEvent.ACTION_DOWN -> renderEngine.engine.addBodies()
+                else -> super.onTouchEvent(event)
+            }
         }
 
         private fun reset() {
-            persistence.reset(width, height)
-
-            renderer.reset()
-            renderer.addBodies()
+            renderEngine.reset()
+            renderEngine.engine.addBodies()
         }
 
         override fun onVisibilityChanged(visible: Boolean) {
@@ -71,34 +69,24 @@ class LwpService : WallpaperService() {
             width: Int,
             height: Int
         ) {
-            renderer.width = width
-            renderer.height = height
-            super.onSurfaceChanged(holder, format, width, height)
+            renderEngine.onSizeChanged(width, height)
+            reset()
 
-            renderer.reset()
-            renderer.addBodies()
+            super.onSurfaceChanged(holder, format, width, height)
         }
 
         override fun onSurfaceDestroyed(holder: SurfaceHolder?) {
             super.onSurfaceDestroyed(holder)
             visible = false
-            persistence.recycle()
+            renderEngine.recycle()
         }
 
         private fun draw() {
             var canvas: Canvas? = null
             try {
                 canvas = surfaceHolder.lockCanvas()
-
-                renderer.tick()
-
-                if (canvas != null) {
-                    if (persistent) {
-                        persistence.draw(renderer, canvas)
-                    } else {
-                        renderer.draw(canvas)
-                    }
-                }
+                canvas.drawColor(options.visualOptions.colorOptions.background)
+                renderEngine.update(canvas)
             } catch (e: Exception) {
                 warn(e)
             } finally {

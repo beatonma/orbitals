@@ -67,7 +67,7 @@
             android:layout_width="@dimen/navigation_drawer_width"
             android:layout_height="match_parent"
             android:layout_gravity="start"
-            android:name="com.beatonma.orbitalslivewallpaper.NavigationDrawerFragment"
+            android:name="org.beatonma.orbitalslivewallpaper.old.NavigationDrawerFragment"
             tools:layout="@layout/fragment_navigation_drawer"
             android:elevation="16dp"
             android:fitsSystemWindows="true"/>
