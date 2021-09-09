@@ -1,9 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.beatonma.orbitalslivewallpaper"
-    android:versionCode="31"
-    android:versionName="1.4.7" >
-
-    <uses-permission android:name="android.permission.BIND_DREAM_SERVICE"/>
+    android:versionCode="32"
+    android:versionName="2.0.0" >
 
     <uses-feature
         android:name="android.software.live_wallpaper"
@@ -11,15 +9,17 @@
     </uses-feature>
 
     <application
+        android:name="org.beatonma.orbitalslivewallpaper.OrbitalsApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <service
-            android:name="org.beatonma.orbitalslivewallpaper.orbitals.LwpService"
+            android:name="org.beatonma.orbitalslivewallpaper.orbitals.services.LwpService"
             android:enabled="true"
             android:label="@string/service_title"
-            android:permission="android.permission.BIND_WALLPAPER" >
+            android:permission="android.permission.BIND_WALLPAPER"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.service.wallpaper.WallpaperService" >
                 </action>
@@ -31,13 +31,6 @@
             </meta-data>
         </service>
 
-        <activity
-            android:name="org.beatonma.orbitalslivewallpaper.old.livewallpaper.LwpPrefsActivity"
-            android:configChanges="keyboardHidden|orientation"
-            android:exported="true"
-            android:label="@string/wallpaper_settings" >
-        </activity>
-
 <!--        <service-->
 <!--            android:name="com.beatonma.orbitalslivewallpaper.org.beatonma.orbitalslivewallpaper.old.IntentFilter"-->
 <!--            android:label="OrbitalsIntentFilter"-->
@@ -47,7 +40,7 @@
 
         <!-- Dream service -->
         <service
-            android:name="org.beatonma.orbitalslivewallpaper.orbitals.ScreensaverService"
+            android:name="org.beatonma.orbitalslivewallpaper.orbitals.services.ScreensaverService"
             android:exported="false"
             android:icon="@drawable/ic_launcher"
             android:label="@string/service_title"
@@ -62,16 +55,16 @@
                 android:resource="@xml/dream" />
         </service>
 
-        <activity
-            android:name="org.beatonma.orbitalslivewallpaper.old.dream.DreamPrefsActivity"
-            android:label="@string/dream_settings" />
+<!--        <activity-->
+<!--            android:name="org.beatonma.orbitalslivewallpaper.old.dream.DreamPrefsActivity"-->
+<!--            android:label="@string/dream_settings" />-->
         <activity
             android:name="org.beatonma.orbitalslivewallpaper.old.DreamPassthroughActivity" />
-<!--        <activity-->
-<!--            android:name="com.soundcloud.android.crop.CropImageActivity"-->
-<!--            android:theme="@style/CropActivityTheme"/>-->
 
-        <activity android:name="org.beatonma.orbitalslivewallpaper.old.LauncherNav" >
+        <activity
+            android:name="org.beatonma.orbitalslivewallpaper.app.MainActivity"
+            android:exported="true"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
