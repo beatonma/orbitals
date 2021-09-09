@@ -1,4 +1,4 @@
-package org.beatonma.orbitalslivewallpaper.orbitals.renderer.compose
+package org.beatonma.orbitalslivewallpaper.orbitals.renderer.compose.util
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.BlendMode
@@ -10,8 +10,6 @@ import androidx.compose.ui.graphics.drawscope.Fill
 import org.beatonma.orbitals.physics.Body
 import org.beatonma.orbitals.physics.Distance
 import org.beatonma.orbitals.physics.Position
-import org.beatonma.orbitalslivewallpaper.color.MaterialRed500
-import org.beatonma.orbitalslivewallpaper.color.getAnyMaterialColor
 
 fun DrawScope.drawCircle(
     position: Position,
@@ -23,19 +21,14 @@ fun DrawScope.drawCircle(
     blendMode: BlendMode = BlendMode.SrcOver
 ) {
     drawCircle(
-        color,
-        center = Offset(position.x.metres, position.y.metres),
+        color = color,
         radius = radius.metres,
+        center = Offset(position.x.metres, position.y.metres),
+        alpha = alpha,
+        blendMode = blendMode,
+        colorFilter = colorFilter,
+        style = style,
     )
-//    drawCircle(
-//        color = color,
-//        radius = radius.metres,
-//        center = Offset(position.x.metres, position.y.metres),
-//        alpha = alpha,
-//        blendMode = blendMode,
-//        colorFilter = colorFilter,
-//        style = style,
-//    )
 }
 
 fun DrawScope.drawCircle(
