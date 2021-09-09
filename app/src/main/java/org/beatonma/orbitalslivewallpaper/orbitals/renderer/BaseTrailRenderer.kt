@@ -8,6 +8,7 @@ import org.beatonma.orbitals.physics.UniqueID
 abstract class BaseTrailRenderer<Canvas>(
     val maxPoints: Int,
     val maxAlpha: Float = .2f,
+    val traceThickness: Float = 4f,
 ) : OrbitalsRenderer<Canvas> {
     val bodyPaths: MutableMap<UniqueID, MutableList<Position>> = mutableMapOf()
     private var trailTicks = 0

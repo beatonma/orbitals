@@ -26,11 +26,14 @@ class TrailRenderer(
 
         points.forEachIndexed { index, position ->
             paint.alpha = ((index.toFloat() / points.size.toFloat()) * (maxAlpha * 255f)).roundToInt()
-            canvas.drawCircle(position, maxOf(1f, body.radius.metres / 10f))
+            canvas.drawCircle(
+                position,
+                radius = maxOf(1f, maxOf(traceThickness, body.radius.metres / 10f))
+            )
         }
     }
 
-    private fun Canvas.drawCircle(position: Position, size: Float = 4f) {
-        drawCircle(position.x.metres, position.y.metres, size, paint)
+    private fun Canvas.drawCircle(position: Position, radius: Float) {
+        drawCircle(position.x.metres, position.y.metres, radius, paint)
     }
 }

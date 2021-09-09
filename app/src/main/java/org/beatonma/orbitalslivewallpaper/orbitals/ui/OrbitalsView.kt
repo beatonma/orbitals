@@ -6,20 +6,18 @@ import android.util.AttributeSet
 import android.view.View
 import org.beatonma.orbitalslivewallpaper.orbitals.OrbitalsRenderEngine
 import org.beatonma.orbitalslivewallpaper.orbitals.options.Options
-import org.beatonma.orbitalslivewallpaper.orbitals.renderer.canvas.AndroidOrbitalsRenderer
-import org.beatonma.orbitalslivewallpaper.orbitals.renderer.canvas.TrailRenderer
+import org.beatonma.orbitalslivewallpaper.orbitals.renderer.canvas.chooseRenderers
 import org.beatonma.orbitalslivewallpaper.orbitals.timeIt
 
 class OrbitalsView @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
     private val options = Options()
-    private val renderEngine = OrbitalsRenderEngine<Canvas>(
-        renderers = listOf(
-            TrailRenderer(15),
-            AndroidOrbitalsRenderer(options.visualOptions),
-        ),
+    private val renderEngine = OrbitalsRenderEngine(
+        renderers = chooseRenderers(options),
         options = options,
     )
 
@@ -45,7 +43,6 @@ class OrbitalsView @JvmOverloads constructor(
 
     override fun onDraw(canvas: Canvas?) {
         timeIt(maxMillis = 15, label = "OrbitalsView.onDraw") {
-
             if (canvas != null) {
                 renderEngine.update(canvas)
             }

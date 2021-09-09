@@ -19,7 +19,7 @@ class TrailRenderer(
             canvas.drawCircle(
                 color = Color.White,
                 position = position,
-                radius = 16.metres,
+                radius = maxOf(1f, maxOf(traceThickness, body.radius.metres / 10f)).metres,
                 alpha = (index.toFloat() / points.size.toFloat()) * maxAlpha
             )
         }

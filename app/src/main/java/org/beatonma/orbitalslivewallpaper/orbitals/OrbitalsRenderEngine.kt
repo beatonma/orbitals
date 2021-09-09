@@ -5,7 +5,7 @@ import org.beatonma.orbitals.Space
 import org.beatonma.orbitals.options.PhysicsOptions
 import org.beatonma.orbitals.physics.Body
 import org.beatonma.orbitalslivewallpaper.orbitals.options.Options
-import org.beatonma.orbitalslivewallpaper.orbitals.renderer.canvas.OrbitalsRenderer
+import org.beatonma.orbitalslivewallpaper.orbitals.renderer.OrbitalsRenderer
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
@@ -19,7 +19,7 @@ class OrbitalsRenderEngine<T>(
         override var space: Space = Space(1, 1)
         override val physics: PhysicsOptions = options.physics
         override var bodies: List<Body> = listOf()
-        override val tickTimeDelta: Duration = options.physics.tickDelta
+        override val tickTimeDelta: Duration = physics.tickDelta
 
         override var pruneCounter = 0
         override val pruneFrequency = 60
