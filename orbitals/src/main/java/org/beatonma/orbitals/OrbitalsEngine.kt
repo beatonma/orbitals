@@ -78,9 +78,6 @@ interface OrbitalsEngine {
         purge.forEach(::onBodyDestroyed)
     }
 
-//    @OptIn(ExperimentalTime::class)
-//    private fun applyInertia(body: Body) = body.applyInertia(tickTimeDelta)
-
     fun reset() {
         bodies = listOf()
     }
