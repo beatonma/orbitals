@@ -5,7 +5,7 @@ import org.beatonma.orbitals.Space
 import org.beatonma.orbitals.options.PhysicsOptions
 import org.beatonma.orbitals.physics.Body
 import org.beatonma.orbitalslivewallpaper.orbitals.options.Options
-import org.beatonma.orbitalslivewallpaper.orbitals.renderer.OrbitalsRenderer
+import org.beatonma.orbitalslivewallpaper.orbitals.renderer.canvas.OrbitalsRenderer
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
@@ -13,14 +13,13 @@ import kotlin.time.ExperimentalTime
 class OrbitalsRenderEngine<T>(
     val renderers: List<OrbitalsRenderer<T>>,
     options: Options,
-    tickDelta: Duration = Duration.seconds(1),
 ) {
     @OptIn(ExperimentalTime::class)
     val engine: OrbitalsEngine = object: OrbitalsEngine {
         override var space: Space = Space(1, 1)
         override val physics: PhysicsOptions = options.physics
         override var bodies: List<Body> = listOf()
-        override val tickTimeDelta: Duration = tickDelta
+        override val tickTimeDelta: Duration = options.physics.tickDelta
 
         override var pruneCounter = 0
         override val pruneFrequency = 60
@@ -41,8 +40,8 @@ class OrbitalsRenderEngine<T>(
         renderers.forEach { it.reset(engine.space.visibleSpace) }
     }
 
-    fun update(canvas: T) {
-        engine.tick()
+    fun update(canvas: T, delta: Duration = engine.tickTimeDelta) {
+        engine.tick(delta)
 
         renderers.forEach {
             it.drawBackground(canvas, engine.bodies)

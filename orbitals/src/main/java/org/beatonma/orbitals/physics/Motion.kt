@@ -10,7 +10,7 @@ data class Motion(
     val position: Position get() = startPosition
     val velocity: Velocity get() = startVelocity
 
-    var accelerationDelta: AccelerationDelta? = null
+    var acceleration: Acceleration = ZeroAcceleration
         internal set
 
     /**
@@ -22,15 +22,3 @@ data class Motion(
         position.y += velocity.y * timeDelta
     }
 }
-
-fun staticPosition(x: Number, y: Number) =
-    Motion(
-        Position(x, y),
-        Velocity(0, 0),
-    )
-
-fun staticPosition(x: Distance, y: Distance) =
-    Motion(
-        Position(x, y),
-        Velocity(0, 0),
-    )

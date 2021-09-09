@@ -45,18 +45,18 @@ interface OrbitalsEngine {
     }
 
     @OptIn(ExperimentalTime::class)
-    fun tick() {
+    fun tick(timeDelta: Duration) {
         if (bodyCount > 1) {
             bodies.forEachIndexed { index, body ->
                 for (i in (index + 1) until bodyCount) {
                     val other = bodies[i]
-                    body.applyGravity(other)
-                    other.applyGravity(body)
+                    body.applyGravity(other, timeDelta)
+                    other.applyGravity(body, timeDelta)
                 }
-                applyInertia(body)
+                body.applyInertia(timeDelta)
             }
         } else {
-            bodies.forEach(::applyInertia)
+            bodies.forEach { body -> body.applyInertia(timeDelta) }
         }
 
         if (bodyCount < physics.maxEntities && Random.nextFloat() > .95f) {
@@ -78,8 +78,8 @@ interface OrbitalsEngine {
         purge.forEach(::onBodyDestroyed)
     }
 
-    @OptIn(ExperimentalTime::class)
-    private fun applyInertia(body: Body) = body.applyInertia(tickTimeDelta)
+//    @OptIn(ExperimentalTime::class)
+//    private fun applyInertia(body: Body) = body.applyInertia(tickTimeDelta)
 
     fun reset() {
         bodies = listOf()

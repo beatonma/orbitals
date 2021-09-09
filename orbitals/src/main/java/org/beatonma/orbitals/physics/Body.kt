@@ -1,8 +1,6 @@
 package org.beatonma.orbitals.physics
 
 import java.util.*
-import kotlin.math.cos
-import kotlin.math.sin
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
@@ -10,9 +8,8 @@ val ZeroMass = 0.0.kg
 val ZeroDistance = 0.0.metres
 val ZeroPosition = Position(ZeroDistance, ZeroDistance)
 val ZeroVelocity = Velocity(0.0.metres.perSecond, 0.0.metres.perSecond)
-val ZeroAcceleration = Acceleration(0f)
 val ZeroMotion = Motion(ZeroPosition, ZeroVelocity)
-val ZeroBody = FixedBody(mass = ZeroMass, id = uniqueID("ZERO_BODY"), position = ZeroPosition)
+val ZeroAcceleration = Acceleration(AccelerationScalar(0f), AccelerationScalar(0f), AccelerationScalar(0f))
 
 @OptIn(ExperimentalTime::class)
 interface Body {
@@ -23,14 +20,16 @@ interface Body {
 
     val position: Position get() = motion.position
     val velocity: Velocity get() = motion.velocity
-    val acceleration: AccelerationDelta? get() = motion.accelerationDelta
+    var acceleration: Acceleration
+        set(value) {
+            motion.acceleration = value
+        }
+        get() = motion.acceleration
 
     val diameter: Distance get() = radius * 2
 
-    val autoLabel: String get() = UUID.randomUUID().toString()
-
     fun applyInertia(timeDelta: Duration)
-    fun applyGravity(other: Body)
+    fun applyGravity(other: Body, timeDelta: Duration)
 
     fun distanceTo(other: Body): Distance = position.distanceTo(other.position)
 }
@@ -50,7 +49,7 @@ data class FixedBody(
         // N/A
     }
 
-    override fun applyGravity(other: Body) {
+    override fun applyGravity(other: Body, timeDelta: Duration) {
         // N/A
     }
 }
@@ -66,19 +65,12 @@ data class InertialBody(
         motion.applyInertia(timeDelta)
     }
 
-    override fun applyGravity(other: Body) {
+    override fun applyGravity(other: Body, timeDelta: Duration) {
+        val theta = position.angleTo(other.position)
         val force: Force = calculateForce(other)
-        val acceleration: Acceleration = calculateAcceleration(force)
+        val acceleration = calculateAcceleration(force, theta)
 
-        val theta = position.angleTo(other.position).asRadians
-
-        val deltaX = cos(theta) * acceleration.value
-        val deltaY = sin(theta) * acceleration.value
-
-        motion.accelerationDelta = AccelerationDelta(acceleration.value, deltaX, deltaY)
-
-        velocity.x += deltaX
-        velocity.y += deltaY
+        velocity += (acceleration * timeDelta)
     }
 
     private fun calculateForce(other: Body): Force {
@@ -92,8 +84,8 @@ data class InertialBody(
     /**
      * Calculate acceleration due to gravity.
      */
-    private fun calculateAcceleration(force: Force): Acceleration {
-        return force / mass
+    private fun calculateAcceleration(force: Force, angle: Angle): Acceleration {
+        return Acceleration(force / mass, angle)
     }
 }
 

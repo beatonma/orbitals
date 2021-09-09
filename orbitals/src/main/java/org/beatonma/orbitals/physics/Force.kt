@@ -10,7 +10,7 @@ value class Force(
 ) {
     operator fun times(factor: Int) = (factor * newtons).newtons
     operator fun times(factor: Float) = (factor * newtons).newtons
-    operator fun div(mass: Mass) = Acceleration(newtons / mass.kg)
+    operator fun div(mass: Mass) = AccelerationScalar(newtons / mass.kg)
 
     override fun toString(): String = "${newtons}N"
 }

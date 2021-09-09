@@ -17,6 +17,10 @@ data class Velocity(
     constructor(x: Number, y: Number) : this(Speed(x), Speed(y))
 
     operator fun plus(other: Velocity): Velocity = Velocity(this.x + other.x, this.y + other.y)
+    operator fun plusAssign(other: Velocity) {
+        this.x += other.x
+        this.y += other.y
+    }
 
     val vector: Speed get() = velocityVector(x, y)
     val angle: Angle get() = atan2(y.magnitude, x.magnitude).radians
