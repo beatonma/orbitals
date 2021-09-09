@@ -9,7 +9,7 @@ val ZeroDistance = 0.0.metres
 val ZeroPosition = Position(ZeroDistance, ZeroDistance)
 val ZeroVelocity = Velocity(0.0.metres.perSecond, 0.0.metres.perSecond)
 val ZeroMotion = Motion(ZeroPosition, ZeroVelocity)
-val ZeroAcceleration = Acceleration(AccelerationScalar(0f), AccelerationScalar(0f), AccelerationScalar(0f))
+val ZeroAcceleration = Acceleration(AccelerationScalar(0f), AccelerationScalar(0f))
 
 @OptIn(ExperimentalTime::class)
 interface Body {

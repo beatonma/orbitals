@@ -38,10 +38,11 @@ enum class SystemGenerator {
     }
 
     private fun generateStarSystem(space: Space): List<Body> {
+        val mass = largeMass()
         val sun = FixedBody(
             id = uniqueID("center"),
-            mass = largeMass(),
-            radius = 50.metres,
+            mass = mass,
+            radius = sizeOf(mass),
             position = space.relativeVisiblePosition(Random.nextFloat(), Random.nextFloat()),
         )
 
@@ -95,5 +96,5 @@ private fun anyDistance(min: Distance, max: Distance) =
 
 private fun anyMass(): Mass = if (Random.nextFloat() > .95f) largeMass() else smallMass()
 private fun smallMass(): Mass = Random.nextInt(10, 30).kg
-private fun largeMass(): Mass = Random.nextInt(100, 400).kg
-private fun sizeOf(mass: Mass): Distance = (mass.kg * .4f).metres
+private fun largeMass(): Mass = Random.nextInt(50, 200).kg
+private fun sizeOf(mass: Mass): Distance = maxOf(4f, (mass.kg * .25f)).metres

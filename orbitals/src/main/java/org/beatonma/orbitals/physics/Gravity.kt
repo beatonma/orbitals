@@ -19,10 +19,6 @@ fun calculateGravitationalForce(
     minDistance: Distance = 30.metres, // Force a minimum distance to avoid extreme behaviour.
     G: Float = DefaultG,
 ): Force {
-    require(distance > 0F) {
-        "Distance between masses is zero: $mass | $otherMass"
-    }
-
     val distanceSquared = distance
         .coerceAtLeast(minDistance)
         .squared

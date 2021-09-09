@@ -19,16 +19,14 @@ value class AccelerationScalar(
 }
 
 fun Acceleration(acceleration: AccelerationScalar, theta: Angle) = Acceleration(
-    acceleration,
     x = acceleration * cos(theta),
     y = acceleration * sin(theta),
 )
 
 data class Acceleration(
-    val value: AccelerationScalar,
-    val x: AccelerationScalar,
-    val y: AccelerationScalar,
-) {
+    override val x: AccelerationScalar,
+    override val y: AccelerationScalar,
+): Vector2D<AccelerationScalar> {
     @OptIn(ExperimentalTime::class)
     operator fun times(duration: Duration): Velocity =
         Velocity(

@@ -11,9 +11,9 @@ val Distance.perSecond: Speed
     get() = this / Duration.seconds(1)
 
 data class Velocity(
-    var x: Speed = Speed(0.0),
-    var y: Speed = Speed(0.0),
-) {
+    override var x: Speed = Speed(0.0),
+    override var y: Speed = Speed(0.0),
+): Vector2D<Speed> {
     constructor(x: Number, y: Number) : this(Speed(x), Speed(y))
 
     operator fun plus(other: Velocity): Velocity = Velocity(this.x + other.x, this.y + other.y)
