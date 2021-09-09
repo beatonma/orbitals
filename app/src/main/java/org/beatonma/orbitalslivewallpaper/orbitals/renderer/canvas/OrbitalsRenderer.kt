@@ -1,4 +1,4 @@
-package org.beatonma.orbitalslivewallpaper.orbitals.renderer
+package org.beatonma.orbitalslivewallpaper.orbitals.renderer.canvas
 
 import android.graphics.Canvas
 import android.graphics.Color

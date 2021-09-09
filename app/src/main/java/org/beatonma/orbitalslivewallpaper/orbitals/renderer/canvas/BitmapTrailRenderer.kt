@@ -1,4 +1,4 @@
-package org.beatonma.orbitalslivewallpaper.orbitals.renderer
+package org.beatonma.orbitalslivewallpaper.orbitals.renderer.canvas
 
 import android.annotation.SuppressLint
 import android.graphics.Bitmap

@@ -1,12 +1,14 @@
-package org.beatonma.orbitalslivewallpaper.orbitals
+package org.beatonma.orbitalslivewallpaper.orbitals.ui
 
 import android.content.Context
 import android.graphics.Canvas
 import android.util.AttributeSet
 import android.view.View
+import org.beatonma.orbitalslivewallpaper.orbitals.OrbitalsRenderEngine
 import org.beatonma.orbitalslivewallpaper.orbitals.options.Options
-import org.beatonma.orbitalslivewallpaper.orbitals.renderer.AndroidOrbitalsRenderer
-import org.beatonma.orbitalslivewallpaper.orbitals.renderer.TrailRenderer
+import org.beatonma.orbitalslivewallpaper.orbitals.renderer.canvas.AndroidOrbitalsRenderer
+import org.beatonma.orbitalslivewallpaper.orbitals.renderer.canvas.TrailRenderer
+import org.beatonma.orbitalslivewallpaper.orbitals.timeIt
 
 class OrbitalsView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0

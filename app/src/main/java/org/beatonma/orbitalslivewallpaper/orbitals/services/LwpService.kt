@@ -1,4 +1,4 @@
-package org.beatonma.orbitalslivewallpaper.orbitals
+package org.beatonma.orbitalslivewallpaper.orbitals.services
 
 import android.graphics.Canvas
 import android.os.Handler
@@ -6,8 +6,9 @@ import android.service.wallpaper.WallpaperService
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import org.beatonma.orbitalslivewallpaper.info
+import org.beatonma.orbitalslivewallpaper.orbitals.OrbitalsRenderEngine
 import org.beatonma.orbitalslivewallpaper.orbitals.options.Options
-import org.beatonma.orbitalslivewallpaper.orbitals.renderer.AndroidOrbitalsRenderer
+import org.beatonma.orbitalslivewallpaper.orbitals.renderer.canvas.AndroidOrbitalsRenderer
 import org.beatonma.orbitalslivewallpaper.warn
 
 private const val FPS = 60
@@ -47,6 +48,11 @@ class LwpService : WallpaperService() {
         }
 
         override fun onTouchEvent(event: MotionEvent?) {
+            if (event?.pointerCount == 3) {
+                reset()
+                return
+            }
+
             when (event?.action) {
                 MotionEvent.ACTION_DOWN -> renderEngine.engine.addBodies()
                 else -> super.onTouchEvent(event)
