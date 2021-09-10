@@ -24,15 +24,33 @@ private typealias ComposeRenderer = OrbitalsRenderer<DrawScope>
  * Layers must be registered here renderer classes for AndroidCanvas and DrawScope!
  */
 private object LayerRegistry {
-    val registery: Map<RenderLayer, Layer<*, *>> = mapOf(
-        RenderLayer.Default to Layer(CanvasSimpleRenderer::class, ComposeSimpleRenderer::class),
-        RenderLayer.Trails to Layer(CanvasTrailRenderer::class, ComposeTrailRenderer::class),
+    private val registry: Map<RenderLayer, Layer<*, *, *>> = mapOf(
+        RenderLayer.Default to Layer(BaseSimpleRenderer::class, CanvasSimpleRenderer::class, ComposeSimpleRenderer::class),
+        RenderLayer.Trails to Layer(BaseTrailRenderer::class,CanvasTrailRenderer::class, ComposeTrailRenderer::class),
     )
 
-    operator fun get(key: RenderLayer): Layer<*, *> {
-        return registery[key]!!
+    operator fun get(key: RenderLayer): Layer<*, *, *> {
+        return registry[key]!!
+    }
+
+
+    fun getLayerType(renderer: OrbitalsRenderer<*>): RenderLayer {
+        val cls = renderer::class.java
+
+        registry.forEach { (layer, renderers) ->
+            val baseClass = renderers.baseRenderClass
+            if (baseClass.java.isAssignableFrom(cls)) return layer
+        }
+
+        throw IllegalArgumentException("Unknown renderer class: $cls")
     }
 }
+
+private data class Layer<B: OrbitalsRenderer<*>, A: AndroidRenderer, C: ComposeRenderer>(
+    val baseRenderClass: KClass<B>,
+    val canvasRenderer: KClass<A>,
+    val composeRenderer: KClass<C>,
+)
 
 inline fun <reified Canvas> diffRenderers(
     engine: OrbitalsRenderEngine<Canvas>,
@@ -77,14 +95,8 @@ inline fun <reified Canvas> diffRenderers(
         .toSet()
 }
 
-fun getLayerType(renderer: OrbitalsRenderer<*>): RenderLayer {
-    val cls = renderer::class.java
-    return when {
-        BaseSimpleRenderer::class.java.isAssignableFrom(cls) -> RenderLayer.Default
-        BaseTrailRenderer::class.java.isAssignableFrom(cls) -> RenderLayer.Trails
-        else -> throw IllegalArgumentException("Unknown renderer class: $cls")
-    }
-}
+fun getLayerType(renderer: OrbitalsRenderer<*>): RenderLayer 
+    = LayerRegistry.getLayerType(renderer)
 
 inline fun <reified Canvas> getRenderers(
     options: VisualOptions,
@@ -144,8 +156,3 @@ private fun <Canvas> createRenderer(
     val opts = params.find { it.name == "options" }!!
     return constructor.callBy(mapOf(opts to options))
 }
-
-private data class Layer<A: AndroidRenderer, C: ComposeRenderer>(
-    val canvasRenderer: KClass<A>,
-    val composeRenderer: KClass<C>,
-)
