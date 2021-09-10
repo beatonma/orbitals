@@ -6,6 +6,8 @@ import org.beatonma.orbitalslivewallpaper.debug
 import org.beatonma.orbitalslivewallpaper.orbitals.OrbitalsRenderEngine
 import org.beatonma.orbitalslivewallpaper.orbitals.options.RenderLayer
 import org.beatonma.orbitalslivewallpaper.orbitals.options.VisualOptions
+import kotlin.reflect.KClass
+import kotlin.reflect.full.primaryConstructor
 import android.graphics.Canvas as AndroidCanvas
 import org.beatonma.orbitalslivewallpaper.orbitals.renderer.canvas.SimpleRenderer as CanvasSimpleRenderer
 import org.beatonma.orbitalslivewallpaper.orbitals.renderer.canvas.TrailRenderer as CanvasTrailRenderer
@@ -14,6 +16,23 @@ import org.beatonma.orbitalslivewallpaper.orbitals.renderer.compose.TrailRendere
 
 private typealias LayerSet = Set<RenderLayer>
 private typealias RenderSet<Canvas> = Set<OrbitalsRenderer<Canvas>>
+
+private typealias AndroidRenderer = OrbitalsRenderer<AndroidCanvas>
+private typealias ComposeRenderer = OrbitalsRenderer<DrawScope>
+
+/**
+ * Layers must be registered here renderer classes for AndroidCanvas and DrawScope!
+ */
+private object LayerRegistry {
+    val registery: Map<RenderLayer, Layer<*, *>> = mapOf(
+        RenderLayer.Default to Layer(CanvasSimpleRenderer::class, ComposeSimpleRenderer::class),
+        RenderLayer.Trails to Layer(CanvasTrailRenderer::class, ComposeTrailRenderer::class),
+    )
+
+    operator fun get(key: RenderLayer): Layer<*, *> {
+        return registery[key]!!
+    }
+}
 
 inline fun <reified Canvas> diffRenderers(
     engine: OrbitalsRenderEngine<Canvas>,
@@ -86,27 +105,47 @@ inline fun <reified Canvas> getRenderers(
 fun getCanvasRenderers(layers: LayerSet, options: VisualOptions): RenderSet<AndroidCanvas> =
     layers.map { getCanvasRenderer(it, options) }.toSet()
 
-private fun getCanvasRenderer(
-    layer: RenderLayer,
-    options: VisualOptions
-): OrbitalsRenderer<AndroidCanvas> {
-    return when (layer) {
-        RenderLayer.Default -> CanvasSimpleRenderer(options)
-        RenderLayer.Trails -> CanvasTrailRenderer(options)
-        else -> throw Exception("Unimplemented renderer: $layer")
-    }
-}
 
 fun getComposeRenderers(layers: LayerSet, options: VisualOptions): RenderSet<DrawScope> =
     layers.map { getComposeRenderer(it, options) }.toSet()
 
+private fun getCanvasRenderer(
+    layer: RenderLayer,
+    options: VisualOptions
+): AndroidRenderer {
+    try {
+        val renderer = LayerRegistry[layer].canvasRenderer
+        return createRenderer(renderer, options)
+    }
+    catch (e: NullPointerException) {
+        throw Exception("Unimplemented renderer for layer $layer - did you add it to LayerRegistry? : $e")
+    }
+}
+
 private fun getComposeRenderer(
     layer: RenderLayer,
     options: VisualOptions
-): OrbitalsRenderer<DrawScope> {
-    return when (layer) {
-        RenderLayer.Default -> ComposeSimpleRenderer(options)
-        RenderLayer.Trails -> ComposeTrailRenderer(options)
-        else -> throw Exception("Unimplemented renderer: $layer")
+): ComposeRenderer {
+    try {
+        val renderer = LayerRegistry[layer].composeRenderer
+        return createRenderer(renderer, options)
+    }
+    catch (e: NullPointerException) {
+        throw Exception("Unimplemented renderer for layer $layer - did you add it to LayerRegistry? : $e")
     }
 }
+
+private fun <Canvas> createRenderer(
+    rendererKClass: KClass<out OrbitalsRenderer<Canvas>>,
+    options: VisualOptions,
+): OrbitalsRenderer<Canvas> {
+    val constructor = rendererKClass.primaryConstructor!!
+    val params = constructor.parameters
+    val opts = params.find { it.name == "options" }!!
+    return constructor.callBy(mapOf(opts to options))
+}
+
+private data class Layer<A: AndroidRenderer, C: ComposeRenderer>(
+    val canvasRenderer: KClass<A>,
+    val composeRenderer: KClass<C>,
+)
