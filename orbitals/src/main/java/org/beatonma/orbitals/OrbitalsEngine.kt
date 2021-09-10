@@ -12,7 +12,7 @@ import kotlin.time.ExperimentalTime
 
 interface OrbitalsEngine {
     var space: Space
-    val physics: PhysicsOptions
+    var physics: PhysicsOptions
     var bodies: List<Body>
     val bodyCount: Int get() = bodies.size
     var pruneCounter: Int
@@ -78,7 +78,9 @@ interface OrbitalsEngine {
         purge.forEach(::onBodyDestroyed)
     }
 
-    fun reset() {
+    fun clear() {
+        val purge = bodies.toList()
+        purge.forEach(this::onBodyDestroyed)
         bodies = listOf()
     }
 }
