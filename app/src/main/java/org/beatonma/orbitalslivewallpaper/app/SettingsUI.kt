@@ -16,7 +16,18 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Checkbox
 import androidx.compose.material.LinearProgressIndicator
@@ -51,6 +62,7 @@ import org.beatonma.orbitalslivewallpaper.orbitals.options.DrawStyle
 import org.beatonma.orbitalslivewallpaper.orbitals.options.ObjectColors
 import org.beatonma.orbitalslivewallpaper.orbitals.options.Options
 import org.beatonma.orbitalslivewallpaper.orbitals.options.PhysicsKeys
+import org.beatonma.orbitalslivewallpaper.orbitals.options.RenderLayer
 import org.beatonma.orbitalslivewallpaper.orbitals.options.Settings
 import org.beatonma.orbitalslivewallpaper.orbitals.options.VisualKeys
 import org.beatonma.orbitalslivewallpaper.orbitals.options.VisualOptions
@@ -74,12 +86,11 @@ fun SettingsUI(
 ) {
     val options by viewmodel.getOptions().collectAsState(initial = Options())
 
-    Box {
+    Box(Modifier.fillMaxSize()) {
         Orbitals(
             options,
             Modifier
                 .fillMaxSize()
-//                .aspectRatio(16f / 9f),
         )
 
         LazyColumn(
@@ -101,13 +112,6 @@ fun SettingsUI(
                         .aspectRatio(16f / 9f)
                 )
             }
-//                Orbitals(
-//                    options,
-//                    Modifier
-//                        .fillMaxWidth()
-//                        .aspectRatio(16f / 9f),
-//                )
-//            }
 
             item {
                 VisualSettingsUI(visualOptions = options.visualOptions, viewmodel = viewmodel)
@@ -149,14 +153,15 @@ private fun VisualSettingsUI(
     viewmodel: SettingsViewModel,
 ) {
     SettingsGroup("Visual") {
-        SwitchSetting(
-            name = "Show path history",
-            value = visualOptions.showTraceLines,
-            key = VisualKeys.showTraceLines,
-            onValueChange = viewmodel::updateOption,
+        MultiSelectSetting(
+            name = "Layers",
+            key = VisualKeys.renderLayers,
+            value = visualOptions.renderLayers,
+            values = RenderLayer.values(),
+            onValueChange = saveSelections(viewmodel),
         )
 
-        Conditional(visualOptions.showTraceLines) {
+        Conditional(RenderLayer.Trails in visualOptions.renderLayers) {
             IntegerSetting(
                 name = "History length",
                 key = VisualKeys.traceLineLength,
@@ -240,9 +245,6 @@ private fun PhysicsSettingsUI(
             value = physics.systemGenerators.toSet(),
             values = SystemGenerator.values(),
             onValueChange = saveSelections(viewmodel),
-//            onValueChange = { key, value ->
-//                viewmodel.updateOption(key, value.map { it.name }.toSet())
-//            }
         )
 
         FloatSetting(
@@ -260,9 +262,6 @@ private fun PhysicsSettingsUI(
             value = physics.collisionStyle,
             values = CollisionStyle.values(),
             onValueChange = saveSelection(viewmodel),
-//            onValueChange = { key, value ->
-//                viewmodel.updateOption(key, value.name)
-//            }
         )
 
         IntegerSetting(
@@ -276,7 +275,7 @@ private fun PhysicsSettingsUI(
     }
 }
 
-private fun <E: Enum<E>> saveSelection(
+private fun <E : Enum<E>> saveSelection(
     viewmodel: SettingsViewModel,
 ): (key: Preferences.Key<String>, newValue: E) -> Unit {
     return { key, value ->
@@ -284,7 +283,7 @@ private fun <E: Enum<E>> saveSelection(
     }
 }
 
-private fun <E: Enum<E>> saveSelections(
+private fun <E : Enum<E>> saveSelections(
     viewmodel: SettingsViewModel,
 ): (key: Preferences.Key<Set<String>>, newValue: Set<E>) -> Unit {
     return { key, value ->
@@ -455,7 +454,7 @@ private fun <E : Enum<E>> SingleSelectSetting(
     onValueChange: (key: Preferences.Key<String>, newValue: E) -> Unit,
     modifier: Modifier = SettingModifier,
 ) {
-    Column {
+    Column(modifier) {
         Text(name, style = typography.h5)
 
         for (v in values) {
@@ -485,7 +484,7 @@ private fun <E : Enum<E>> MultiSelectSetting(
     allowEmptySet: Boolean = false,
     modifier: Modifier = SettingModifier,
 ) {
-    Column {
+    Column(modifier) {
         Text(name, style = typography.h5)
 
         for (v in values) {
@@ -494,12 +493,10 @@ private fun <E : Enum<E>> MultiSelectSetting(
                     val newValue = value.filter { it != v }.toSet()
                     if (!allowEmptySet && newValue.isEmpty()) {
                         onValueChange(key, setOf(values.first()))
-                    }
-                    else {
+                    } else {
                         onValueChange(key, newValue)
                     }
-                }
-                else {
+                } else {
                     onValueChange(key, value + v)
                 }
             }

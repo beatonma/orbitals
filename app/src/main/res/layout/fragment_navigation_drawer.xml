@@ -46,7 +46,7 @@
         android:drawSelectorOnTop="true"
         tools:context="org.beatonma.orbitalslivewallpaper.old.NavigationDrawerFragment" />
 
-    <org.beatonma.orbitalslivewallpaper.orbitals.OrbitalsView
+    <org.beatonma.orbitalslivewallpaper.orbitals.ui.OrbitalsView
         android:id="@+id/orbitals"
         android:layout_width="match_parent"
         android:layout_height="160dp"

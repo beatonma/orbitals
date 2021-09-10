@@ -4,8 +4,10 @@ import org.beatonma.orbitals.physics.Body
 import org.beatonma.orbitals.physics.InertialBody
 import org.beatonma.orbitals.physics.Position
 import org.beatonma.orbitals.physics.UniqueID
+import org.beatonma.orbitalslivewallpaper.orbitals.options.VisualOptions
 
 abstract class BaseTrailRenderer<Canvas>(
+    override var options: VisualOptions,
     val maxPoints: Int,
     val maxAlpha: Float = .2f,
     val traceThickness: Float = 4f,

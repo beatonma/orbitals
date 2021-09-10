@@ -4,13 +4,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import org.beatonma.orbitals.physics.Body
 import org.beatonma.orbitals.physics.metres
+import org.beatonma.orbitalslivewallpaper.orbitals.options.VisualOptions
 import org.beatonma.orbitalslivewallpaper.orbitals.renderer.BaseTrailRenderer
 import org.beatonma.orbitalslivewallpaper.orbitals.renderer.compose.util.drawCircle
 
 class TrailRenderer(
-    maxPoints: Int,
+    options: VisualOptions,
+    maxPoints: Int = options.traceLineLength,
     maxAlpha: Float = .2f,
-) : BaseTrailRenderer<DrawScope>(maxPoints, maxAlpha) {
+) : BaseTrailRenderer<DrawScope>(options, maxPoints, maxAlpha) {
 
     override fun drawBody(canvas: DrawScope, body: Body) {
         val points = bodyPaths[body.id] ?: throw Exception("drawBody $body no path")

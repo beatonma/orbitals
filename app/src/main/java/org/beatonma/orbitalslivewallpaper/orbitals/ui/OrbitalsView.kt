@@ -6,7 +6,8 @@ import android.util.AttributeSet
 import android.view.View
 import org.beatonma.orbitalslivewallpaper.orbitals.OrbitalsRenderEngine
 import org.beatonma.orbitalslivewallpaper.orbitals.options.Options
-import org.beatonma.orbitalslivewallpaper.orbitals.renderer.canvas.chooseRenderers
+import org.beatonma.orbitalslivewallpaper.orbitals.renderer.diffRenderers
+import org.beatonma.orbitalslivewallpaper.orbitals.renderer.getRenderers
 import org.beatonma.orbitalslivewallpaper.orbitals.timeIt
 
 class OrbitalsView @JvmOverloads constructor(
@@ -16,20 +17,23 @@ class OrbitalsView @JvmOverloads constructor(
 ) : View(context, attrs, defStyleAttr) {
 
     private val options = Options()
-    private val renderEngine = OrbitalsRenderEngine(
-        renderers = chooseRenderers(options),
+    private val renderEngine = OrbitalsRenderEngine<Canvas>(
+        renderers = getRenderers(options.visualOptions),
         options = options,
+        onOptionsChange = { newOptions ->
+            renderers = diffRenderers(this)
+        }
     )
 
     init {
         setOnClickListener {
-            renderEngine.engine.addBodies()
+            renderEngine.addBodies()
         }
     }
 
     private fun reset() {
-        renderEngine.reset()
-        renderEngine.engine.addBodies()
+        renderEngine.clear()
+        renderEngine.addBodies()
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {

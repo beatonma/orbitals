@@ -11,13 +11,23 @@ import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
 class OrbitalsRenderEngine<T>(
-    val renderers: List<OrbitalsRenderer<T>>,
+    var renderers: Set<OrbitalsRenderer<T>>,
     options: Options,
+    private val onOptionsChange: OrbitalsRenderEngine<T>.(Options) -> Unit
 ) {
+    var options: Options = options
+        set(value) {
+            field = value
+            onOptionsChange(value)
+            engine.physics = value.physics
+            renderers.forEach { it.options = value.visualOptions }
+////            renderers.forEach { it.options = options.visualOptions }
+        }
+
     @OptIn(ExperimentalTime::class)
-    val engine: OrbitalsEngine = object: OrbitalsEngine {
+    private val engine: OrbitalsEngine = object : OrbitalsEngine {
         override var space: Space = Space(1, 1)
-        override val physics: PhysicsOptions = options.physics
+        override var physics: PhysicsOptions = options.physics
         override var bodies: List<Body> = listOf()
         override val tickTimeDelta: Duration = physics.tickDelta
 
@@ -35,9 +45,11 @@ class OrbitalsRenderEngine<T>(
         }
     }
 
+    val bodies get() = engine.bodies
+
     fun onSizeChanged(width: Int, height: Int) {
         engine.space = Space(width, height)
-        renderers.forEach { it.reset(engine.space.visibleSpace) }
+        renderers.forEach { it.onSizeChanged(engine.space.visibleSpace) }
     }
 
     fun update(canvas: T, delta: Duration = engine.tickTimeDelta) {
@@ -52,9 +64,12 @@ class OrbitalsRenderEngine<T>(
         }
     }
 
-    fun reset() {
-        engine.reset()
-        renderers.forEach { it.reset(engine.space) }
+    fun addBodies(space: Space = engine.space) {
+        engine.addBodies(space)
+    }
+
+    fun clear() {
+        engine.clear()
     }
 
     fun recycle() {

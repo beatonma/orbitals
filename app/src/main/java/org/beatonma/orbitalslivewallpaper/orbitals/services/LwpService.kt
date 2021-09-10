@@ -10,7 +10,8 @@ import org.beatonma.orbitalslivewallpaper.orbitals.OrbitalsRenderEngine
 import org.beatonma.orbitalslivewallpaper.orbitals.options.Options
 import org.beatonma.orbitalslivewallpaper.orbitals.options.Settings
 import org.beatonma.orbitalslivewallpaper.orbitals.options.getSavedOptionsSync
-import org.beatonma.orbitalslivewallpaper.orbitals.renderer.canvas.chooseRenderers
+import org.beatonma.orbitalslivewallpaper.orbitals.renderer.diffRenderers
+import org.beatonma.orbitalslivewallpaper.orbitals.renderer.getRenderers
 import org.beatonma.orbitalslivewallpaper.warn
 
 private const val FPS = 60
@@ -21,6 +22,10 @@ class LwpService : WallpaperService() {
 
     inner class LwpEngine : Engine() {
         private var options: Options = getSavedOptionsSync(dataStore(Settings.Wallpaper))
+            set(value) {
+                field = value
+                renderEngine.options = value
+            }
         private val handler: Handler = Handler(mainLooper)
         private val drawRunnable: Runnable = Runnable(this@LwpEngine::draw)
         private var visible = true
@@ -32,9 +37,12 @@ class LwpService : WallpaperService() {
                 }
             }
 
-        private val renderEngine = OrbitalsRenderEngine(
-            renderers = chooseRenderers(options),
+        private val renderEngine = OrbitalsRenderEngine<Canvas>(
+            renderers = getRenderers(options.visualOptions),
             options = options,
+            onOptionsChange = {
+                renderers = diffRenderers(this)
+            }
         )
 
         override fun onCreate(surfaceHolder: SurfaceHolder?) {
@@ -48,23 +56,26 @@ class LwpService : WallpaperService() {
             when (event?.action) {
                 MotionEvent.ACTION_DOWN -> {
                     if (event.pointerCount == 3) {
-                        reset()
+                        clear()
                     } else {
-                        renderEngine.engine.addBodies()
+                        renderEngine.addBodies()
                     }
                 }
                 else -> super.onTouchEvent(event)
             }
         }
 
-        private fun reset() {
-            renderEngine.reset()
-//            renderEngine.engine.addBodies()
+        private fun clear() {
+            renderEngine.clear()
         }
 
         override fun onVisibilityChanged(visible: Boolean) {
             super.onVisibilityChanged(visible)
             this.visible = visible
+
+            if (visible) {
+                options = getSavedOptionsSync(dataStore(Settings.Wallpaper))
+            }
         }
 
         override fun onSurfaceChanged(
@@ -74,7 +85,6 @@ class LwpService : WallpaperService() {
             height: Int
         ) {
             renderEngine.onSizeChanged(width, height)
-            reset()
 
             super.onSurfaceChanged(holder, format, width, height)
         }

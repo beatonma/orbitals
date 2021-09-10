@@ -17,7 +17,9 @@ data class ColorOptions(
         ObjectColors.Greyscale,
     ),
     val foregroundAlpha: Float = 1f,
-)
+) {
+    val colorForBody: Int get() = bodies.random().colors().random()
+}
 
 enum class ObjectColors {
     Greyscale,

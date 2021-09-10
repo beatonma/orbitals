@@ -30,6 +30,5 @@ class SimpleRenderer(
         )
     }
 
-    override fun chooseColor(body: Body): Color =
-        options.colorOptions.bodies.random().colors().random().toComposeColor()
+    override fun chooseColor(body: Body): Color = options.colorOptions.colorForBody.toComposeColor()
 }

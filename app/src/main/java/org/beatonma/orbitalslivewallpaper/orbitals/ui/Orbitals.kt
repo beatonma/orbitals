@@ -17,10 +17,8 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import org.beatonma.orbitalslivewallpaper.orbitals.OrbitalsRenderEngine
 import org.beatonma.orbitalslivewallpaper.orbitals.options.Options
-import org.beatonma.orbitalslivewallpaper.orbitals.renderer.OrbitalsRenderer
-import org.beatonma.orbitalslivewallpaper.orbitals.renderer.compose.SimpleRenderer
-import org.beatonma.orbitalslivewallpaper.orbitals.renderer.compose.TrailRenderer
-import org.beatonma.orbitalslivewallpaper.orbitals.renderer.compose.chooseRenderers
+import org.beatonma.orbitalslivewallpaper.orbitals.renderer.diffRenderers
+import org.beatonma.orbitalslivewallpaper.orbitals.renderer.getRenderers
 import kotlin.math.roundToInt
 import kotlin.time.ExperimentalTime
 
@@ -31,7 +29,20 @@ fun Orbitals(
     modifier: Modifier = Modifier,
 ) {
     var size by remember { mutableStateOf(Size(1f, 1f)) }
-    val orbitals = rememberRenderEngine(options = options, size = size)
+    val orbitals = rememberRenderEngine(options)
+
+    LaunchedEffect(size) {
+        orbitals.onSizeChanged(
+            size.width.roundToInt(),
+            size.height.roundToInt()
+        )
+    }
+
+    LaunchedEffect(options) {
+        println("options updated: $options")
+        orbitals.options = options
+//        orbitals.renderers = diffRenderers(orbitals.renderers, options.visualOptions.renderLayers, options.visualOptions, orbitals.bodies)
+    }
 
     val animator by rememberInfiniteTransition().animateFloat(
         initialValue = 0f,
@@ -45,26 +56,19 @@ fun Orbitals(
 
         orbitals.update(this)
     }
-
-    LaunchedEffect(size) {
-        orbitals.onSizeChanged(
-            size.width.roundToInt(),
-            size.height.roundToInt()
-        )
-    }
 }
 
 @Composable
 private fun rememberRenderEngine(
     options: Options,
-    size: Size,
 ): OrbitalsRenderEngine<DrawScope> {
-    return remember(options) {
+    return remember {
         OrbitalsRenderEngine(
-            renderers = chooseRenderers(options),
+            renderers = getRenderers(options.visualOptions),
             options = options,
-        ).apply {
-            onSizeChanged(size.width.roundToInt(), size.height.roundToInt())
-        }
+            onOptionsChange = {
+                renderers = diffRenderers(this)
+            }
+        )
     }
 }

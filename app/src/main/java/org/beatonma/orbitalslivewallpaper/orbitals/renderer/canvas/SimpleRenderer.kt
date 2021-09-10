@@ -5,7 +5,6 @@ import android.graphics.Color
 import android.graphics.Paint
 import org.beatonma.orbitals.physics.Body
 import org.beatonma.orbitals.physics.FixedBody
-import org.beatonma.orbitalslivewallpaper.color.getAnyMaterialColor
 import org.beatonma.orbitalslivewallpaper.orbitals.drawCircle
 import org.beatonma.orbitalslivewallpaper.orbitals.options.VisualOptions
 import org.beatonma.orbitalslivewallpaper.orbitals.renderer.BaseSimpleRenderer
@@ -31,6 +30,6 @@ class SimpleRenderer(
     override fun chooseColor(body: Body) =
         when (body) {
             is FixedBody -> Color.WHITE
-            else -> getAnyMaterialColor()
+            else -> options.colorOptions.colorForBody
         }
 }

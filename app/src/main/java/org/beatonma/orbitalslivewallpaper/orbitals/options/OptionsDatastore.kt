@@ -56,8 +56,8 @@ suspend fun <T> updateOption(
 }
 
 object VisualKeys {
+    val renderLayers = stringSetPreferencesKey("render_layers")
     val focusCenterOfMass = booleanPreferencesKey("focus_center_of_mass")
-    val showTraceLines = booleanPreferencesKey("show_path_history")
     val traceLineLength = intPreferencesKey("path_history_length")
     val showAcceleration = booleanPreferencesKey("show_acceleration")
     val drawStyle = stringPreferencesKey("draw_style")
@@ -97,8 +97,11 @@ private fun loadVisualOptions(
     colors: ColorOptions = loadColors(preferences),
 ): VisualOptions = with(VisualKeys) {
     VisualOptions(
+        renderLayers = preferences[renderLayers]
+            ?.map(RenderLayer::valueOf)
+            ?.toSet()
+            ?: setOf(RenderLayer.Default),
         colorOptions = colors,
-        showTraceLines = preferences[showTraceLines] ?: false,
         traceLineLength = preferences[traceLineLength] ?: 50,
         showAcceleration = preferences[showAcceleration] ?: false,
         drawStyle = preferences[drawStyle]
