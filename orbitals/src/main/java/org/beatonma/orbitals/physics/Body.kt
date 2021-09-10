@@ -74,10 +74,6 @@ data class InertialBody(
     }
 
     private fun calculateForce(other: Body): Force {
-        check(this.position != other.position) {
-            "Same position ${this.id} vs ${other.id}"
-        }
-
         return calculateGravitationalForce(this.mass, other.mass, distanceTo(other))
     }
 
