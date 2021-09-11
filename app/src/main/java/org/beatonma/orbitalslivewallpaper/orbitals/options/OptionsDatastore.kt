@@ -59,7 +59,6 @@ object VisualKeys {
     val renderLayers = stringSetPreferencesKey("render_layers")
     val focusCenterOfMass = booleanPreferencesKey("focus_center_of_mass")
     val traceLineLength = intPreferencesKey("path_history_length")
-    val showAcceleration = booleanPreferencesKey("show_acceleration")
     val drawStyle = stringPreferencesKey("draw_style")
     val strokeWidth = floatPreferencesKey("stroke_width")
 }
@@ -103,11 +102,10 @@ private fun loadVisualOptions(
             ?: setOf(RenderLayer.Default),
         colorOptions = colors,
         traceLineLength = preferences[traceLineLength] ?: 50,
-        showAcceleration = preferences[showAcceleration] ?: false,
         drawStyle = preferences[drawStyle]
             ?.let { DrawStyle.valueOf(it) }
             ?: DrawStyle.Solid,
-        strokeWidth = (preferences[strokeWidth] ?: 4f).dp
+        strokeWidth = preferences[strokeWidth] ?: 4f,
     )
 }
 

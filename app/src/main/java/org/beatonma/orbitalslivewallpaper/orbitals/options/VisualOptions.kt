@@ -1,16 +1,13 @@
 package org.beatonma.orbitalslivewallpaper.orbitals.options
 
 import android.graphics.Paint
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 
 data class VisualOptions(
     val renderLayers: Set<RenderLayer> = setOf(RenderLayer.Default),
     val focusCenterOfMass: Boolean = false,
     val traceLineLength: Int = 25,
-    val showAcceleration: Boolean = false,
     val drawStyle: DrawStyle = DrawStyle.Wireframe,
-    val strokeWidth: Dp = 4.dp,
+    val strokeWidth: Float = 4f,
     val colorOptions: ColorOptions = ColorOptions(),
 )
 
