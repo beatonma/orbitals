@@ -1,4 +1,4 @@
-package org.beatonma.orbitalslivewallpaper.orbitals.renderer.compose.util
+package org.beatonma.orbitalslivewallpaper.orbitals.renderer.util
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.BlendMode
@@ -49,3 +49,5 @@ fun DrawScope.drawCircle(
         style = style,
     )
 }
+
+fun Position.toOffset() = Offset(x.metres, y.metres)

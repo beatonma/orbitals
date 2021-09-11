@@ -1,14 +1,13 @@
-package org.beatonma.orbitalslivewallpaper.orbitals.renderer.compose
+package org.beatonma.orbitalslivewallpaper.orbitals.renderer.trail
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import org.beatonma.orbitals.physics.Body
 import org.beatonma.orbitals.physics.metres
 import org.beatonma.orbitalslivewallpaper.orbitals.options.VisualOptions
-import org.beatonma.orbitalslivewallpaper.orbitals.renderer.BaseTrailRenderer
-import org.beatonma.orbitalslivewallpaper.orbitals.renderer.compose.util.drawCircle
+import org.beatonma.orbitalslivewallpaper.orbitals.renderer.util.drawCircle
 
-class TrailRenderer(
+class ComposeTrailRenderer(
     options: VisualOptions,
     maxPoints: Int = options.traceLineLength,
     maxAlpha: Float = .2f,

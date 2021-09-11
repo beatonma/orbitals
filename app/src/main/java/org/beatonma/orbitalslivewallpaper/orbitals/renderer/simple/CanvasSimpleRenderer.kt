@@ -1,4 +1,4 @@
-package org.beatonma.orbitalslivewallpaper.orbitals.renderer.canvas
+package org.beatonma.orbitalslivewallpaper.orbitals.renderer.simple
 
 import android.graphics.Canvas
 import android.graphics.Color
@@ -7,10 +7,9 @@ import org.beatonma.orbitals.physics.Body
 import org.beatonma.orbitals.physics.FixedBody
 import org.beatonma.orbitalslivewallpaper.orbitals.drawCircle
 import org.beatonma.orbitalslivewallpaper.orbitals.options.VisualOptions
-import org.beatonma.orbitalslivewallpaper.orbitals.renderer.BaseSimpleRenderer
 
 
-class SimpleRenderer(
+class CanvasSimpleRenderer(
     options: VisualOptions,
 ) : BaseSimpleRenderer<Canvas, Int>(options) {
 

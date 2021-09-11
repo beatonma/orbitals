@@ -1,4 +1,4 @@
-package org.beatonma.orbitalslivewallpaper.orbitals.renderer.canvas
+package org.beatonma.orbitalslivewallpaper.orbitals.renderer.trail
 
 import android.graphics.Canvas
 import android.graphics.Color
@@ -6,10 +6,9 @@ import android.graphics.Paint
 import org.beatonma.orbitals.physics.Body
 import org.beatonma.orbitals.physics.Position
 import org.beatonma.orbitalslivewallpaper.orbitals.options.VisualOptions
-import org.beatonma.orbitalslivewallpaper.orbitals.renderer.BaseTrailRenderer
 import kotlin.math.roundToInt
 
-class TrailRenderer(
+class CanvasTrailRenderer(
     options: VisualOptions,
     maxPoints: Int = options.traceLineLength,
     maxAlpha: Float = .2f,

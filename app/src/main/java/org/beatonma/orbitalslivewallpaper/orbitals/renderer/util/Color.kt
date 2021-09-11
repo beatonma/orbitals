@@ -1,4 +1,4 @@
-package org.beatonma.orbitalslivewallpaper.orbitals.renderer.compose.util
+package org.beatonma.orbitalslivewallpaper.orbitals.renderer.util
 
 import android.graphics.Color as AndroidColor
 import androidx.compose.ui.graphics.Color

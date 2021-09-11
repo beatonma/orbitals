@@ -1,8 +1,9 @@
-package org.beatonma.orbitalslivewallpaper.orbitals.renderer
+package org.beatonma.orbitalslivewallpaper.orbitals.renderer.simple
 
 import org.beatonma.orbitals.physics.Body
 import org.beatonma.orbitals.physics.UniqueID
 import org.beatonma.orbitalslivewallpaper.orbitals.options.VisualOptions
+import org.beatonma.orbitalslivewallpaper.orbitals.renderer.OrbitalsRenderer
 
 abstract class BaseSimpleRenderer<Canvas, Color>(
     override var options: VisualOptions

@@ -6,13 +6,21 @@ import org.beatonma.orbitalslivewallpaper.debug
 import org.beatonma.orbitalslivewallpaper.orbitals.OrbitalsRenderEngine
 import org.beatonma.orbitalslivewallpaper.orbitals.options.RenderLayer
 import org.beatonma.orbitalslivewallpaper.orbitals.options.VisualOptions
+import org.beatonma.orbitalslivewallpaper.orbitals.renderer.acceleration.BaseAccelerationRenderer
+import org.beatonma.orbitalslivewallpaper.orbitals.renderer.acceleration.CanvasAccelerationRenderer
+import org.beatonma.orbitalslivewallpaper.orbitals.renderer.acceleration.ComposeAccelerationRenderer
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
 import android.graphics.Canvas as AndroidCanvas
-import org.beatonma.orbitalslivewallpaper.orbitals.renderer.canvas.SimpleRenderer as CanvasSimpleRenderer
-import org.beatonma.orbitalslivewallpaper.orbitals.renderer.canvas.TrailRenderer as CanvasTrailRenderer
-import org.beatonma.orbitalslivewallpaper.orbitals.renderer.compose.SimpleRenderer as ComposeSimpleRenderer
-import org.beatonma.orbitalslivewallpaper.orbitals.renderer.compose.TrailRenderer as ComposeTrailRenderer
+import org.beatonma.orbitalslivewallpaper.orbitals.renderer.drip.CanvasDripRenderer
+import org.beatonma.orbitalslivewallpaper.orbitals.renderer.simple.CanvasSimpleRenderer
+import org.beatonma.orbitalslivewallpaper.orbitals.renderer.trail.CanvasTrailRenderer
+import org.beatonma.orbitalslivewallpaper.orbitals.renderer.drip.ComposeDripRenderer
+import org.beatonma.orbitalslivewallpaper.orbitals.renderer.simple.ComposeSimpleRenderer
+import org.beatonma.orbitalslivewallpaper.orbitals.renderer.trail.ComposeTrailRenderer
+import org.beatonma.orbitalslivewallpaper.orbitals.renderer.drip.BaseDripRenderer
+import org.beatonma.orbitalslivewallpaper.orbitals.renderer.simple.BaseSimpleRenderer
+import org.beatonma.orbitalslivewallpaper.orbitals.renderer.trail.BaseTrailRenderer
 
 private typealias LayerSet = Set<RenderLayer>
 private typealias RenderSet<Canvas> = Set<OrbitalsRenderer<Canvas>>
@@ -25,8 +33,26 @@ private typealias ComposeRenderer = OrbitalsRenderer<DrawScope>
  */
 private object LayerRegistry {
     private val registry: Map<RenderLayer, Layer<*, *, *>> = mapOf(
-        RenderLayer.Default to Layer(BaseSimpleRenderer::class, CanvasSimpleRenderer::class, ComposeSimpleRenderer::class),
-        RenderLayer.Trails to Layer(BaseTrailRenderer::class,CanvasTrailRenderer::class, ComposeTrailRenderer::class),
+        RenderLayer.Default to Layer(
+            BaseSimpleRenderer::class,
+            CanvasSimpleRenderer::class,
+            ComposeSimpleRenderer::class
+        ),
+        RenderLayer.Trails to Layer(
+            BaseTrailRenderer::class,
+            CanvasTrailRenderer::class,
+            ComposeTrailRenderer::class
+        ),
+        RenderLayer.Acceleration to Layer(
+            BaseAccelerationRenderer::class,
+            CanvasAccelerationRenderer::class,
+            ComposeAccelerationRenderer::class
+        ),
+        RenderLayer.Drip to Layer(
+            BaseDripRenderer::class,
+            CanvasDripRenderer::class,
+            ComposeDripRenderer::class
+        )
     )
 
     operator fun get(key: RenderLayer): Layer<*, *, *> {
@@ -46,7 +72,7 @@ private object LayerRegistry {
     }
 }
 
-private data class Layer<B: OrbitalsRenderer<*>, A: AndroidRenderer, C: ComposeRenderer>(
+private data class Layer<B : OrbitalsRenderer<*>, A : AndroidRenderer, C : ComposeRenderer>(
     val baseRenderClass: KClass<B>,
     val canvasRenderer: KClass<A>,
     val composeRenderer: KClass<C>,
@@ -95,8 +121,7 @@ inline fun <reified Canvas> diffRenderers(
         .toSet()
 }
 
-fun getLayerType(renderer: OrbitalsRenderer<*>): RenderLayer 
-    = LayerRegistry.getLayerType(renderer)
+fun getLayerType(renderer: OrbitalsRenderer<*>): RenderLayer = LayerRegistry.getLayerType(renderer)
 
 inline fun <reified Canvas> getRenderers(
     options: VisualOptions,
@@ -128,8 +153,7 @@ private fun getCanvasRenderer(
     try {
         val renderer = LayerRegistry[layer].canvasRenderer
         return createRenderer(renderer, options)
-    }
-    catch (e: NullPointerException) {
+    } catch (e: NullPointerException) {
         throw Exception("Unimplemented renderer for layer $layer - did you add it to LayerRegistry? : $e")
     }
 }
@@ -141,8 +165,7 @@ private fun getComposeRenderer(
     try {
         val renderer = LayerRegistry[layer].composeRenderer
         return createRenderer(renderer, options)
-    }
-    catch (e: NullPointerException) {
+    } catch (e: NullPointerException) {
         throw Exception("Unimplemented renderer for layer $layer - did you add it to LayerRegistry? : $e")
     }
 }
