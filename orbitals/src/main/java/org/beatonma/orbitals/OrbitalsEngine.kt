@@ -1,11 +1,9 @@
 package org.beatonma.orbitals
 
 import org.beatonma.orbitals.options.PhysicsOptions
-import org.beatonma.orbitals.options.SystemGenerator
 import org.beatonma.orbitals.physics.Body
-import org.beatonma.orbitals.physics.FixedBody
+import org.beatonma.orbitals.physics.ZeroAcceleration
 import org.beatonma.orbitals.physics.contains
-import kotlin.random.Random
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
@@ -28,16 +26,15 @@ interface OrbitalsEngine {
         bodies = bodies + generateBodies(space)
     }
 
-    fun generateBodies(space: Space = this.space): List<Body> {
+    fun generateBodies(
+        space: Space = this.space,
+        max: Int = physics.maxEntities - bodies.size
+    ): List<Body> {
+        if (max <= 0) return listOf()
+
         val newBodies = physics.systemGenerators
-            .filter { generator ->
-                if (bodies.count { it is FixedBody } > 4) {
-                    generator == SystemGenerator.Randomized
-                }
-                else true
-            }
             .random()
-            .generate(space)
+            .generate(space, bodies, max - bodies.size)
 
         onBodiesCreated(newBodies)
 
@@ -46,6 +43,11 @@ interface OrbitalsEngine {
 
     @OptIn(ExperimentalTime::class)
     fun tick(timeDelta: Duration) {
+        bodies.forEach {
+            it.acceleration = ZeroAcceleration
+            it.tick(timeDelta)
+        }
+
         if (bodyCount > 1) {
             bodies.forEachIndexed { index, body ->
                 for (i in (index + 1) until bodyCount) {
@@ -53,13 +55,10 @@ interface OrbitalsEngine {
                     body.applyGravity(other, timeDelta)
                     other.applyGravity(body, timeDelta)
                 }
-                body.applyInertia(timeDelta)
             }
-        } else {
-            bodies.forEach { body -> body.applyInertia(timeDelta) }
         }
 
-        if (bodyCount < physics.maxEntities && Random.nextFloat() > .95f) {
+        if (bodyCount < physics.maxEntities && chance(5.percent)) {
             addBodies()
         }
 

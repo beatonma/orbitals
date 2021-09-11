@@ -1,5 +1,7 @@
 package org.beatonma.orbitals
 
+import kotlin.random.Random
+
 /**
  * Calculate position relative to toMin..toMax based on relative position in range fromMin..fromMax.
  */
@@ -24,3 +26,11 @@ fun Float.normalizeIn(min: Float, max: Float): Float {
     return ((this - min) / range)
         .coerceIn(0F, 1F)
 }
+
+fun chance(likelihood: Float): Boolean {
+    require(likelihood in 0f..1F)
+    return Random.nextFloat() < likelihood
+}
+
+val Int.percent get() = this.toFloat().percent
+val Float.percent get() = this / 100f

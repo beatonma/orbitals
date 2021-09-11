@@ -1,5 +1,7 @@
 package org.beatonma.orbitals.physics
 
+import org.beatonma.orbitals.chance
+import org.beatonma.orbitals.percent
 import kotlin.math.sqrt
 import kotlin.random.Random
 
@@ -33,7 +35,7 @@ fun getOrbitalMotion(
     distance: Distance,
     parent: Body,
     radialAngle: Angle = Random.nextInt(0, 359).degrees,
-    prograde: Boolean = Random.nextFloat() < 0.995f, // Small chance of retrograde orbit
+    prograde: Boolean = chance(.005f), // Small chance of retrograde orbit
     G: Float = DefaultG,
 ): Motion {
     val position = parent.position + Position(
@@ -53,7 +55,7 @@ fun getOrbitalMotion(
     mass: Mass,
     position: Position,
     parent: Body,
-    prograde: Boolean = Random.nextFloat() < 0.995f, // Small chance of retrograde orbit
+    prograde: Boolean = chance(.005f.percent), // Small chance of retrograde orbit
     G: Float = DefaultG,
 ): Motion {
     val radialAngle = position.angleTo(parent.position)
