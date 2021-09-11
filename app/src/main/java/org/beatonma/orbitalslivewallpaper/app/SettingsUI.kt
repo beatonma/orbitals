@@ -1,8 +1,5 @@
-@file:SuppressLint("ModifierParameter")
-
 package org.beatonma.orbitalslivewallpaper.app
 
-import android.annotation.SuppressLint
 import android.app.Application
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
@@ -12,16 +9,9 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.draggable
-import androidx.compose.foundation.gestures.rememberDraggableState
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,20 +19,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.Checkbox
-import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.MaterialTheme.typography
-import androidx.compose.material.RadioButton
-import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -52,10 +34,14 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
-import org.beatonma.orbitals.map
 import org.beatonma.orbitals.options.CollisionStyle
 import org.beatonma.orbitals.options.PhysicsOptions
 import org.beatonma.orbitals.options.SystemGenerator
+import org.beatonma.orbitalslivewallpaper.app.settings.ColorSetting
+import org.beatonma.orbitalslivewallpaper.app.settings.FloatSetting
+import org.beatonma.orbitalslivewallpaper.app.settings.IntegerSetting
+import org.beatonma.orbitalslivewallpaper.app.settings.MultiSelectSetting
+import org.beatonma.orbitalslivewallpaper.app.settings.SingleSelectSetting
 import org.beatonma.orbitalslivewallpaper.orbitals.options.ColorKeys
 import org.beatonma.orbitalslivewallpaper.orbitals.options.ColorOptions
 import org.beatonma.orbitalslivewallpaper.orbitals.options.DrawStyle
@@ -67,7 +53,6 @@ import org.beatonma.orbitalslivewallpaper.orbitals.options.Settings
 import org.beatonma.orbitalslivewallpaper.orbitals.options.VisualKeys
 import org.beatonma.orbitalslivewallpaper.orbitals.options.VisualOptions
 import org.beatonma.orbitalslivewallpaper.orbitals.ui.Orbitals
-import kotlin.math.roundToInt
 import kotlin.time.ExperimentalTime
 
 
@@ -130,22 +115,6 @@ fun SettingsUI(
     }
 }
 
-@Composable
-private fun SettingsGroup(
-    title: String,
-    content: @Composable ColumnScope.() -> Unit
-) {
-    Column(
-        Modifier
-            .fillMaxWidth()
-            .padding(vertical = 16.dp)
-    ) {
-        Text(title, style = typography.h4)
-
-        content()
-    }
-}
-
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun VisualSettingsUI(
@@ -159,6 +128,7 @@ private fun VisualSettingsUI(
             value = visualOptions.renderLayers,
             values = RenderLayer.values(),
             onValueChange = saveSelections(viewmodel),
+            modifier = SettingModifier,
         )
 
         Conditional(RenderLayer.Trails in visualOptions.renderLayers) {
@@ -169,15 +139,9 @@ private fun VisualSettingsUI(
                 onValueChange = viewmodel::updateOption,
                 min = 1,
                 max = 120,
+                modifier = SettingModifier,
             )
         }
-
-        SwitchSetting(
-            name = "Show acceleration",
-            value = visualOptions.showAcceleration,
-            key = VisualKeys.showAcceleration,
-            onValueChange = viewmodel::updateOption,
-        )
 
         SingleSelectSetting(
             name = "Style",
@@ -185,16 +149,20 @@ private fun VisualSettingsUI(
             value = visualOptions.drawStyle,
             values = DrawStyle.values(),
             onValueChange = saveSelection(viewmodel),
+            modifier = SettingModifier,
         )
 
-        FloatSetting(
-            name = "Stroke width",
-            key = VisualKeys.strokeWidth,
-            value = visualOptions.strokeWidth.value,
-            onValueChange = viewmodel::updateOption,
-            min = 1f,
-            max = 16f
-        )
+        Conditional(visualOptions.drawStyle == DrawStyle.Wireframe) {
+            FloatSetting(
+                name = "Stroke width",
+                key = VisualKeys.strokeWidth,
+                value = visualOptions.strokeWidth,
+                onValueChange = viewmodel::updateOption,
+                min = 1f,
+                max = 24f,
+                modifier = SettingModifier,
+            )
+        }
     }
 
     ColorSettingsUI(visualOptions.colorOptions, viewmodel)
@@ -211,6 +179,7 @@ private fun ColorSettingsUI(
             key = ColorKeys.background,
             value = colorOptions.background,
             onValueChange = viewmodel::updateOption,
+            modifier = SettingModifier,
         )
 
         MultiSelectSetting(
@@ -219,6 +188,7 @@ private fun ColorSettingsUI(
             value = colorOptions.bodies.toSet(),
             values = ObjectColors.values(),
             onValueChange = saveSelections(viewmodel),
+            modifier = SettingModifier,
         )
     }
 }
@@ -237,6 +207,7 @@ private fun PhysicsSettingsUI(
             onValueChange = viewmodel::updateOption,
             min = 1,
             max = 200,
+            modifier = SettingModifier,
         )
 
         MultiSelectSetting(
@@ -245,6 +216,7 @@ private fun PhysicsSettingsUI(
             value = physics.systemGenerators.toSet(),
             values = SystemGenerator.values(),
             onValueChange = saveSelections(viewmodel),
+            modifier = SettingModifier,
         )
 
         FloatSetting(
@@ -254,6 +226,7 @@ private fun PhysicsSettingsUI(
             onValueChange = viewmodel::updateOption,
             min = .1f,
             max = 2f,
+            modifier = SettingModifier,
         )
 
         SingleSelectSetting(
@@ -262,6 +235,7 @@ private fun PhysicsSettingsUI(
             value = physics.collisionStyle,
             values = CollisionStyle.values(),
             onValueChange = saveSelection(viewmodel),
+            modifier = SettingModifier,
         )
 
         IntegerSetting(
@@ -271,6 +245,7 @@ private fun PhysicsSettingsUI(
             onValueChange = viewmodel::updateOption,
             min = 1,
             max = 5,
+            modifier = SettingModifier,
         )
     }
 }
@@ -295,7 +270,7 @@ private fun <E : Enum<E>> saveSelections(
 @Composable
 private fun Conditional(
     condition: Boolean,
-    content: @Composable AnimatedVisibilityScope.() -> Unit
+    content: @Composable AnimatedVisibilityScope.() -> Unit,
 ) {
     AnimatedVisibility(
         visible = condition,
@@ -306,230 +281,32 @@ private fun Conditional(
 }
 
 @Composable
-private fun SwitchSetting(
-    name: String,
-    key: Preferences.Key<Boolean>,
-    value: Boolean,
-    onValueChange: (key: Preferences.Key<Boolean>, value: Boolean) -> Unit,
-    modifier: Modifier = SettingModifier,
-) {
-    Checkable(
-        name,
-        modifier,
-        onClick = { onValueChange(key, !value) }
-    ) {
-        Switch(checked = value, onCheckedChange = { checked -> onValueChange(key, checked) })
-    }
+fun Todo(name: String) {
+    Text("// TODO: $name", color = Color.Red, modifier = SettingModifier)
 }
 
 @Composable
-private fun Checkable(
-    name: String,
-    modifier: Modifier,
-    onClick: (() -> Unit)? = null,
-    content: @Composable () -> Unit
+private fun SettingsGroup(
+    title: String,
+    content: @Composable ColumnScope.() -> Unit
 ) {
-    val modifierWithClick = if (onClick == null) {
-        modifier
-    } else {
+    Column(
         Modifier
-            .clickable(onClick = onClick)
-            .then(modifier)
-    }
-
-    Row(
-        modifierWithClick,
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
+            .fillMaxWidth()
+            .padding(vertical = 16.dp)
     ) {
-        Text(name)
+        Text(title, style = typography.h4)
 
         content()
     }
 }
 
-@Composable
-private fun Todo(name: String) {
-    Text("// TODO: $name", color = Color.Red, modifier = SettingModifier)
-}
-
-@Composable
-private fun IntegerSetting(
-    name: String,
-    key: Preferences.Key<Int>,
-    value: Int,
-    onValueChange: (key: Preferences.Key<Int>, newValue: Int) -> Unit,
-    min: Int,
-    max: Int,
-    modifier: Modifier = SettingModifier,
-) {
-    BoxWithConstraints {
-        val maxWidth = constraints.maxWidth.toFloat()
-        var offset by remember {
-            println("maxWidth $maxWidth")
-            mutableStateOf(value.toFloat().map(min.toFloat(), max.toFloat(), 0f, maxWidth))
-        }
-
-        Column(
-            modifier.draggable(
-                orientation = Orientation.Horizontal,
-                state = rememberDraggableState { delta ->
-                    offset = (offset + delta).coerceIn(0f, maxWidth)
-                    onValueChange(
-                        key,
-                        offset.map(0f, maxWidth, min.toFloat(), max.toFloat()).roundToInt()
-                    )
-                }
-            )
-        ) {
-            Text("$name: $value", Modifier.align(Alignment.CenterHorizontally))
-
-            Row(
-                Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                Text("$min")
-                LinearProgressIndicator(
-                    progress = value.toFloat().map(min.toFloat(), max.toFloat(), 0f, 1f),
-                )
-                Text("$max")
-            }
-        }
-    }
-}
-
-@Composable
-private fun FloatSetting(
-    name: String,
-    key: Preferences.Key<Float>,
-    value: Float,
-    onValueChange: (key: Preferences.Key<Float>, newValue: Float) -> Unit,
-    min: Float,
-    max: Float,
-    modifier: Modifier = SettingModifier,
-) {
-    BoxWithConstraints {
-        val maxWidth = constraints.maxWidth.toFloat()
-        var offset by remember {
-            println("maxWidth $maxWidth")
-            mutableStateOf(value.map(min, max, 0f, maxWidth))
-        }
-
-        Column(
-            modifier.draggable(
-                orientation = Orientation.Horizontal,
-                state = rememberDraggableState { delta ->
-                    offset = (offset + delta).coerceIn(0f, maxWidth)
-                    onValueChange(
-                        key,
-                        offset.map(0f, maxWidth, min, max)
-                    )
-                }
-            )
-        ) {
-            Text("$name: $value", Modifier.align(Alignment.CenterHorizontally))
-
-            Row(
-                Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                Text("$min")
-                LinearProgressIndicator(
-                    progress = value.map(min, max, 0f, 1f),
-                )
-                Text("$max")
-            }
-        }
-    }
-}
-
-@Composable
-private fun <E : Enum<E>> SingleSelectSetting(
-    name: String,
-    key: Preferences.Key<String>,
-    value: E,
-    values: Array<out E>,
-    onValueChange: (key: Preferences.Key<String>, newValue: E) -> Unit,
-    modifier: Modifier = SettingModifier,
-) {
-    Column(modifier) {
-        Text(name, style = typography.h5)
-
-        for (v in values) {
-            val onClick = { onValueChange(key, v) }
-            Checkable(
-                v.name,
-                modifier,
-                onClick,
-            ) {
-                RadioButton(
-                    selected = value == v,
-                    onClick = onClick,
-                )
-            }
-        }
-    }
-}
-
-
-@Composable
-private fun <E : Enum<E>> MultiSelectSetting(
-    name: String,
-    key: Preferences.Key<Set<String>>,
-    value: Set<E>,
-    values: Array<out E>,
-    onValueChange: (key: Preferences.Key<Set<String>>, newValue: Set<E>) -> Unit,
-    allowEmptySet: Boolean = false,
-    modifier: Modifier = SettingModifier,
-) {
-    Column(modifier) {
-        Text(name, style = typography.h5)
-
-        for (v in values) {
-            val onClick = {
-                if (v in value) {
-                    val newValue = value.filter { it != v }.toSet()
-                    if (!allowEmptySet && newValue.isEmpty()) {
-                        onValueChange(key, setOf(values.first()))
-                    } else {
-                        onValueChange(key, newValue)
-                    }
-                } else {
-                    onValueChange(key, value + v)
-                }
-            }
-
-            Checkable(
-                v.name,
-                modifier,
-                onClick,
-            ) {
-                Checkbox(
-                    checked = v in value,
-                    onCheckedChange = { onClick() }
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun ColorSetting(
-    name: String,
-    key: Preferences.Key<Int>,
-    value: Int,
-    onValueChange: (key: Preferences.Key<Int>, newValue: Int) -> Unit,
-    modifier: Modifier = SettingModifier,
-) {
-    Todo(name)
-}
 
 private class SettingsViewModelFactory(
     private val application: Application,
     private val settings: Settings
 ) : ViewModelProvider.Factory {
+    @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(SettingsViewModel::class.java)) {
             return SettingsViewModel(application, settings) as T

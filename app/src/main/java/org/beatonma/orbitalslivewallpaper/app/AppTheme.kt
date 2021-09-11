@@ -18,7 +18,7 @@ import org.beatonma.orbitalslivewallpaper.dataStore
 import org.beatonma.orbitalslivewallpaper.orbitals.options.ColorOptions
 import org.beatonma.orbitalslivewallpaper.orbitals.options.Settings
 import org.beatonma.orbitalslivewallpaper.orbitals.options.getSavedColors
-import org.beatonma.orbitalslivewallpaper.orbitals.renderer.compose.util.toComposeColor
+import org.beatonma.orbitalslivewallpaper.orbitals.renderer.util.toComposeColor
 
 @Composable
 fun AppTheme(
