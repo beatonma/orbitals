@@ -1,25 +1,15 @@
 package org.beatonma.orbitals.physics
 
-import kotlin.math.cos
 import kotlin.math.pow
-import kotlin.math.sin
-import kotlin.math.sqrt
 
 
 fun squareOf(value: Float): Float = value.pow(2.0F)
-fun squareOf(distance: Distance): Float = distance.metres.pow(2)
-
-fun hypotenuse(x: Float, y: Float): Float =
-    sqrt(squareOf(x) + squareOf(y))
-
-fun velocityVector(x: Speed, y: Speed): Speed =
-    hypotenuse(x.magnitude, y.magnitude).metres.perSecond
 
 /**
  * Run the block using points from around the origin.
  * All points fall on the circle with the given radius.
  */
-inline fun doAround(
+fun doAround(
     radius: Float,
     start: Angle = 0.degrees,
     center: Position = ZeroPosition,
@@ -28,10 +18,10 @@ inline fun doAround(
     block: (degrees: Int, x: Float, y: Float) -> Unit
 ) {
     for (deg in start.asDegreesInt..rotation.asDegreesInt step stepSize.asDegreesInt) {
-        val theta = deg.degrees.asRadians
+        val theta = deg.degrees
 
-        val x = center.x.metres + (cos(theta) * radius)
-        val y = center.y.metres + (sin(theta) * radius)
+        val x = center.x.value + (cos(theta) * radius)
+        val y = center.y.value + (sin(theta) * radius)
 
         block(deg, x, y)
     }
@@ -41,7 +31,7 @@ inline fun doAround(
  * Returns the result of applying [transform] to the points at distance [radius]
  * from the [center] at intervals of angle [stepSize].
  */
-inline fun <T> mapAround(
+fun <T> mapAround(
     radius: Distance,
     start: Angle = 0.degrees,
     center: Position = ZeroPosition,
@@ -50,10 +40,10 @@ inline fun <T> mapAround(
     transform: (degrees: Int, x: Float, y: Float) -> T
 ): List<T> {
     return (start.asDegreesInt..rotation.asDegreesInt step stepSize.asDegreesInt).map { deg ->
-        val theta = deg.degrees.asRadians
+        val theta = deg.degrees
 
-        val x = center.x.metres + (cos(theta) * radius.metres)
-        val y = center.y.metres + (sin(theta) * radius.metres)
+        val x = center.x.value + (cos(theta) * radius.value)
+        val y = center.y.value + (sin(theta) * radius.value)
 
         transform(deg, x, y)
     }
@@ -63,7 +53,7 @@ inline fun <T> mapAround(
  * Returns the result of applying [transform] to [steps] equally-spaced points at distance [radius]
  * from the [center].
  */
-inline fun <T> mapAround(
+fun <T> mapAround(
     radius: Distance,
     start: Angle = 0.degrees,
     center: Position = ZeroPosition,
@@ -78,3 +68,5 @@ inline fun <T> mapAround(
         transform = transform
     )
 }
+
+private val Angle.asDegreesInt: Int get() = asDegrees.toInt()

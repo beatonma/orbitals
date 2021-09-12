@@ -1,7 +1,7 @@
 package org.beatonma.orbitals.physics
 
 import kotlin.math.atan2
-import kotlin.math.roundToInt
+import kotlin.math.sqrt
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
@@ -10,7 +10,7 @@ import kotlin.time.ExperimentalTime
 val Distance.perSecond: Speed
     get() = this / Duration.seconds(1)
 
-data class Velocity(
+data class Velocity internal constructor(
     override var x: Speed = Speed(0.0),
     override var y: Speed = Speed(0.0),
 ): Vector2D<Speed> {
@@ -22,40 +22,35 @@ data class Velocity(
         this.y += other.y
     }
 
-    val vector: Speed get() = velocityVector(x, y)
-    val angle: Angle get() = atan2(y.magnitude, x.magnitude).radians
+    override val magnitude: Speed get() = Speed(magnitude(x, y))
+    val angle: Angle get() = atan2(y.value, x.value).radians
 
     override fun toString(): String =
-        "$vector @ ${angle.asDegrees.roundToInt()}°"
+        "$magnitude @ $angle"
 }
 
 
-data class Speed(private var metresPersSecond: Float) {
-    /**
-     * Metres per second.
-     */
-    val magnitude get() = metresPersSecond
-
+/**
+ * Metres per second
+ */
+data class Speed internal constructor(override var value: Float): Scalar {
     constructor(magnitude: Number) : this(magnitude.toFloat())
 
-    /**
-     * Distance = speed * time
-     */
     @OptIn(ExperimentalTime::class)
-    operator fun times(time: Duration): Distance = (this.magnitude * time.toDouble(DurationUnit.SECONDS)).metres
-    operator fun times(multiplier: Float): Speed = Speed(magnitude * multiplier)
+    operator fun times(time: Duration): Distance = (this.value * time.toDouble(DurationUnit.SECONDS)).metres
+    operator fun times(multiplier: Float): Speed = Speed(value * multiplier)
 
-    operator fun plus(other: Speed) = Speed(magnitude + other.magnitude)
+    operator fun plus(other: Speed) = Speed(value + other.value)
 
     operator fun plusAssign(other: Float) {
-        metresPersSecond += other
+        value += other
     }
 
     operator fun minusAssign(other: Float) {
-        metresPersSecond -= other
+        value -= other
     }
 
-    operator fun unaryMinus(): Speed = Speed(-magnitude)
+    operator fun unaryMinus(): Speed = Speed(-value)
 
-    override fun toString(): String = "${magnitude}m/s"
+    override fun toString(): String = "${value}m/s"
 }

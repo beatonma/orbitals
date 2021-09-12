@@ -1,10 +1,9 @@
 package org.beatonma.orbitals.physics
 
 import org.beatonma.orbitals.Space
-import kotlin.math.absoluteValue
+import org.beatonma.orbitals.Universe
 import kotlin.math.atan2
 import kotlin.math.roundToInt
-import kotlin.math.sqrt
 
 internal fun Position(x: Number, y: Number) = Position(x.metres, y.metres)
 
@@ -28,14 +27,15 @@ fun Position.gradientTo(other: Position, max: Float = 1.0e5f): Float {
 }
 
 fun Position.angleTo(other: Position): Angle =
-    atan2((other.y - this.y).metres, (other.x - this.x).metres).radians
+    atan2((other.y - this.y).value, (other.x - this.x).value).radians
 
-fun Position.distanceTo(other: Position): Distance = Distance(
+fun Position.distanceTo(other: Position): Distance =
     sqrt(
         squareOf(other.x - this.x)
                 + squareOf(other.y - this.y)
-    ).absoluteValue
-)
+    )
 
 fun Space.contains(position: Position): Boolean =
-    contains(position.x.metres.roundToInt(), position.y.metres.roundToInt())
+    contains(position.x.value.roundToInt(), position.y.value.roundToInt())
+
+private fun squareOf(distance: Distance): Area = distance * distance

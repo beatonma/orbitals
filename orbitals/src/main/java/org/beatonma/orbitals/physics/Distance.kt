@@ -10,32 +10,36 @@ val Number.km: Distance get() = this.toFloat().km
 val Float.metres: Distance get() = Distance(this)
 val Number.metres: Distance get() = this.toFloat().metres
 
+/**
+ * Metres
+ */
 @JvmInline
-value class Distance internal constructor(val metres: Float) {
-    operator fun times(multiplier: Int) = Distance(metres * multiplier)
-    operator fun times(multiplier: Float) = Distance(metres * multiplier)
+value class Distance internal constructor(
+    override val value: Float,
+) : Scalar {
+    operator fun times(multiplier: Int) = Distance(value * multiplier)
+    operator fun times(multiplier: Float) = Distance(value * multiplier)
+    operator fun times(other: Distance) = Area(value * other.value)
 
-    operator fun plus(other: Distance) = Distance(metres + other.metres)
-    operator fun minus(other: Distance) = Distance(metres - other.metres)
+    operator fun plus(other: Distance) = Distance(value + other.value)
+    operator fun minus(other: Distance) = Distance(value - other.value)
 
-    operator fun div(other: Distance): Float = metres / other.metres
-    operator fun div(factor: Float): Distance = (metres / factor).metres
+    operator fun div(other: Distance): Float = value / other.value
+    operator fun div(factor: Float): Distance = (value / factor).metres
 
-    /**
-     * Speed = distance / time
-     */
     @OptIn(ExperimentalTime::class)
-    operator fun div(duration: Duration): Speed = Speed(this.metres / duration.toDouble(DurationUnit.SECONDS))
+    operator fun div(duration: Duration): Speed =
+        Speed(this.value / duration.toDouble(DurationUnit.SECONDS))
 
-    operator fun compareTo(other: Distance): Int = this.metres.compareTo(other.metres)
-    operator fun compareTo(other: Float): Int = this.metres.compareTo(other)
+    operator fun compareTo(other: Distance): Int = this.value.compareTo(other.value)
+    operator fun compareTo(other: Float): Int = this.value.compareTo(other)
 
-    operator fun unaryMinus(): Distance = Distance(-metres)
+    operator fun unaryMinus(): Distance = Distance(-value)
 
-    override fun toString(): String = "${metres}m"
+    override fun toString(): String = "${value}m"
 }
 
-val Distance.squared: Float get() = squareOf(this.metres)
+val Distance.squared: Float get() = squareOf(this.value)
 fun Distance.coerceAtLeast(min: Distance): Distance {
-    return this.metres.coerceAtLeast(min.metres).metres
+    return this.value.coerceAtLeast(min.value).metres
 }

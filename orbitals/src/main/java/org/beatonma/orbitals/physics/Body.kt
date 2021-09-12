@@ -17,6 +17,7 @@ interface Body {
     val mass: Mass
     val radius: Distance
     val motion: Motion
+    var age: Duration
 
     val position: Position get() = motion.position
     val velocity: Velocity get() = motion.velocity
@@ -32,6 +33,11 @@ interface Body {
     fun applyGravity(other: Body, timeDelta: Duration)
 
     fun distanceTo(other: Body): Distance = position.distanceTo(other.position)
+
+    fun tick(duration: Duration) {
+        age += duration
+        applyInertia(duration)
+    }
 }
 
 /**
@@ -42,9 +48,10 @@ data class FixedBody(
     override val id: UniqueID = uniqueID("FixedBody"),
     override val mass: Mass,
     override val radius: Distance = ZeroDistance,
-    override val position: Position,
+    override val motion: Motion = ZeroMotion,
+    override var age: Duration = Duration.seconds(0)
 ) : Body {
-    override val motion: Motion = ZeroMotion
+
     override fun applyInertia(timeDelta: Duration) {
         // N/A
     }
@@ -54,13 +61,22 @@ data class FixedBody(
     }
 }
 
+fun FixedBody.toInertialBody() = InertialBody(
+    id = id,
+    mass = mass,
+    radius = radius,
+    motion = motion,
+)
+
 @OptIn(ExperimentalTime::class)
 data class InertialBody(
     override val id: UniqueID = uniqueID("InertialBody"),
     override val mass: Mass,
     override val radius: Distance = ZeroDistance,
     override val motion: Motion = ZeroMotion,
+    override var age: Duration = Duration.seconds(0)
 ) : Body {
+
     override fun applyInertia(timeDelta: Duration) {
         motion.applyInertia(timeDelta)
     }
@@ -70,19 +86,22 @@ data class InertialBody(
         val force: Force = calculateForce(other)
         val acceleration = calculateAcceleration(force, theta)
 
+
         velocity += (acceleration * timeDelta)
+        this.acceleration += acceleration
+        println("[$id:${other.id}: θ=$theta | F=$force | a=$acceleration | $velocity]")
     }
 
-    private fun calculateForce(other: Body): Force {
-        return calculateGravitationalForce(this.mass, other.mass, distanceTo(other))
-    }
+    private fun calculateForce(other: Body): Force =
+        calculateGravitationalForce(this.mass, other.mass, distanceTo(other))
+
 
     /**
      * Calculate acceleration due to gravity.
      */
-    private fun calculateAcceleration(force: Force, angle: Angle): Acceleration {
-        return Acceleration(force / mass, angle)
-    }
+    private fun calculateAcceleration(force: Force, angle: Angle): Acceleration =
+        Acceleration(force / mass, angle)
+
 }
 
 
@@ -90,4 +109,8 @@ fun uniqueID(name: Any): UniqueID = UniqueID("$name[$uniqueID]")
 private val uniqueID: String get() = UUID.randomUUID().toString().substring(0, 5)
 
 @JvmInline
-value class UniqueID(val value: String)
+value class UniqueID(val value: String) {
+    override fun toString(): String {
+        return "id:$value"
+    }
+}

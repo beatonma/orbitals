@@ -1,16 +1,18 @@
 package org.beatonma.orbitals.physics
 
 val Float.newtons: Force get() = Force(this)
-val Number.newtons: Force get() = this.toFloat().newtons
 
+/**
+ * Newtons
+ */
 @JvmInline
-value class Force(
+value class Force internal constructor(
     /** kg·m/s2 */
-    val newtons: Float,
-) {
-    operator fun times(factor: Int) = (factor * newtons).newtons
-    operator fun times(factor: Float) = (factor * newtons).newtons
-    operator fun div(mass: Mass) = AccelerationScalar(newtons / mass.kg)
+    override val value: Float,
+): Scalar {
+    operator fun times(factor: Int) = (factor * value).newtons
+    operator fun times(factor: Float) = (factor * value).newtons
+    operator fun div(mass: Mass) = AccelerationScalar(value / mass.value)
 
-    override fun toString(): String = "${newtons}N"
+    override fun toString(): String = "${value}N"
 }

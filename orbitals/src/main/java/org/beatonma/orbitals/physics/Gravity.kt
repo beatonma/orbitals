@@ -39,8 +39,8 @@ fun getOrbitalMotion(
     G: Float = DefaultG,
 ): Motion {
     val position = parent.position + Position(
-        cos(radialAngle) * distance.metres,
-        sin(radialAngle) * distance.metres,
+        cos(radialAngle) * distance.value,
+        sin(radialAngle) * distance.value,
     )
     val speed = getOrbitalSpeed(mass, parent.mass, distance, G)
     val tangentialAngle = getTangentialAngle(radialAngle, prograde)
@@ -75,7 +75,7 @@ private fun getOrbitalSpeed(
     secondMass: Mass,
     distance: Distance,
     G: Float,
-): Speed = sqrt(G * (firstMass + secondMass).kg / distance.metres).metres.perSecond
+): Speed = sqrt(G * (firstMass + secondMass).value / distance.value).metres.perSecond
 
 private fun getVelocity(speed: Speed, tangentialAngle: Angle) = Velocity(
     speed * cos(tangentialAngle),

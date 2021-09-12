@@ -6,7 +6,7 @@ import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
-interface RectangleSpace {
+interface Space {
     val start: Int
     val top: Int
     val end: Int
@@ -38,41 +38,40 @@ interface RectangleSpace {
     }
 }
 
-class Space internal constructor(
+data class Universe internal constructor(
     override val start: Int,
     override val top: Int,
     override val end: Int,
     override val bottom: Int,
-    val visibleSpace: VisibleSpace,
-): RectangleSpace {
-}
+    val visibleSpace: Region,
+): Space
 
-class VisibleSpace internal constructor(
+data class Region(
     override val start: Int,
     override val top: Int,
     override val end: Int,
     override val bottom: Int,
-): RectangleSpace
+): Space
 
 /**
- * Return a [Space] centered on the region (0, 0, focusWidth, focusHeight) with a surrounding
+ * Return a [Universe] centered on the region (0, 0, focusWidth, focusHeight) with a surrounding
  * margin of overflow * (width | height)
  */
-fun Space(windowWidth: Int, windowHeight: Int, overflow: Float = .2f): Space {
+fun Universe(windowWidth: Int, windowHeight: Int, overflow: Float = .2f): Universe {
     val overflowWidth = (overflow * windowWidth).roundToInt()
     val overflowHeight = (overflow * windowHeight).roundToInt()
 
-    return Space(
+    return Universe(
         start = -overflowWidth,
         top = -overflowHeight,
         end = windowWidth + overflowWidth,
         bottom = windowHeight + overflowHeight,
-        visibleSpace = VisibleSpace(0, 0, windowWidth, windowHeight)
+        visibleSpace = Region(0, 0, windowWidth, windowHeight)
     )
 }
 
 
-fun RectangleSpace.relativePosition(
+fun Space.relativePosition(
     @FloatRange(from = 0.0, to = 1.0) x: Float,
     @FloatRange(from = 0.0, to = 1.0) y: Float,
 ): Position = Position(
@@ -80,12 +79,12 @@ fun RectangleSpace.relativePosition(
     top.toFloat() + (height.toFloat() * y)
 )
 
-fun Space.relativeVisiblePosition(
+fun Universe.relativeVisiblePosition(
     @FloatRange(from = 0.0, to = 1.0) x: Float,
     @FloatRange(from = 0.0, to = 1.0) y: Float,
 ): Position = visibleSpace.relativePosition(x, y)
 
-fun Space.anyVisiblePosition(): Position =
+fun Universe.anyVisiblePosition(): Position =
     relativeVisiblePosition(
         Random.nextFloat(),
         Random.nextFloat(),
