@@ -6,12 +6,21 @@ import kotlin.time.ExperimentalTime
 
 /** ms^-2 */
 @JvmInline
-value class AccelerationScalar internal constructor(override val value: Float): Scalar {
-    operator fun plus(other: AccelerationScalar) = AccelerationScalar(value + other.value)
-    operator fun times(multiplier: Float) = AccelerationScalar(value * multiplier)
+value class AccelerationScalar internal constructor(override val value: Float) : Scalar {
+    operator fun plus(other: AccelerationScalar): AccelerationScalar =
+        AccelerationScalar(value + other.value)
+
+    operator fun times(multiplier: Float): AccelerationScalar =
+        AccelerationScalar(value * multiplier)
 
     @OptIn(ExperimentalTime::class)
-    operator fun times(duration: Duration) = Speed(value * duration.toDouble(DurationUnit.SECONDS))
+    operator fun times(duration: Duration): Speed {
+        return Speed(value * duration.toDouble(DurationUnit.SECONDS).toFloat())
+    }
+
+    override fun toString(): String {
+        return "$value"
+    }
 }
 
 internal fun Acceleration(acceleration: AccelerationScalar, theta: Angle) = Acceleration(
@@ -22,12 +31,12 @@ internal fun Acceleration(acceleration: AccelerationScalar, theta: Angle) = Acce
 data class Acceleration internal constructor(
     override val x: AccelerationScalar,
     override val y: AccelerationScalar,
-): Vector2D<AccelerationScalar> {
+) : Vector2D<AccelerationScalar> {
     @OptIn(ExperimentalTime::class)
     operator fun times(duration: Duration): Velocity =
         Velocity(
-            x * duration,
-            y * duration,
+            x = x * duration,
+            y = y * duration,
         )
 
     operator fun plus(other: Acceleration) = Acceleration(x + other.x, y + other.y)

@@ -1,4 +1,4 @@
-package org.beatonma.orbitalslivewallpaper.orbitals.physics
+package org.beatonma.orbitals.physics
 
 //class GravityTest {
 //    @Test

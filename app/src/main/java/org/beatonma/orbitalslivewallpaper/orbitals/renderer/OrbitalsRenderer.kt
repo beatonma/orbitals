@@ -1,6 +1,6 @@
 package org.beatonma.orbitalslivewallpaper.orbitals.renderer
 
-import org.beatonma.orbitals.RectangleSpace
+import org.beatonma.orbitals.Space
 import org.beatonma.orbitals.physics.Body
 import org.beatonma.orbitalslivewallpaper.orbitals.options.VisualOptions
 
@@ -18,6 +18,6 @@ interface OrbitalsRenderer<Canvas> {
 
     fun onBodyCreated(body: Body) {}
     fun onBodyDestroyed(body: Body) {}
-    fun onSizeChanged(space: RectangleSpace) {}
+    fun onSizeChanged(space: Space) {}
     fun recycle() {}
 }

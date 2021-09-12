@@ -1,11 +1,12 @@
 package org.beatonma.orbitalslivewallpaper.orbitals
 
+import com.beatonma.orbitalslivewallpaper.BuildConfig
 import org.beatonma.orbitalslivewallpaper.warn
 
 inline fun timeIt(
     maxMillis: Int = 15,
     label: String = "action",
-    enabled: Boolean = true,
+    enabled: Boolean = BuildConfig.DEBUG,
     block: () -> Unit
 ) {
     if (!enabled) {
@@ -14,7 +15,9 @@ inline fun timeIt(
     }
     else {
         val start = System.currentTimeMillis()
+
         block()
+
         val end = System.currentTimeMillis()
         val duration = end - start
         if (duration > maxMillis) {

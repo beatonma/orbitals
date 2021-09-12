@@ -20,7 +20,7 @@ class OrbitalsView @JvmOverloads constructor(
     private val renderEngine = OrbitalsRenderEngine<Canvas>(
         renderers = getRenderers(options.visualOptions),
         options = options,
-        onOptionsChange = { newOptions ->
+        onOptionsChange = {
             renderers = diffRenderers(this)
         }
     )

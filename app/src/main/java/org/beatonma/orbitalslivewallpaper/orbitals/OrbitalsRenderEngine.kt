@@ -2,6 +2,7 @@ package org.beatonma.orbitalslivewallpaper.orbitals
 
 import org.beatonma.orbitals.OrbitalsEngine
 import org.beatonma.orbitals.Space
+import org.beatonma.orbitals.Universe
 import org.beatonma.orbitals.options.PhysicsOptions
 import org.beatonma.orbitals.physics.Body
 import org.beatonma.orbitalslivewallpaper.orbitals.options.Options
@@ -21,12 +22,11 @@ class OrbitalsRenderEngine<T>(
             onOptionsChange(value)
             engine.physics = value.physics
             renderers.forEach { it.options = value.visualOptions }
-////            renderers.forEach { it.options = options.visualOptions }
         }
 
     @OptIn(ExperimentalTime::class)
     private val engine: OrbitalsEngine = object : OrbitalsEngine {
-        override var space: Space = Space(1, 1)
+        override var space: Universe = Universe(1, 1)
         override var physics: PhysicsOptions = options.physics
         override var bodies: List<Body> = listOf()
         override val tickTimeDelta: Duration = physics.tickDelta
@@ -48,7 +48,7 @@ class OrbitalsRenderEngine<T>(
     val bodies get() = engine.bodies
 
     fun onSizeChanged(width: Int, height: Int) {
-        engine.space = Space(width, height)
+        engine.space = Universe(width, height)
         renderers.forEach { it.onSizeChanged(engine.space.visibleSpace) }
     }
 

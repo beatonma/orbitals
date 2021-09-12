@@ -6,6 +6,7 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -15,6 +16,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.input.pointer.pointerInput
+import org.beatonma.orbitals.Region
 import org.beatonma.orbitalslivewallpaper.orbitals.OrbitalsRenderEngine
 import org.beatonma.orbitalslivewallpaper.orbitals.options.Options
 import org.beatonma.orbitalslivewallpaper.orbitals.renderer.diffRenderers
@@ -39,9 +42,7 @@ fun Orbitals(
     }
 
     LaunchedEffect(options) {
-        println("options updated: $options")
         orbitals.options = options
-//        orbitals.renderers = diffRenderers(orbitals.renderers, options.visualOptions.renderLayers, options.visualOptions, orbitals.bodies)
     }
 
     val animator by rememberInfiniteTransition().animateFloat(
@@ -50,7 +51,28 @@ fun Orbitals(
         animationSpec = infiniteRepeatable(tween(100), RepeatMode.Restart)
     )
 
-    Canvas(modifier = modifier) {
+    Canvas(
+        modifier = modifier
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onTap = { offset ->
+                        val x = offset.x.toInt()
+                        val y = offset.y.toInt()
+                        orbitals.addBodies(
+                            Region(
+                                x - 250,
+                                y - 250,
+                                x + 250,
+                                y + 250,
+                            )
+                        )
+                    },
+                    onDoubleTap = { offset ->
+                        orbitals.clear()
+                    }
+                )
+            },
+    ) {
         animator
         size = this.size
 

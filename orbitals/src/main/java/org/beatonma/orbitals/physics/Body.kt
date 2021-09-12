@@ -1,15 +1,16 @@
 package org.beatonma.orbitals.physics
 
+import androidx.annotation.VisibleForTesting
 import java.util.*
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
-val ZeroMass = 0.0.kg
-val ZeroDistance = 0.0.metres
-val ZeroPosition = Position(ZeroDistance, ZeroDistance)
-val ZeroVelocity = Velocity(0.0.metres.perSecond, 0.0.metres.perSecond)
-val ZeroMotion = Motion(ZeroPosition, ZeroVelocity)
-val ZeroAcceleration = Acceleration(AccelerationScalar(0f), AccelerationScalar(0f))
+val ZeroMass get() = 0.0.kg
+val ZeroDistance get() = 0.0.metres
+val ZeroPosition get() = Position(ZeroDistance, ZeroDistance)
+val ZeroVelocity get() = Velocity(0.0.metres.perSecond, 0.0.metres.perSecond)
+val ZeroMotion get() = Motion(ZeroPosition, ZeroVelocity)
+val ZeroAcceleration get() = Acceleration(AccelerationScalar(0f), AccelerationScalar(0f))
 
 @OptIn(ExperimentalTime::class)
 interface Body {
@@ -20,7 +21,9 @@ interface Body {
     var age: Duration
 
     val position: Position get() = motion.position
-    val velocity: Velocity get() = motion.velocity
+    val velocity: Velocity
+        get() = motion.velocity
+
     var acceleration: Acceleration
         set(value) {
             motion.acceleration = value
@@ -82,24 +85,23 @@ data class InertialBody(
     }
 
     override fun applyGravity(other: Body, timeDelta: Duration) {
-        val theta = position.angleTo(other.position)
+        val theta: Angle = position.angleTo(other.position)
         val force: Force = calculateForce(other)
-        val acceleration = calculateAcceleration(force, theta)
-
+        val acceleration: Acceleration = calculateAcceleration(force, theta)
 
         velocity += (acceleration * timeDelta)
         this.acceleration += acceleration
-        println("[$id:${other.id}: θ=$theta | F=$force | a=$acceleration | $velocity]")
     }
 
-    private fun calculateForce(other: Body): Force =
+    @VisibleForTesting
+    internal fun calculateForce(other: Body): Force =
         calculateGravitationalForce(this.mass, other.mass, distanceTo(other))
-
 
     /**
      * Calculate acceleration due to gravity.
      */
-    private fun calculateAcceleration(force: Force, angle: Angle): Acceleration =
+    @VisibleForTesting
+    internal fun calculateAcceleration(force: Force, angle: Angle): Acceleration =
         Acceleration(force / mass, angle)
 
 }

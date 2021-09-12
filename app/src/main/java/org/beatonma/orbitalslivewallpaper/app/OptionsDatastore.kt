@@ -1,7 +1,6 @@
-package org.beatonma.orbitalslivewallpaper.orbitals.options
+package org.beatonma.orbitalslivewallpaper.app
 
 import android.graphics.Color
-import androidx.compose.ui.unit.dp
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -14,9 +13,16 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
+import org.beatonma.orbitals.SystemGenerator
 import org.beatonma.orbitals.options.CollisionStyle
 import org.beatonma.orbitals.options.PhysicsOptions
-import org.beatonma.orbitals.options.SystemGenerator
+import org.beatonma.orbitalslivewallpaper.orbitals.options.ColorOptions
+import org.beatonma.orbitalslivewallpaper.orbitals.options.DrawStyle
+import org.beatonma.orbitalslivewallpaper.orbitals.options.ObjectColors
+import org.beatonma.orbitalslivewallpaper.orbitals.options.Options
+import org.beatonma.orbitalslivewallpaper.orbitals.options.RenderLayer
+import org.beatonma.orbitalslivewallpaper.orbitals.options.VisualOptions
+import org.beatonma.orbitalslivewallpaper.warn
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
@@ -64,6 +70,8 @@ object VisualKeys {
 }
 
 object PhysicsKeys {
+    val autoAddBodies = booleanPreferencesKey("auto_add_bodies")
+    val maxFixedBodyAgeMinutes = intPreferencesKey("max_fixedbody_age_minutes")
     val maxEntities = intPreferencesKey("max_entities")
     val systemGenerators = stringSetPreferencesKey("system_generators")
     val gravityMultiplier = floatPreferencesKey("gravity_multiplier")
@@ -83,8 +91,9 @@ private fun loadColors(preferences: Preferences): ColorOptions =
             background = preferences[background] ?: Color.BLACK,
             foregroundAlpha = preferences[foregroundAlpha] ?: 1f,
             bodies = preferences[bodies]
-                ?.map { ObjectColors.valueOf(it) }
-                ?: listOf(
+                ?.map { safeValueOf(it, default = ObjectColors.Greyscale) }
+                ?.toSet()
+                ?: setOf(
                     ObjectColors.Red,
                     ObjectColors.Purple,
                 ),
@@ -97,13 +106,13 @@ private fun loadVisualOptions(
 ): VisualOptions = with(VisualKeys) {
     VisualOptions(
         renderLayers = preferences[renderLayers]
-            ?.map(RenderLayer::valueOf)
+            ?.map { safeValueOf(it, default = RenderLayer.Default) }
             ?.toSet()
             ?: setOf(RenderLayer.Default),
         colorOptions = colors,
         traceLineLength = preferences[traceLineLength] ?: 50,
         drawStyle = preferences[drawStyle]
-            ?.let { DrawStyle.valueOf(it) }
+            ?.let { safeValueOf(it, default = DrawStyle.Solid) }
             ?: DrawStyle.Solid,
         strokeWidth = preferences[strokeWidth] ?: 4f,
     )
@@ -114,18 +123,29 @@ private fun loadPhysicsOptions(
     preferences: Preferences,
 ): PhysicsOptions = with(PhysicsKeys) {
     PhysicsOptions(
+        autoAddBodies = preferences[autoAddBodies] ?: true,
         maxEntities = preferences[maxEntities] ?: 25,
+        maxFixedBodyAgeMinutes = Duration.hours(preferences[maxFixedBodyAgeMinutes] ?: 1),
         systemGenerators = preferences[systemGenerators]
-            ?.map { SystemGenerator.valueOf(it) }
-            ?: listOf(
+            ?.map { safeValueOf(it, default = SystemGenerator.StarSystem) }
+            ?.toSet()
+            ?: setOf(
                 SystemGenerator.Gauntlet,
                 SystemGenerator.Randomized,
                 SystemGenerator.StarSystem,
             ),
         gravityMultiplier = preferences[gravityMultiplier] ?: 1f,
         collisionStyle = preferences[collisionStyle]
-            ?.let { CollisionStyle.valueOf(it) }
+            ?.let { safeValueOf(it, CollisionStyle.None) }
             ?: CollisionStyle.None,
         tickDelta = Duration.seconds(preferences[tickDelta] ?: 1),
     )
 }
+
+private inline fun <reified E : Enum<E>> safeValueOf(value: String, default: E): E =
+    try {
+        java.lang.Enum.valueOf(E::class.java, value)
+    } catch (e: IllegalArgumentException) {
+        warn(e)
+        default
+    }

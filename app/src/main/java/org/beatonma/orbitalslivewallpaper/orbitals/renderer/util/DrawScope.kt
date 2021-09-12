@@ -10,6 +10,7 @@ import androidx.compose.ui.graphics.drawscope.Fill
 import org.beatonma.orbitals.physics.Body
 import org.beatonma.orbitals.physics.Distance
 import org.beatonma.orbitals.physics.Position
+import org.beatonma.orbitalslivewallpaper.warn
 
 fun DrawScope.drawCircle(
     position: Position,
@@ -20,15 +21,20 @@ fun DrawScope.drawCircle(
     colorFilter: ColorFilter? = null,
     blendMode: BlendMode = BlendMode.SrcOver
 ) {
-    drawCircle(
-        color = color,
-        radius = radius.metres,
-        center = Offset(position.x.metres, position.y.metres),
-        alpha = alpha,
-        blendMode = blendMode,
-        colorFilter = colorFilter,
-        style = style,
-    )
+    try {
+        drawCircle(
+            color = color,
+            radius = radius.value,
+            center = position.toOffset(),
+            alpha = alpha,
+            blendMode = blendMode,
+            colorFilter = colorFilter,
+            style = style,
+        )
+    } catch (e: Exception) {
+        println("OFFSET IS UNSPECIFIED: $position $radius $color")
+        throw e
+    }
 }
 
 fun DrawScope.drawCircle(
@@ -50,4 +56,4 @@ fun DrawScope.drawCircle(
     )
 }
 
-fun Position.toOffset() = Offset(x.metres, y.metres)
+fun Position.toOffset() = Offset(x.value, y.value)

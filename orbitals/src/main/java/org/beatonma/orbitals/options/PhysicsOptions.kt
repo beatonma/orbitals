@@ -1,14 +1,15 @@
 package org.beatonma.orbitals.options
 
+import org.beatonma.orbitals.SystemGenerator
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
 data class PhysicsOptions @OptIn(ExperimentalTime::class) constructor(
+    val autoAddBodies: Boolean = true,
+    val maxFixedBodyAgeMinutes: Duration = Duration.hours(1),
     val maxEntities: Int = 50,
-    val systemGenerators: List<SystemGenerator> = listOf(
+    val systemGenerators: Set<SystemGenerator> = setOf(
         SystemGenerator.StarSystem,
-        SystemGenerator.Randomized,
-        SystemGenerator.Gauntlet,
     ),
     val gravityMultiplier: Float = 1f,
     val collisionStyle: CollisionStyle = CollisionStyle.None,
@@ -19,6 +20,7 @@ data class PhysicsOptions @OptIn(ExperimentalTime::class) constructor(
 
 enum class CollisionStyle {
     None,
+    Break,
     Merge,
     ;
 }

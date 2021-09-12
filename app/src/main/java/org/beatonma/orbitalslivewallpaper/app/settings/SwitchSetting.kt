@@ -1,5 +1,6 @@
 package org.beatonma.orbitalslivewallpaper.app.settings
 
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Switch
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -13,11 +14,13 @@ fun SwitchSetting(
     onValueChange: (key: Preferences.Key<Boolean>, value: Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    CheckableLayout(
-        name,
-        modifier,
-        onClick = { onValueChange(key, !value) }
-    ) {
-        Switch(checked = value, onCheckedChange = { checked -> onValueChange(key, checked) })
+    SettingLayout {
+        CheckableLayout(
+            name,
+            modifier.fillMaxWidth(),
+            onClick = { onValueChange(key, !value) }
+        ) {
+            Switch(checked = value, onCheckedChange = { checked -> onValueChange(key, checked) })
+        }
     }
 }

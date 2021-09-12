@@ -27,12 +27,12 @@ class CanvasTrailRenderer(
                 ((index.toFloat() / points.size.toFloat()) * (maxAlpha * 255f)).roundToInt()
             canvas.drawCircle(
                 position,
-                radius = maxOf(1f, maxOf(traceThickness, body.radius.metres / 10f))
+                radius = maxOf(1f, maxOf(traceThickness, body.radius.value / 10f))
             )
         }
     }
 
     private fun Canvas.drawCircle(position: Position, radius: Float) {
-        drawCircle(position.x.metres, position.y.metres, radius, paint)
+        drawCircle(position.x.value, position.y.value, radius, paint)
     }
 }

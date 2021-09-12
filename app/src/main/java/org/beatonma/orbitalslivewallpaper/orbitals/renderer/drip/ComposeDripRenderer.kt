@@ -5,7 +5,7 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
-import org.beatonma.orbitals.RectangleSpace
+import org.beatonma.orbitals.Space
 import org.beatonma.orbitals.physics.Body
 import org.beatonma.orbitals.physics.UniqueID
 import org.beatonma.orbitalslivewallpaper.orbitals.options.VisualOptions
@@ -21,7 +21,7 @@ class ComposeDripRenderer(
 //    private val color = Color.Red
 //    private val paint = Paint().apply {
 //        strokeCap = StrokeCap.Round
-//        strokeJoin = if (Random.nextFloat() > .8f) StrokeJoin.Bevel else StrokeJoin.Round
+//        strokeJoin = if (chance(20.percent)) StrokeJoin.Bevel else StrokeJoin.Round
 //        strokeWidth = options.strokeWidth
 //        color = color
 //    }
@@ -57,7 +57,7 @@ class ComposeDripRenderer(
         )
     }
 
-    override fun onSizeChanged(space: RectangleSpace) {
+    override fun onSizeChanged(space: Space) {
         super.onSizeChanged(space)
         bitmap = ImageBitmap(space.width, space.height)
     }

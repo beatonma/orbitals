@@ -1,4 +1,4 @@
-package org.beatonma.orbitalslivewallpaper.test
+package org.beatonma.orbitals.test
 
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue

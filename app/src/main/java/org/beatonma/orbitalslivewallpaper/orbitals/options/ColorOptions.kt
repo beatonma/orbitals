@@ -13,7 +13,7 @@ import org.beatonma.orbitalslivewallpaper.color.MaterialYellow
 
 data class ColorOptions(
     val background: Int = Color.BLACK,
-    val bodies: List<ObjectColors> = listOf(
+    val bodies: Set<ObjectColors> = setOf(
         ObjectColors.Greyscale,
     ),
     val foregroundAlpha: Float = 1f,

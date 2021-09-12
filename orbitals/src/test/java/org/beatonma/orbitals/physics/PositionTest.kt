@@ -1,7 +1,6 @@
-package org.beatonma.orbitalslivewallpaper.orbitals.physics
+package org.beatonma.orbitals.physics
 
-import org.beatonma.orbitals.physics.*
-import org.beatonma.orbitalslivewallpaper.test.shouldbe
+import org.beatonma.orbitals.test.shouldbe
 import kotlin.test.Test
 
 
@@ -11,7 +10,7 @@ class PositionTest {
     }
 
     private infix fun Distance.shouldbe(expected: Float) {
-        this.metres.shouldbe(expected, delta = 0.001f)
+        this.value.shouldbe(expected, delta = 0.001f)
     }
 
     @Test

@@ -13,5 +13,7 @@ fun ColorSetting(
     onValueChange: (key: Preferences.Key<Int>, newValue: Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Todo(name)
+    SettingLayout {
+        Todo(name)
+    }
 }

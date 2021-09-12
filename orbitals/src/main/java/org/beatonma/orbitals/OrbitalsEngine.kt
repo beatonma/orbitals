@@ -2,14 +2,16 @@ package org.beatonma.orbitals
 
 import org.beatonma.orbitals.options.PhysicsOptions
 import org.beatonma.orbitals.physics.Body
+import org.beatonma.orbitals.physics.FixedBody
 import org.beatonma.orbitals.physics.ZeroAcceleration
 import org.beatonma.orbitals.physics.contains
+import org.beatonma.orbitals.physics.toInertialBody
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
 
 interface OrbitalsEngine {
-    var space: Space
+    var space: Universe
     var physics: PhysicsOptions
     var bodies: List<Body>
     val bodyCount: Int get() = bodies.size
@@ -22,7 +24,7 @@ interface OrbitalsEngine {
     fun onBodiesCreated(newBodies: List<Body>) {}
     fun onBodyDestroyed(body: Body) {}
 
-    fun addBodies(space: Space = this.space) {
+    fun addBodies(space: Space = this.space.visibleSpace) {
         bodies = bodies + generateBodies(space)
     }
 
@@ -44,7 +46,7 @@ interface OrbitalsEngine {
     @OptIn(ExperimentalTime::class)
     fun tick(timeDelta: Duration) {
         bodies.forEach {
-            it.acceleration = ZeroAcceleration
+            it.motion.acceleration = ZeroAcceleration
             it.tick(timeDelta)
         }
 
@@ -58,7 +60,7 @@ interface OrbitalsEngine {
             }
         }
 
-        if (bodyCount < physics.maxEntities && chance(5.percent)) {
+        if (physics.autoAddBodies && bodyCount < physics.maxEntities && chance(5.percent)) {
             addBodies()
         }
 
@@ -71,10 +73,16 @@ interface OrbitalsEngine {
     /**
      * Remove any bodies that leave the active region.
      */
-    private fun pruneBodies(space: Space = this.space) {
-        val (keep, purge) = bodies.partition { body -> space.contains(body.position) }
-        bodies = keep
-        purge.forEach(::onBodyDestroyed)
+    @OptIn(ExperimentalTime::class)
+    @Suppress("UNCHECKED_CAST")
+    private fun pruneBodies(space: Universe = this.space) {
+        val (keep, escaped) = bodies.partition { body -> space.contains(body.position) }
+        val (oldAged, youngEnough) =
+            keep.partition { it is FixedBody && it.age > physics.maxFixedBodyAgeMinutes }
+
+        bodies = youngEnough + (oldAged as List<FixedBody>).map(FixedBody::toInertialBody)
+
+        escaped.forEach(::onBodyDestroyed)
     }
 
     fun clear() {

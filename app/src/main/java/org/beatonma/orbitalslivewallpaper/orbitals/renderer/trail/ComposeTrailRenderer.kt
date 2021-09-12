@@ -20,7 +20,7 @@ class ComposeTrailRenderer(
             canvas.drawCircle(
                 color = Color.White,
                 position = position,
-                radius = maxOf(1f, maxOf(traceThickness, body.radius.metres / 10f)).metres,
+                radius = maxOf(1f, maxOf(traceThickness, body.radius.value / 10f)).metres,
                 alpha = (index.toFloat() / points.size.toFloat()) * maxAlpha
             )
         }

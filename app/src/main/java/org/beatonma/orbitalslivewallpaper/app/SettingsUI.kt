@@ -8,8 +8,9 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
@@ -34,32 +35,26 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
+import org.beatonma.orbitals.SystemGenerator
 import org.beatonma.orbitals.options.CollisionStyle
 import org.beatonma.orbitals.options.PhysicsOptions
-import org.beatonma.orbitals.options.SystemGenerator
 import org.beatonma.orbitalslivewallpaper.app.settings.ColorSetting
 import org.beatonma.orbitalslivewallpaper.app.settings.FloatSetting
 import org.beatonma.orbitalslivewallpaper.app.settings.IntegerSetting
 import org.beatonma.orbitalslivewallpaper.app.settings.MultiSelectSetting
 import org.beatonma.orbitalslivewallpaper.app.settings.SingleSelectSetting
-import org.beatonma.orbitalslivewallpaper.orbitals.options.ColorKeys
+import org.beatonma.orbitalslivewallpaper.app.settings.SwitchSetting
 import org.beatonma.orbitalslivewallpaper.orbitals.options.ColorOptions
 import org.beatonma.orbitalslivewallpaper.orbitals.options.DrawStyle
 import org.beatonma.orbitalslivewallpaper.orbitals.options.ObjectColors
 import org.beatonma.orbitalslivewallpaper.orbitals.options.Options
-import org.beatonma.orbitalslivewallpaper.orbitals.options.PhysicsKeys
 import org.beatonma.orbitalslivewallpaper.orbitals.options.RenderLayer
-import org.beatonma.orbitalslivewallpaper.orbitals.options.Settings
-import org.beatonma.orbitalslivewallpaper.orbitals.options.VisualKeys
 import org.beatonma.orbitalslivewallpaper.orbitals.options.VisualOptions
 import org.beatonma.orbitalslivewallpaper.orbitals.ui.Orbitals
 import kotlin.time.ExperimentalTime
 
 
-private val SettingModifier = Modifier
-    .padding(16.dp)
-    .fillMaxWidth()
-
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SettingsUI(
     viewmodel: SettingsViewModel = viewModel(
@@ -71,12 +66,13 @@ fun SettingsUI(
 ) {
     val options by viewmodel.getOptions().collectAsState(initial = Options())
 
-    Box(Modifier.fillMaxSize()) {
-        Orbitals(
-            options,
-            Modifier
-                .fillMaxSize()
-        )
+    BoxWithConstraints(Modifier.fillMaxSize()) {
+//        Orbitals(
+//            options,
+//            Modifier
+//                .fillMaxWidth()
+//                .aspectRatio(16f / 9f)
+//        )
 
         LazyColumn(
             Modifier.background(
@@ -86,16 +82,30 @@ fun SettingsUI(
                         colors.surface,
                     ),
                     startY = 0f,
-                    endY = 2000F,
+                    endY = constraints.maxWidth / 16f * 9f,
                 )
             )
         ) {
+//            stickyHeader {
+//                Orbitals(
+//                    options,
+//                    Modifier
+//                        .fillMaxWidth()
+//                        .aspectRatio(16f / 9f)
+//                )
+//            }
             item {
-                Spacer(
-                    modifier = Modifier
+                Orbitals(
+                    options,
+                    Modifier
                         .fillMaxWidth()
                         .aspectRatio(16f / 9f)
                 )
+//                Spacer(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .aspectRatio(16f / 9f)
+//                )
             }
 
             item {
@@ -128,20 +138,7 @@ private fun VisualSettingsUI(
             value = visualOptions.renderLayers,
             values = RenderLayer.values(),
             onValueChange = saveSelections(viewmodel),
-            modifier = SettingModifier,
         )
-
-        Conditional(RenderLayer.Trails in visualOptions.renderLayers) {
-            IntegerSetting(
-                name = "History length",
-                key = VisualKeys.traceLineLength,
-                value = visualOptions.traceLineLength,
-                onValueChange = viewmodel::updateOption,
-                min = 1,
-                max = 120,
-                modifier = SettingModifier,
-            )
-        }
 
         SingleSelectSetting(
             name = "Style",
@@ -149,7 +146,6 @@ private fun VisualSettingsUI(
             value = visualOptions.drawStyle,
             values = DrawStyle.values(),
             onValueChange = saveSelection(viewmodel),
-            modifier = SettingModifier,
         )
 
         Conditional(visualOptions.drawStyle == DrawStyle.Wireframe) {
@@ -160,7 +156,17 @@ private fun VisualSettingsUI(
                 onValueChange = viewmodel::updateOption,
                 min = 1f,
                 max = 24f,
-                modifier = SettingModifier,
+            )
+        }
+
+        Conditional(RenderLayer.Trails in visualOptions.renderLayers) {
+            IntegerSetting(
+                name = "History length",
+                key = VisualKeys.traceLineLength,
+                value = visualOptions.traceLineLength,
+                onValueChange = viewmodel::updateOption,
+                min = 1,
+                max = 120,
             )
         }
     }
@@ -179,16 +185,14 @@ private fun ColorSettingsUI(
             key = ColorKeys.background,
             value = colorOptions.background,
             onValueChange = viewmodel::updateOption,
-            modifier = SettingModifier,
         )
 
         MultiSelectSetting(
             name = "Object colors",
             key = ColorKeys.bodies,
-            value = colorOptions.bodies.toSet(),
+            value = colorOptions.bodies,
             values = ObjectColors.values(),
             onValueChange = saveSelections(viewmodel),
-            modifier = SettingModifier,
         )
     }
 }
@@ -200,6 +204,13 @@ private fun PhysicsSettingsUI(
     viewmodel: SettingsViewModel,
 ) {
     SettingsGroup("Physics") {
+        SwitchSetting(
+            "Auto-add bodies",
+            key = PhysicsKeys.autoAddBodies,
+            value = physics.autoAddBodies,
+            onValueChange = viewmodel::updateOption,
+        )
+
         IntegerSetting(
             name = "Maximum population",
             key = PhysicsKeys.maxEntities,
@@ -207,35 +218,15 @@ private fun PhysicsSettingsUI(
             onValueChange = viewmodel::updateOption,
             min = 1,
             max = 200,
-            modifier = SettingModifier,
         )
 
-        MultiSelectSetting(
-            name = "System generators",
-            key = PhysicsKeys.systemGenerators,
-            value = physics.systemGenerators.toSet(),
-            values = SystemGenerator.values(),
-            onValueChange = saveSelections(viewmodel),
-            modifier = SettingModifier,
-        )
-
-        FloatSetting(
-            name = "Gravity multiplier",
-            key = PhysicsKeys.gravityMultiplier,
-            value = physics.gravityMultiplier,
+        IntegerSetting(
+            name = "Maximum age of fixed bodies (minutes)",
+            key = PhysicsKeys.maxFixedBodyAgeMinutes,
+            value = physics.maxFixedBodyAgeMinutes.inWholeHours.toInt(),
             onValueChange = viewmodel::updateOption,
-            min = .1f,
-            max = 2f,
-            modifier = SettingModifier,
-        )
-
-        SingleSelectSetting(
-            name = "Collision style",
-            key = PhysicsKeys.collisionStyle,
-            value = physics.collisionStyle,
-            values = CollisionStyle.values(),
-            onValueChange = saveSelection(viewmodel),
-            modifier = SettingModifier,
+            min = 1,
+            max = 30,
         )
 
         IntegerSetting(
@@ -245,7 +236,31 @@ private fun PhysicsSettingsUI(
             onValueChange = viewmodel::updateOption,
             min = 1,
             max = 5,
-            modifier = SettingModifier,
+        )
+
+        FloatSetting(
+            name = "Gravity multiplier",
+            key = PhysicsKeys.gravityMultiplier,
+            value = physics.gravityMultiplier,
+            onValueChange = viewmodel::updateOption,
+            min = .1f,
+            max = 2f,
+        )
+
+        MultiSelectSetting(
+            name = "System generators",
+            key = PhysicsKeys.systemGenerators,
+            value = physics.systemGenerators,
+            values = SystemGenerator.values(),
+            onValueChange = saveSelections(viewmodel),
+        )
+
+        SingleSelectSetting(
+            name = "Collision style",
+            key = PhysicsKeys.collisionStyle,
+            value = physics.collisionStyle,
+            values = CollisionStyle.values(),
+            onValueChange = saveSelection(viewmodel),
         )
     }
 }
@@ -276,13 +291,13 @@ private fun Conditional(
         visible = condition,
         enter = fadeIn() + expandVertically(),
         exit = fadeOut() + shrinkVertically(),
-        content = content
+        content = content,
     )
 }
 
 @Composable
 fun Todo(name: String) {
-    Text("// TODO: $name", color = Color.Red, modifier = SettingModifier)
+    Text("// TODO: $name", color = Color.Red)
 }
 
 @Composable
@@ -293,7 +308,7 @@ private fun SettingsGroup(
     Column(
         Modifier
             .fillMaxWidth()
-            .padding(vertical = 16.dp)
+            .padding(vertical = 16.dp, horizontal = 8.dp)
     ) {
         Text(title, style = typography.h4)
 

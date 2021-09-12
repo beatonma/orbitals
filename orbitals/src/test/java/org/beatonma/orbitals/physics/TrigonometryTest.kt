@@ -1,9 +1,6 @@
-package org.beatonma.orbitalslivewallpaper.orbitals.physics
+package org.beatonma.orbitals.physics
 
-import org.beatonma.orbitals.physics.degrees
-import org.beatonma.orbitals.physics.radians
-import org.beatonma.orbitals.physics.squareOf
-import org.beatonma.orbitalslivewallpaper.test.shouldbe
+import org.beatonma.orbitals.test.shouldbe
 import kotlin.test.Test
 
 

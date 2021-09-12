@@ -18,10 +18,10 @@ class ComposeAccelerationRenderer(
             color = Color.Green,
             start = body.position.toOffset(),
             end = Offset(
-                (100 * body.acceleration.x.value.coerceAtMost(1f)).map(0F, 1f, 0f, 120f),
-                (100 * body.acceleration.y.value.coerceAtMost(1f)).map(0F, 1f, 0f, 120f),
-//                body.acceleration.x.value * Scale,
-//                body.acceleration.y.value * Scale,
+//                (100 * body.acceleration.x.value.coerceAtMost(1f)).map(0F, 1f, 0f, 120f),
+//                (100 * body.acceleration.y.value.coerceAtMost(1f)).map(0F, 1f, 0f, 120f),
+                body.acceleration.x.value * Scale,
+                body.acceleration.y.value * Scale,
             ) + body.position.toOffset(),
             strokeWidth = options.strokeWidth,
         )
