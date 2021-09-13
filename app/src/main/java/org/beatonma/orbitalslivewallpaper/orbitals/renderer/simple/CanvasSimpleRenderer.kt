@@ -1,10 +1,8 @@
 package org.beatonma.orbitalslivewallpaper.orbitals.renderer.simple
 
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
 import org.beatonma.orbitals.physics.Body
-import org.beatonma.orbitals.physics.FixedBody
 import org.beatonma.orbitalslivewallpaper.orbitals.drawCircle
 import org.beatonma.orbitalslivewallpaper.orbitals.options.VisualOptions
 
@@ -26,9 +24,6 @@ class CanvasSimpleRenderer(
         canvas.drawCircle(body.position, body.radius, paint)
     }
 
-    override fun chooseColor(body: Body) =
-        when (body) {
-            is FixedBody -> Color.WHITE
-            else -> options.colorOptions.colorForBody
-        }
+    override fun chooseColor(body: Body) = options.colorOptions.colorForBody
+
 }
