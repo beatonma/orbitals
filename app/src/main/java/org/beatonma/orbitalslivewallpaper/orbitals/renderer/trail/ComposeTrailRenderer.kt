@@ -9,9 +9,7 @@ import org.beatonma.orbitalslivewallpaper.orbitals.renderer.util.drawCircle
 
 class ComposeTrailRenderer(
     options: VisualOptions,
-    maxPoints: Int = options.traceLineLength,
-    maxAlpha: Float = .2f,
-) : BaseTrailRenderer<DrawScope>(options, maxPoints, maxAlpha) {
+) : BaseTrailRenderer<DrawScope>(options) {
 
     override fun drawBody(canvas: DrawScope, body: Body) {
         val points = bodyPaths[body.id] ?: throw Exception("drawBody $body no path")

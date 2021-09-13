@@ -8,14 +8,24 @@ import org.beatonma.orbitalslivewallpaper.orbitals.options.VisualOptions
 import org.beatonma.orbitalslivewallpaper.orbitals.renderer.OrbitalsRenderer
 
 abstract class BaseTrailRenderer<Canvas>(
-    override var options: VisualOptions,
-    val maxPoints: Int,
-    val maxAlpha: Float = .2f,
-    val traceThickness: Float = 4f,
+    options: VisualOptions,
 ) : OrbitalsRenderer<Canvas> {
     val bodyPaths: MutableMap<UniqueID, MutableList<Position>> = mutableMapOf()
     private var trailTicks = 0
     private val trailTickFrequency = 0
+
+    val maxAlpha: Float = .2f
+    var traceThickness: Float = options.strokeWidth
+        private set
+
+    override var options: VisualOptions = options
+        set(value) {
+            field = value
+            maxPoints = value.traceLineLength
+            traceThickness = value.strokeWidth
+        }
+
+    private var maxPoints: Int = options.traceLineLength
 
     override fun onBodyCreated(body: Body) {
         super.onBodyCreated(body)
@@ -49,7 +59,7 @@ abstract class BaseTrailRenderer<Canvas>(
         val points = bodyPaths[body.id] ?: throw Exception("remember $body no path")
 
         points.add(body.position.copy())
-        if (points.size > maxPoints) {
+        while(points.size > maxPoints) {
             points.removeAt(0)
         }
     }

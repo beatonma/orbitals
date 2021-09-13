@@ -10,9 +10,7 @@ import kotlin.math.roundToInt
 
 class CanvasTrailRenderer(
     options: VisualOptions,
-    maxPoints: Int = options.traceLineLength,
-    maxAlpha: Float = .2f,
-) : BaseTrailRenderer<Canvas>(options, maxPoints, maxAlpha) {
+) : BaseTrailRenderer<Canvas>(options) {
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         strokeWidth = 8f
         style = Paint.Style.STROKE
