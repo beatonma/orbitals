@@ -57,13 +57,21 @@ interface OrbitalsEngine {
             }
         }
 
-        if (physics.autoAddBodies
-            && bodyCount < physics.maxEntities
-            && chance(1.percent)
-        ) {
-            addBodies()
-        }
+        autoAddBodies()
+        prune()
+    }
 
+    private fun autoAddBodies() {
+        if (physics.autoAddBodies) {
+            if (bodyCount == 0
+                || (bodyCount < physics.maxEntities && chance(1.percent))
+            ) {
+                addBodies()
+            }
+        }
+    }
+
+    private fun prune() {
         if (pruneCounter++ > pruneFrequency) {
             pruneBodies()
             pruneCounter = 0
