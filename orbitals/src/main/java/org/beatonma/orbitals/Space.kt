@@ -16,11 +16,13 @@ interface Space {
     val height: Int get() = bottom - top
 
     val area: Int get() = width * height
+    val isValid: Boolean get() = width > 1f && height > 1f
 
-    val center: Position get() = Position(
-        start + width / 2,
-        top + height / 2
-    )
+    val center: Position
+        get() = Position(
+            start + width / 2,
+            top + height / 2
+        )
 
     /**
      * Largest radius of a circle that can fit inside this space.
@@ -44,14 +46,14 @@ data class Universe internal constructor(
     override val end: Int,
     override val bottom: Int,
     val visibleSpace: Region,
-): Space
+) : Space
 
 data class Region(
     override val start: Int,
     override val top: Int,
     override val end: Int,
     override val bottom: Int,
-): Space
+) : Space
 
 /**
  * Return a [Universe] centered on the region (0, 0, focusWidth, focusHeight) with a surrounding

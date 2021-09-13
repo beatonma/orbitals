@@ -27,7 +27,7 @@ class BodyTest {
 
     @Test
     fun testDistanceTo_isCorrectInAllDirections() {
-        doAround(radius = 500f) { _, x, y ->
+        doAround(radius = 500.metres) { _, x, y ->
             val body = body
             val other = other.copy(
                 motion = Motion(
@@ -42,7 +42,7 @@ class BodyTest {
 
     @Test
     fun testCalculateForce_isCorrectInAllDirections() {
-        doAround(radius = 500f) { _, x, y ->
+        doAround(radius = 500.metres) { _, x, y ->
             val body = body
             val other = other.copy(
                 motion = Motion(
@@ -50,14 +50,14 @@ class BodyTest {
                 )
             )
 
-            val force: Force = body.calculateForce(other)
+            val force: Force = body.calculateForce(other, DefaultG)
             force.value.shouldbe(5.606e2f, delta = 1f)
         }
     }
 
     @Test
     fun testCalculateAcceleration_isCorrectInAllDirections() {
-        doAround(radius = 500f) { _, x, y ->
+        doAround(radius = 500.metres) { _, x, y ->
             val body = body
             val other = other.copy(
                 motion = Motion(
@@ -67,7 +67,7 @@ class BodyTest {
 
             val angle = body.position.angleTo(other.position)
 //
-            val force = body.calculateForce(other)
+            val force = body.calculateForce(other, DefaultG)
             val acceleration = body.calculateAcceleration(force, angle)
 
             val absAcceleration = force / body.mass
@@ -83,7 +83,7 @@ class BodyTest {
         var distance: Distance? = null
 
         // Ensure that gravity is applied as expected in all directions.
-        doAround(radius = 100f) { degrees, x, y ->
+        doAround(radius = 100.metres) { degrees, x, y ->
             val body = body.copy(mass = 10_000.kg)
 
             val other = other.copy(
@@ -96,7 +96,7 @@ class BodyTest {
             val distanceBefore = body.distanceTo(other)
             distanceBefore.value.shouldbe(100f, delta = 0.0001f)
 
-            body.applyGravity(other, 1000.ms)
+            body.applyGravity(other, 1000.ms, DefaultG)
             body.applyInertia(1000.ms)
 
             val distanceAfter = body.distanceTo(other)
@@ -105,7 +105,6 @@ class BodyTest {
                 distance = distanceAfter
             } else {
                 distanceAfter.value.shouldbe(93.326f, delta = 0.0001f)
-//                assertEquals(distanceAfter, distance, message = "$distance != $distanceAfter")
             }
 
             val errorMessage = when {

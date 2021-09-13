@@ -11,7 +11,7 @@ private const val SCALE = 1e11f
  * Units: m^3 kg^-1 s^-2
  */
 private const val GRAVITATIONAL_CONSTANT_ACTUAL = 6.674e-11f
-private const val DefaultG = GRAVITATIONAL_CONSTANT_ACTUAL * SCALE
+internal const val DefaultG = GRAVITATIONAL_CONSTANT_ACTUAL * SCALE
 
 
 fun calculateGravitationalForce(
@@ -19,7 +19,7 @@ fun calculateGravitationalForce(
     otherMass: Mass,
     distance: Distance,
     minDistance: Distance = 30.metres, // Force a minimum distance to avoid extreme behaviour.
-    G: Float = DefaultG,
+    G: Float,
 ): Force {
     val distanceSquared = distance
         .coerceAtLeast(minDistance)
@@ -35,13 +35,10 @@ fun getOrbitalMotion(
     distance: Distance,
     parent: Body,
     radialAngle: Angle = Random.nextInt(0, 359).degrees,
-    prograde: Boolean = chance(.005f), // Small chance of retrograde orbit
-    G: Float = DefaultG,
+    prograde: Boolean = chance(.995f), // Small chance of retrograde orbit
+    G: Float,
 ): Motion {
-    val position = parent.position + Position(
-        cos(radialAngle) * distance.value,
-        sin(radialAngle) * distance.value,
-    )
+    val position = getRadialPosition(parent.position, distance, radialAngle)
     val speed = getOrbitalSpeed(mass, parent.mass, distance, G)
     val tangentialAngle = getTangentialAngle(radialAngle, prograde)
 
@@ -55,8 +52,8 @@ fun getOrbitalMotion(
     mass: Mass,
     position: Position,
     parent: Body,
-    prograde: Boolean = chance(.005f.percent), // Small chance of retrograde orbit
-    G: Float = DefaultG,
+    prograde: Boolean = chance(.995f.percent), // Small chance of retrograde orbit
+    G: Float,
 ): Motion {
     val radialAngle = position.angleTo(parent.position)
     val distance = position.distanceTo(parent.position)
@@ -75,7 +72,10 @@ private fun getOrbitalSpeed(
     secondMass: Mass,
     distance: Distance,
     G: Float,
-): Speed = sqrt(G * (firstMass + secondMass).value / distance.value).metres.perSecond
+): Speed =
+    sqrt(
+        (G * (firstMass + secondMass).value / distance.value)
+    ).metres.perSecond
 
 private fun getVelocity(speed: Speed, tangentialAngle: Angle) = Velocity(
     speed * cos(tangentialAngle),

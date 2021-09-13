@@ -12,4 +12,11 @@ class MathTest {
         4.factorial shouldbe 24
         5.factorial shouldbe 120
     }
+
+    @Test
+    fun testSquareOf() {
+        squareOf(2f) shouldbe 4f
+        squareOf(3f) shouldbe 9f
+        squareOf(-1f) shouldbe 1f
+    }
 }

@@ -1,17 +1,17 @@
 package org.beatonma.orbitals.physics
 
 import org.beatonma.orbitals.Space
-import org.beatonma.orbitals.Universe
 import kotlin.math.atan2
 import kotlin.math.roundToInt
 
 internal fun Position(x: Number, y: Number) = Position(x.metres, y.metres)
 
 data class Position(
-    var x: Distance,
-    var y: Distance,
-) {
+    override var x: Distance,
+    override var y: Distance,
+) : Vector2D<Distance> {
     operator fun plus(other: Position) = Position(x + other.x, y + other.y)
+    override val magnitude: Distance get() = Distance(magnitude(x, y))
 }
 
 

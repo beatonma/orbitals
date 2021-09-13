@@ -1,49 +1,71 @@
 package org.beatonma.orbitals.physics
 
+import kotlin.random.Random
+
+
+/**
+ * Return the position by travelling [distance] away from [parent] at [angle].
+ */
+fun getRadialPosition(
+    parent: Position,
+    distance: Distance,
+    angle: Angle = Random.nextInt(0, 359).degrees,
+): Position =
+    parent + Position(
+    cos(angle) * distance.value,
+    sin(angle) * distance.value,
+)
 
 /**
  * Run the block using points from around the origin.
  * All points fall on the circle with the given radius.
  */
-fun doAround(
-    radius: Float,
-    start: Angle = 0.degrees,
-    center: Position = ZeroPosition,
-    stepSize: Angle = 45.degrees,
-    rotation: Angle = 315.degrees,
-    block: (degrees: Int, x: Float, y: Float) -> Unit
+private fun doAround(
+    radius: Distance,
+    start: Angle,
+    center: Position,
+    stepSize: Angle,
+    rotation: Angle,
+    block: (degrees: Int, x: Distance, y: Distance) -> Unit
 ) {
     for (deg in start.asDegreesInt..rotation.asDegreesInt step stepSize.asDegreesInt) {
-        val theta = deg.degrees
-
-        val x = center.x.value + (cos(theta) * radius)
-        val y = center.y.value + (sin(theta) * radius)
-
+        val (x, y) = getRadialPosition(center, radius, deg.degrees)
         block(deg, x, y)
     }
+}
+
+fun doAround(
+    radius: Distance,
+    start: Angle = 0.degrees,
+    center: Position = ZeroPosition,
+    steps: Int = 8,
+    rotation: Angle = 360.rawDegrees,
+    block: (degrees: Int, x: Distance, y: Distance) -> Unit,
+) {
+    val stepSize = rotation / steps
+    doAround(
+        radius, start, center, stepSize,
+        rotation = rotation - stepSize,
+        block = block
+    )
 }
 
 /**
  * Returns the result of applying [transform] to the points at distance [radius]
  * from the [center] at intervals of angle [stepSize].
  */
-fun <T> mapAround(
+private fun <T> mapAround(
     radius: Distance,
     start: Angle = 0.degrees,
     center: Position = ZeroPosition,
     stepSize: Angle = 45.degrees,
     rotation: Angle = 315.degrees,
-    transform: (degrees: Int, x: Float, y: Float) -> T
-): List<T> {
-    return (start.asDegreesInt..rotation.asDegreesInt step stepSize.asDegreesInt).map { deg ->
-        val theta = deg.degrees
-
-        val x = center.x.value + (cos(theta) * radius.value)
-        val y = center.y.value + (sin(theta) * radius.value)
-
+    transform: (degrees: Int, x: Distance, y: Distance) -> T
+): List<T> =
+    (start.asDegreesInt..rotation.asDegreesInt step stepSize.asDegreesInt).map { deg ->
+        val (x, y) = getRadialPosition(center, radius, deg.degrees)
         transform(deg, x, y)
     }
-}
 
 /**
  * Returns the result of applying [transform] to [steps] equally-spaced points at distance [radius]
@@ -54,8 +76,8 @@ fun <T> mapAround(
     start: Angle = 0.degrees,
     center: Position = ZeroPosition,
     steps: Int = 8,
-    rotation: Angle = 360.degrees,
-    transform: (degrees: Int, x: Float, y: Float) -> T
+    rotation: Angle = 360.rawDegrees,
+    transform: (degrees: Int, x: Distance, y: Distance) -> T
 ): List<T> {
     val stepSize = rotation / steps
     return mapAround(

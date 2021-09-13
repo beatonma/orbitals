@@ -33,7 +33,7 @@ interface Body {
     val diameter: Distance get() = radius * 2
 
     fun applyInertia(timeDelta: Duration)
-    fun applyGravity(other: Body, timeDelta: Duration)
+    fun applyGravity(other: Body, timeDelta: Duration, G: Float)
 
     fun distanceTo(other: Body): Distance = position.distanceTo(other.position)
 
@@ -59,7 +59,7 @@ data class FixedBody(
         // N/A
     }
 
-    override fun applyGravity(other: Body, timeDelta: Duration) {
+    override fun applyGravity(other: Body, timeDelta: Duration, G: Float) {
         // N/A
     }
 }
@@ -84,9 +84,9 @@ data class InertialBody(
         motion.applyInertia(timeDelta)
     }
 
-    override fun applyGravity(other: Body, timeDelta: Duration) {
+    override fun applyGravity(other: Body, timeDelta: Duration, G: Float) {
         val theta: Angle = position.angleTo(other.position)
-        val force: Force = calculateForce(other)
+        val force: Force = calculateForce(other, G)
         val acceleration: Acceleration = calculateAcceleration(force, theta)
 
         velocity += (acceleration * timeDelta)
@@ -94,8 +94,8 @@ data class InertialBody(
     }
 
     @VisibleForTesting
-    internal fun calculateForce(other: Body): Force =
-        calculateGravitationalForce(this.mass, other.mass, distanceTo(other))
+    internal fun calculateForce(other: Body, G: Float): Force =
+        calculateGravitationalForce(this.mass, other.mass, distanceTo(other), G = G)
 
     /**
      * Calculate acceleration due to gravity.

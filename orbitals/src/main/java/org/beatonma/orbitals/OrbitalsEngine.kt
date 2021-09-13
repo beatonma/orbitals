@@ -30,13 +30,10 @@ interface OrbitalsEngine {
 
     fun generateBodies(
         space: Space = this.space,
-        max: Int = physics.maxEntities - bodies.size
     ): List<Body> {
-        if (max <= 0) return listOf()
-
         val newBodies = physics.systemGenerators
             .random()
-            .generate(space, bodies, max - bodies.size)
+            .generate(space, bodies, physics)
 
         onBodiesCreated(newBodies)
 
@@ -54,13 +51,16 @@ interface OrbitalsEngine {
             bodies.forEachIndexed { index, body ->
                 for (i in (index + 1) until bodyCount) {
                     val other = bodies[i]
-                    body.applyGravity(other, timeDelta)
-                    other.applyGravity(body, timeDelta)
+                    body.applyGravity(other, timeDelta, G = physics.G)
+                    other.applyGravity(body, timeDelta, G = physics.G)
                 }
             }
         }
 
-        if (physics.autoAddBodies && bodyCount < physics.maxEntities && chance(5.percent)) {
+        if (physics.autoAddBodies
+            && bodyCount < physics.maxEntities
+            && chance(1.percent)
+        ) {
             addBodies()
         }
 
