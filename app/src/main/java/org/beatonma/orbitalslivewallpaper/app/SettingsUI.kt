@@ -67,13 +67,6 @@ fun SettingsUI(
     val options by viewmodel.getOptions().collectAsState(initial = Options())
 
     BoxWithConstraints(Modifier.fillMaxSize()) {
-//        Orbitals(
-//            options,
-//            Modifier
-//                .fillMaxWidth()
-//                .aspectRatio(16f / 9f)
-//        )
-
         LazyColumn(
             Modifier.background(
                 brush = Brush.verticalGradient(
@@ -86,14 +79,6 @@ fun SettingsUI(
                 )
             )
         ) {
-//            stickyHeader {
-//                Orbitals(
-//                    options,
-//                    Modifier
-//                        .fillMaxWidth()
-//                        .aspectRatio(16f / 9f)
-//                )
-//            }
             item {
                 Orbitals(
                     options,
@@ -101,11 +86,6 @@ fun SettingsUI(
                         .fillMaxWidth()
                         .aspectRatio(16f / 9f)
                 )
-//                Spacer(
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .aspectRatio(16f / 9f)
-//                )
             }
 
             item {
@@ -244,7 +224,7 @@ private fun PhysicsSettingsUI(
             value = physics.gravityMultiplier,
             onValueChange = viewmodel::updateOption,
             min = .1f,
-            max = 2f,
+            max = 10f,
         )
 
         MultiSelectSetting(
