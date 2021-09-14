@@ -168,8 +168,10 @@ public class LwpService extends WallpaperService {
     private boolean dripRendering = false;
     private Bitmap bitmap;
     private Canvas pathingCanvas;
-    private Paint pathingPaint;
     private int pathingOverlayDelay = 0;
+
+    private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint pathingPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     public void onCreate() {
         super.onCreate();
@@ -261,15 +263,13 @@ public class LwpService extends WallpaperService {
         }
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB) {
-            chargeColors = mPrefs.getStringSet(key, new HashSet<String>()).toArray(new String[]{});
+            chargeColors = mPrefs.getStringSet(key, new HashSet<>()).toArray(new String[]{});
         } else {
             //chargeColor = Integer.valueOf(mPrefs.getString("pref_color_colortheme", "0"));
         }
 
         if (chargeColors.length >= 1) {
-            chargeColor = Integer.valueOf(chargeColors[((int) Math.floor(Math.random() * chargeColors.length))]);
-        } else {
-            chargeColor = Color.WHITE;
+            chargeColor = Integer.parseInt(chargeColors[((int) Math.floor(Math.random() * chargeColors.length))]);
         }
 
 
@@ -305,7 +305,7 @@ public class LwpService extends WallpaperService {
         enableOutlines = settings.getBoolean("pref_render_outlines", true);
         wireFrame = settings.getBoolean("pref_render_wireframe", false);
         wireFrameWidth = settings.getInt("pref_render_wireframewidth", 2);
-        objectSize = Double.valueOf(settings.getString("pref_render_size",
+        objectSize = Double.parseDouble(settings.getString("pref_render_size",
                 "1.0"));
 
         allowCellSystems = settings.getBoolean("pref_systems_cell", true);
@@ -946,7 +946,7 @@ public class LwpService extends WallpaperService {
             }
             try {
                 String s = subs.get(pulseIndex);
-                pulseColor = Integer.valueOf(s.substring(s.indexOf(";") + 1));
+                pulseColor = Integer.parseInt(s.substring(s.indexOf(";") + 1));
                 Log.d(TAG, "Pulse index: " + pulseIndex + ". App: " + s + ". Pulse Color: " + pulseColor);
                 pulseIndex++;
             } catch (Exception e) {
@@ -1015,11 +1015,7 @@ public class LwpService extends WallpaperService {
         float xScreen = xSize / 768;
         float yScreen = ySize / 1280;
 
-        if ((xScreen) > (yScreen)) {
-            g.screenScale = xScreen;
-        } else {
-            g.screenScale = yScreen;
-        }
+        g.screenScale = Math.max((xScreen), (yScreen));
     }
 
     public float getWidth() {
@@ -1101,10 +1097,7 @@ public class LwpService extends WallpaperService {
     }
 
     public void removeDeadMass() {
-        ListIterator<LwpEntity> iterator = removeEntities.listIterator();
-
-        while (iterator.hasNext()) {
-            LwpEntity e = iterator.next();
+        for (LwpEntity e : removeEntities) {
             totalMass -= e.getMass();
         }
     }
@@ -1172,7 +1165,7 @@ public class LwpService extends WallpaperService {
 
                     int touchType = 1;
 
-                    touchType = Integer.valueOf(touchGeneration);
+                    touchType = Integer.parseInt(touchGeneration);
 
                     int allowance = maxEntities - entities.size();
                     if (allowance <= 0) {
@@ -1307,9 +1300,7 @@ public class LwpService extends WallpaperService {
             final SurfaceHolder holder = getSurfaceHolder();
 
             boolean updateBatteryLevel = false;
-            Canvas c = null;
-            Paint p = new Paint();
-            p.setAntiAlias(true);
+            Canvas canvas = null;
 
             int xCentreOfMass = 0;
             int yCentreOfMass = 0;
@@ -1322,22 +1313,21 @@ public class LwpService extends WallpaperService {
             }
 
             try {
-                c = holder.lockCanvas();
+                canvas = holder.lockCanvas();
                 totalMass = 0;
 
                 if (dripRendering) {
                     if (bitmap == null) {
-                        bitmap = Bitmap.createBitmap(c.getWidth(), c.getHeight(), Bitmap.Config.ARGB_8888);
+                        bitmap = Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.ARGB_8888);
                     }
 
                     if (pathingCanvas == null) {
                         pathingCanvas = new Canvas(bitmap);
-                        pathingPaint = new Paint(Paint.DITHER_FLAG | Paint.ANTI_ALIAS_FLAG);
                         pathingPaint.setColor(getBackgroundColor());
                     }
                 }
 
-                if (c != null) {
+                if (canvas != null) {
                     if (colorByCharge) {
                         float oldBatteryLevel = batteryLevel;
                         IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
@@ -1354,10 +1344,10 @@ public class LwpService extends WallpaperService {
                     }
 
                     // clear the canvas
-                    c.drawColor(getBackgroundColor());
+                    canvas.drawColor(getBackgroundColor());
 
-                    if (((int) xSize | (int) ySize) == 0) {
-                        setScreenScale(c);
+                    if (xSize == 0f || ySize == 0f) {
+                        setScreenScale(canvas);
                     }
 
                     if (useBackgroundImage) {
@@ -1381,8 +1371,8 @@ public class LwpService extends WallpaperService {
                                     useBackgroundImage = false;
                                     loadingBackground = false;
                                 }
-                            } else if (backgroundImage != null) {
-                                c.drawBitmap(backgroundImage, c.getWidth() / 2 - backgroundImageSize.x / 2, c.getHeight() / 2 - backgroundImageSize.y / 2, p);
+                            } else {
+                                canvas.drawBitmap(backgroundImage, canvas.getWidth() / 2f - backgroundImageSize.x / 2f, canvas.getHeight() / 2f - backgroundImageSize.y / 2f, paint);
                             }
                         } else {
                             if (backgroundScale == 0f) {
@@ -1390,19 +1380,19 @@ public class LwpService extends WallpaperService {
                                 int xDifference = 0;
                                 int yDifference = 0;
 
-                                if (backgroundImage.getWidth() < c.getWidth()) {
-                                    xDifference = c.getWidth() - backgroundImage.getWidth();
+                                if (backgroundImage.getWidth() < canvas.getWidth()) {
+                                    xDifference = canvas.getWidth() - backgroundImage.getWidth();
                                 }
-                                if (backgroundImage.getHeight() < c.getHeight()) {
-                                    yDifference = c.getHeight() - backgroundImage.getHeight();
+                                if (backgroundImage.getHeight() < canvas.getHeight()) {
+                                    yDifference = canvas.getHeight() - backgroundImage.getHeight();
                                 }
 
                                 int maxDifference = Math.max(xDifference, yDifference);
                                 if (maxDifference != 0) {
                                     if (maxDifference == xDifference) {
-                                        backgroundScale = (float) c.getWidth() / (float) backgroundImage.getWidth();
+                                        backgroundScale = (float) canvas.getWidth() / (float) backgroundImage.getWidth();
                                     } else if (maxDifference == yDifference) {
-                                        backgroundScale = (float) c.getHeight() / (float) backgroundImage.getHeight();
+                                        backgroundScale = (float) canvas.getHeight() / (float) backgroundImage.getHeight();
                                     }
 
                                     Log.d(TAG, "Scaling background by " + backgroundScale);
@@ -1413,15 +1403,15 @@ public class LwpService extends WallpaperService {
                                 }
                             }
 
-                            c.drawBitmap(backgroundImage, c.getWidth() / 2 - backgroundImageSize.x / 2, c.getHeight() / 2 - backgroundImageSize.y / 2, p);
+                            canvas.drawBitmap(backgroundImage, canvas.getWidth() / 2f - backgroundImageSize.x / 2f, canvas.getHeight() / 2f - backgroundImageSize.y / 2f, paint);
                         }
                     }
 
                     if (dripRendering) {
-                        c.drawBitmap(bitmap, 0, 0, pathingPaint);
+                        canvas.drawBitmap(bitmap, 0, 0, pathingPaint);
                     }
 
-                    float ff = g.getScreenScale();
+                    final float screenScale = g.getScreenScale();
 
                     if (showCentreOfMass) {
                         if (!(centreOfMass.x == 0 && centreOfMass.y == 0)) {
@@ -1453,11 +1443,7 @@ public class LwpService extends WallpaperService {
                                 translateY = -10;
                             }
 
-                            ListIterator<LwpEntity> iterator = entities.listIterator();
-
-                            while (iterator.hasNext()) {
-                                LwpEntity e = iterator.next();
-
+                            for (LwpEntity e : entities) {
                                 e.setX(e.getX() + translateX);
                                 e.setY(e.getY() + translateY);
                             }
@@ -1490,17 +1476,14 @@ public class LwpService extends WallpaperService {
                     if (allowSystemGeneration) {
                         if (entities.size() < maxEntities) {
                             if (Math.random() > 0.95) {
-                                addRandomEntities(c.getWidth(), c.getHeight());
+                                addRandomEntities(canvas.getWidth(), canvas.getHeight());
                             }
                         }
                     }
 
                     if (allowParticleGuns) {
-                        ListIterator<LwpParticleGun> iterator = particleGuns.listIterator();
-
-                        while (iterator.hasNext()) {
+                        for (LwpParticleGun gun : particleGuns) {
                             // Cycle through list of entities.
-                            LwpParticleGun gun = iterator.next();
                             gun.shoot();
                             if (gun.ttl <= 0) {
                                 removeParticleGuns.add(gun);
@@ -1510,7 +1493,7 @@ public class LwpService extends WallpaperService {
 
 
                     if (enableTraceLines) {
-                        float fft = ff;
+                        float fft = screenScale;
                         if (fft < 1f)
                             fft = 0.5f;
 
@@ -1520,7 +1503,7 @@ public class LwpService extends WallpaperService {
                         if (deadTraceLines.size() > 0) {
                             Iterator<Point> deadTraceIterator = deadTraceLines
                                     .iterator();
-                            p.setColor(Color.argb(getAlpha(), 50, 50, 50));
+                            paint.setColor(Color.argb(getAlpha(), 50, 50, 50));
 
                             while (deadTraceIterator.hasNext()) {
                                 Point deadPoint = deadTraceIterator.next();
@@ -1528,111 +1511,97 @@ public class LwpService extends WallpaperService {
                                 deadPoint.x += translateX;
                                 deadPoint.y += translateY;
 
-                                c.drawCircle((deadPoint.x + scrollOffset) * ff,
-                                        deadPoint.y * ff, (int) (2 * fft), p);
+                                canvas.drawCircle((deadPoint.x + scrollOffset) * screenScale,
+                                        deadPoint.y * screenScale, (int) (2 * fft), paint);
                             }
                         }
 
-                        ListIterator<LwpEntity> iterator = entities.listIterator();
-
-                        while (iterator.hasNext()) {
+                        for (LwpEntity e : entities) {
                             // Cycle through list of entities.
-                            LwpEntity e = iterator.next();
-
-                            p.setColor(e.getColor());
-                            p.setAlpha(getAlpha());
+                            paint.setColor(e.getColor());
+                            paint.setAlpha(getAlpha());
 
                             e.doTrace();
 
-                            Iterator<Point> traceIterator = e.getTrace()
-                                    .iterator();
-
-                            while (traceIterator.hasNext()) {
-
-                                Point point = traceIterator.next();
+                            for (Point point : e.getTrace()) {
 
                                 point.x += translateX;
                                 point.y += translateY;
 
-                                c.drawCircle((point.x + scrollOffset) * ff,
-                                        point.y * ff, (int) (2 * fft), p);
+                                canvas.drawCircle((point.x + scrollOffset) * screenScale,
+                                        point.y * screenScale, (int) (2 * fft), paint);
 
                             }
                         }
                     }
 
                     // Update logic and draw entities to canvas
-                    ListIterator<LwpEntity> iterator = entities.listIterator();
+                    for (LwpEntity entity : entities) {
 
-                    while (iterator.hasNext()) {
-
-                        // Cycle through list of entities.
-
-                        LwpEntity e = iterator.next();
-                        totalMass += e.getMass();
+                        totalMass += entity.getMass();
 
                         // Check if entity is too far off the screen
-                        checkOutOfBounds(e, (int) (c.getWidth() * 1.2 / ff),
-                                (int) (c.getHeight() * 1.2 / ff));
+                        checkOutOfBounds(entity, (int) (canvas.getWidth() * 1.2 / screenScale),
+                                (int) (canvas.getHeight() * 1.2 / screenScale));
 
                         // Check mass,size and destroy if too large.
                         if (lockScreenDelay < 1000)
                             lockScreenDelay++;
                         else {
                             if (lockScreen) {
-                                if ((e.getMass() > (70000.0 * lockScreenObjectSize))
-                                        || (e.getRadius() > (65.0 * lockScreenObjectSize))) {
-                                    explodeEntity(e);
+                                if ((entity.getMass() > (70000.0 * lockScreenObjectSize))
+                                        || (entity.getRadius() > (65.0 * lockScreenObjectSize))) {
+                                    explodeEntity(entity);
                                 }
                             } else {
-                                if ((e.getMass() > (70000.0 * objectSize))
-                                        || (e.getRadius() > (65.0 * objectSize))) {
-                                    explodeEntity(e);
+                                if ((entity.getMass() > (70000.0 * objectSize))
+                                        || (entity.getRadius() > (65.0 * objectSize))) {
+                                    explodeEntity(entity);
                                 }
                             }
                         }
 
                         // Linear movement.
-                        e.updateLogic();
+                        entity.updateLogic();
 
                         // Assign new color if necessary
                         if (assignNewColors) {
                             if (pulse) {
-                                e.setColor(pulseColor);
+                                entity.setColor(pulseColor);
                             } else {
                                 if (pulseColor != INVALID_COLOR) {
-                                    e.setColor(makeRandomColor());
+                                    entity.setColor(makeRandomColor());
                                 }
                             }
                         }
 
                         // Change colour if battery status has changed
                         if (colorByCharge && updateBatteryLevel) {
-                            e.setColor(betterColor(e.getColor()));
+                            entity.setColor(betterColor(entity.getColor()));
                         }
 
                         // Change colour if lockscreen status has changed
                         else if (oldLock != lockScreen) {
-                            e.setColor(betterColor(e.getColor()));
+                            entity.setColor(betterColor(entity.getColor()));
                             if (lockScreen) {
-                                e.setRadius(e.getRadius() * lockScreenObjectSize / objectSize);
-                                e.setMass(e.getMass() * lockScreenObjectSize / objectSize);
+                                entity.setRadius(entity.getRadius() * lockScreenObjectSize / objectSize);
+                                entity.setMass(entity.getMass() * lockScreenObjectSize / objectSize);
                             } else {
-                                e.setRadius(e.getRadius() * objectSize / lockScreenObjectSize);
-                                e.setMass(e.getMass() * objectSize / lockScreenObjectSize);
+                                entity.setRadius(entity.getRadius() * objectSize / lockScreenObjectSize);
+                                entity.setMass(entity.getMass() * objectSize / lockScreenObjectSize);
                             }
                         }
 
                         // Calculate net direction and force of gravity.
-                        for (LwpEntity o : entities) {
-                            if (o != e) {
-                                e.doGravity(o);
+                        for (LwpEntity other : entities) {
+                            if (other != entity) {
+                                entity.doGravity(other);
 
-                                if (e.allowCollisions()) {
-                                    if (e.detectCollision(o)) {
-                                        e.doCollision(o);
-                                        if (o.getDestroy()) {
-                                            removeEntities.add(o);
+                                if (entity.allowCollisions()) {
+                                    if (entity.detectCollision(other)) {
+                                        entity.doCollision(other);
+                                        if (other.getDestroy()) {
+                                            removeEntities.add(other);
                                         }
                                     }
                                 }
@@ -1641,120 +1610,120 @@ public class LwpService extends WallpaperService {
 
                         if (enableAccelerationArrows) {
 
-                            p.setColor(Color.argb(getAlpha(), 255, 255, 255));
+                            paint.setColor(Color.argb(getAlpha(), 255, 255, 255));
 
-                            Point point = e.doAccelerationArrows();
-                            p.setStrokeCap(Paint.Cap.ROUND);
-                            p.setStrokeWidth(3);
+                            Point point = entity.doAccelerationArrows();
+                            paint.setStrokeCap(Paint.Cap.ROUND);
+                            paint.setStrokeWidth(3);
 
-                            c.drawLine((int) (e.getX() + scrollOffset) * ff,
-                                    (int) e.getY() * ff,
-                                    (point.x + scrollOffset) * ff,
-                                    point.y * ff, p);
+                            canvas.drawLine((int) (entity.getX() + scrollOffset) * screenScale,
+                                    (int) entity.getY() * screenScale,
+                                    (point.x + scrollOffset) * screenScale,
+                                    point.y * screenScale, paint);
                         }
 
                         // Draw entity to canvas.
                         if (lockScreen) {
-                            p.setStyle(e.getPaint().getStyle());
+                            paint.setStyle(entity.getPaint().getStyle());
 
-                            p.setColor(e.getColor());
-                            p.setAlpha(getAlpha());
+                            paint.setColor(entity.getColor());
+                            paint.setAlpha(getAlpha());
 
                             if (dripRendering) {
-                                e.plot(ff);
-                                pathingCanvas.drawPath(e.path, e.getPaint());
-                                e.resetPath();
+                                entity.plot(screenScale);
+                                pathingCanvas.drawPath(entity.path, entity.getPaint());
+                                entity.resetPath();
                             } else if (lockScreenWireFrame) {
-                                p.setStyle(Paint.Style.STROKE);
-                                p.setStrokeWidth(lockScreenWireFrameWidth);
+                                paint.setStyle(Style.STROKE);
+                                paint.setStrokeWidth(lockScreenWireFrameWidth);
 
-                                c.drawCircle((float) (e.getX() + scrollOffset)
-                                                * ff, (float) e.getY() * ff,
-                                        (float) e.getRadius() * ff, p);
+                                canvas.drawCircle((float) (entity.getX() + scrollOffset)
+                                                * screenScale, (float) entity.getY() * screenScale,
+                                        (float) entity.getRadius() * screenScale, paint);
                             } else {
-                                c.drawCircle((float) (e.getX() + scrollOffset)
-                                                * ff, (float) e.getY() * ff,
-                                        (float) e.getRadius() * ff, p);
+                                canvas.drawCircle((float) (entity.getX() + scrollOffset)
+                                                * screenScale, (float) entity.getY() * screenScale,
+                                        (float) entity.getRadius() * screenScale, paint);
 
                                 if (lockScreenEnableOutlines) {
                                     if (lockScreenOutlineColorCustom) {
-                                        p.setColor(lockScreenOutlineColor);
+                                        paint.setColor(lockScreenOutlineColor);
                                     } else {
-                                        p.setColor(backgroundRenderColor);
+                                        paint.setColor(backgroundRenderColor);
                                     }
-                                    p.setStyle(Style.STROKE);
-                                    p.setStrokeWidth(lockScreenWireFrameWidth);
-                                    p.setAlpha(getAlpha());
+                                    paint.setStyle(Style.STROKE);
+                                    paint.setStrokeWidth(lockScreenWireFrameWidth);
+                                    paint.setAlpha(getAlpha());
 
-                                    c.drawCircle(
-                                            (float) (e.getX() + scrollOffset)
-                                                    * ff,
-                                            (float) e.getY() * ff,
-                                            (float) e.getRadius() * ff, p);
+                                    canvas.drawCircle(
+                                            (float) (entity.getX() + scrollOffset)
+                                                    * screenScale,
+                                            (float) entity.getY() * screenScale,
+                                            (float) entity.getRadius() * screenScale, paint);
                                 }
                             }
 
                         } else {
                             if (dripRendering) {
-                                e.plot(ff);
-                                pathingCanvas.drawPath(e.path, e.getPaint());
-                                e.resetPath();
+                                entity.plot(screenScale);
+                                pathingCanvas.drawPath(entity.path, entity.getPaint());
+                                entity.resetPath();
                             } else {
                                 if (pixelate) {
-                                    p.setColor(e.getColor());
-                                    p.setStyle(Paint.Style.FILL);
-                                    p.setAlpha(getAlpha());
+                                    paint.setColor(entity.getColor());
+                                    paint.setStyle(Style.FILL);
+                                    paint.setAlpha(getAlpha());
 
-                                    pixelate(c, e, p);
+                                    pixelate(canvas, entity, paint);
                                 } else if (wireFrame) {
-                                    p.setColor(e.getColor());
-                                    p.setStyle(Paint.Style.STROKE);
-                                    p.setStrokeWidth(wireFrameWidth);
-                                    p.setAlpha(getAlpha());
+                                    paint.setColor(entity.getColor());
+                                    paint.setStyle(Style.STROKE);
+                                    paint.setStrokeWidth(wireFrameWidth);
+                                    paint.setAlpha(getAlpha());
 
-                                    c.drawCircle((float) (e.getX() + scrollOffset)
-                                                    * ff, (float) e.getY() * ff,
-                                            (float) e.getRadius() * ff, p);
+                                    canvas.drawCircle((float) (entity.getX() + scrollOffset)
+                                                    * screenScale, (float) entity.getY() * screenScale,
+                                            (float) entity.getRadius() * screenScale, paint);
                                 } else {
-                                    p.setColor(e.getColor());
+                                    paint.setColor(entity.getColor());
 
                                     //p.setStyle(e.getPaint().getStyle());
-                                    p.setStyle(Paint.Style.FILL);
-                                    p.setAlpha(getAlpha());
+                                    paint.setStyle(Style.FILL);
+                                    paint.setAlpha(getAlpha());
 
-                                    c.drawCircle((float) (e.getX() + scrollOffset)
-                                                    * ff, (float) e.getY() * ff,
-                                            (float) e.getRadius() * ff, p);
+                                    canvas.drawCircle((float) (entity.getX() + scrollOffset)
+                                                    * screenScale, (float) entity.getY() * screenScale,
+                                            (float) entity.getRadius() * screenScale, paint);
 
                                     if (enableOutlines) {
                                         if (outlineColorCustom) {
-                                            p.setColor(outlineColor);
+                                            paint.setColor(outlineColor);
                                         } else {
-                                            p.setColor(backgroundRenderColor);
+                                            paint.setColor(backgroundRenderColor);
                                         }
-                                        p.setStyle(Style.STROKE);
-                                        p.setStrokeWidth(wireFrameWidth);
-                                        p.setAlpha(getAlpha());
+                                        paint.setStyle(Style.STROKE);
+                                        paint.setStrokeWidth(wireFrameWidth);
+                                        paint.setAlpha(getAlpha());
 
-                                        c.drawCircle(
-                                                (float) (e.getX() + scrollOffset)
-                                                        * ff,
-                                                (float) e.getY() * ff,
-                                                (float) e.getRadius() * ff, p);
+                                        canvas.drawCircle(
+                                                (float) (entity.getX() + scrollOffset)
+                                                        * screenScale,
+                                                (float) entity.getY() * screenScale,
+                                                (float) entity.getRadius() * screenScale, paint);
                                     }
                                 }
                             }
                         }
 
-                        if (e.getDestroy()) {
-                            if (e.getRadius() <= 0) {
-                                removeEntities.add(e);
+                        if (entity.getDestroy()) {
+                            if (entity.getRadius() <= 0) {
+                                removeEntities.add(entity);
                             }
                         }
 
                         if (showCentreOfMass) {
-                            xCentreOfMass += e.getMass() * e.getX();
-                            yCentreOfMass += e.getMass() * e.getY();
+                            xCentreOfMass += entity.getMass() * entity.getX();
+                            yCentreOfMass += entity.getMass() * entity.getY();
                         }
                     } // ENTITY LOOP ENDS HERE
 
@@ -1771,8 +1740,8 @@ public class LwpService extends WallpaperService {
 
                     // Remove collided objects from entities list
                     if (showCentreOfMass) {
-                        centreOfMass.x = (int) (xCentreOfMass / totalMass * ff);
-                        centreOfMass.y = (int) (yCentreOfMass / totalMass * ff);
+                        centreOfMass.x = (int) (xCentreOfMass / totalMass * screenScale);
+                        centreOfMass.y = (int) (yCentreOfMass / totalMass * screenScale);
 //                        Log.d(TAG, "Total Mass " + totalMass);
 //                        Log.d(TAG, "CoM:" + centreOfMass);
 
@@ -1792,8 +1761,8 @@ public class LwpService extends WallpaperService {
                     removeEntities.clear();
                 }
             } finally {
-                if (c != null)
-                    holder.unlockCanvasAndPost(c);
+                if (canvas != null)
+                    holder.unlockCanvasAndPost(canvas);
             }
 
             handler.removeCallbacks(drawRunner);

@@ -28,7 +28,7 @@ public class LwpEntity {
     // Physical properties.
     private int color;
     private Paint paint;
-    public Path path;
+    final public Path path = new Path();
     private double radius;
     //private double realRadius;
     private double mass;
@@ -92,9 +92,8 @@ public class LwpEntity {
         paint.setStrokeCap(Paint.Cap.ROUND);
         paint.setAntiAlias(true);
 
-        float ff = g.getScreenScale();
-        path = new Path();
-        path.moveTo(x * ff, y * ff);
+        float screenScale = g.getScreenScale();
+        path.moveTo(x * screenScale, y * screenScale);
 
         if ((dx < 0) || (dy < 0)) {
             this.momentum = -this.momentum;
