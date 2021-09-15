@@ -6,7 +6,7 @@ import org.beatonma.orbitals.Universe
 import org.beatonma.orbitals.options.PhysicsOptions
 import org.beatonma.orbitals.physics.Body
 import org.beatonma.orbitalslivewallpaper.orbitals.options.Options
-import org.beatonma.orbitalslivewallpaper.orbitals.renderer.OrbitalsRenderer
+import org.beatonma.orbitalslivewallpaper.orbitals.render.OrbitalsRenderer
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 

@@ -10,8 +10,8 @@ import org.beatonma.orbitalslivewallpaper.orbitals.OrbitalsRenderEngine
 import org.beatonma.orbitalslivewallpaper.orbitals.options.Options
 import org.beatonma.orbitalslivewallpaper.app.Settings
 import org.beatonma.orbitalslivewallpaper.app.getSavedOptionsSync
-import org.beatonma.orbitalslivewallpaper.orbitals.renderer.diffRenderers
-import org.beatonma.orbitalslivewallpaper.orbitals.renderer.getRenderers
+import org.beatonma.orbitalslivewallpaper.orbitals.render.diffRenderers
+import org.beatonma.orbitalslivewallpaper.orbitals.render.getRenderers
 import org.beatonma.orbitalslivewallpaper.warn
 
 private const val FPS = 60

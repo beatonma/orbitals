@@ -1,4 +1,4 @@
-package org.beatonma.orbitalslivewallpaper.orbitals.renderer
+package org.beatonma.orbitalslivewallpaper.orbitals.render
 
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import org.beatonma.orbitals.physics.Body
@@ -6,21 +6,21 @@ import org.beatonma.orbitalslivewallpaper.debug
 import org.beatonma.orbitalslivewallpaper.orbitals.OrbitalsRenderEngine
 import org.beatonma.orbitalslivewallpaper.orbitals.options.RenderLayer
 import org.beatonma.orbitalslivewallpaper.orbitals.options.VisualOptions
-import org.beatonma.orbitalslivewallpaper.orbitals.renderer.acceleration.BaseAccelerationRenderer
-import org.beatonma.orbitalslivewallpaper.orbitals.renderer.acceleration.CanvasAccelerationRenderer
-import org.beatonma.orbitalslivewallpaper.orbitals.renderer.acceleration.ComposeAccelerationRenderer
+import org.beatonma.orbitalslivewallpaper.orbitals.render.renderer.BaseAccelerationRenderer
+import org.beatonma.orbitalslivewallpaper.orbitals.render.renderer.CanvasAccelerationRenderer
+import org.beatonma.orbitalslivewallpaper.orbitals.render.renderer.ComposeAccelerationRenderer
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
 import android.graphics.Canvas as AndroidCanvas
-import org.beatonma.orbitalslivewallpaper.orbitals.renderer.drip.CanvasDripRenderer
-import org.beatonma.orbitalslivewallpaper.orbitals.renderer.simple.CanvasSimpleRenderer
-import org.beatonma.orbitalslivewallpaper.orbitals.renderer.trail.CanvasTrailRenderer
-import org.beatonma.orbitalslivewallpaper.orbitals.renderer.drip.ComposeDripRenderer
-import org.beatonma.orbitalslivewallpaper.orbitals.renderer.simple.ComposeSimpleRenderer
-import org.beatonma.orbitalslivewallpaper.orbitals.renderer.trail.ComposeTrailRenderer
-import org.beatonma.orbitalslivewallpaper.orbitals.renderer.drip.BaseDripRenderer
-import org.beatonma.orbitalslivewallpaper.orbitals.renderer.simple.BaseSimpleRenderer
-import org.beatonma.orbitalslivewallpaper.orbitals.renderer.trail.BaseTrailRenderer
+import org.beatonma.orbitalslivewallpaper.orbitals.render.renderer.CanvasDripRenderer
+import org.beatonma.orbitalslivewallpaper.orbitals.render.renderer.CanvasSimpleRenderer
+import org.beatonma.orbitalslivewallpaper.orbitals.render.renderer.CanvasTrailRenderer
+import org.beatonma.orbitalslivewallpaper.orbitals.render.renderer.ComposeDripRenderer
+import org.beatonma.orbitalslivewallpaper.orbitals.render.renderer.ComposeSimpleRenderer
+import org.beatonma.orbitalslivewallpaper.orbitals.render.renderer.ComposeTrailRenderer
+import org.beatonma.orbitalslivewallpaper.orbitals.render.renderer.BaseDripRenderer
+import org.beatonma.orbitalslivewallpaper.orbitals.render.renderer.BaseSimpleRenderer
+import org.beatonma.orbitalslivewallpaper.orbitals.render.renderer.BaseTrailRenderer
 
 private typealias LayerSet = Set<RenderLayer>
 private typealias RenderSet<Canvas> = Set<OrbitalsRenderer<Canvas>>

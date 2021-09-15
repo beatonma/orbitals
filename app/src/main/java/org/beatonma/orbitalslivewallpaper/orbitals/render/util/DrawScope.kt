@@ -1,4 +1,4 @@
-package org.beatonma.orbitalslivewallpaper.orbitals.renderer.util
+package org.beatonma.orbitalslivewallpaper.orbitals.render.util
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.BlendMode
@@ -10,7 +10,6 @@ import androidx.compose.ui.graphics.drawscope.Fill
 import org.beatonma.orbitals.physics.Body
 import org.beatonma.orbitals.physics.Distance
 import org.beatonma.orbitals.physics.Position
-import org.beatonma.orbitalslivewallpaper.warn
 
 fun DrawScope.drawCircle(
     position: Position,

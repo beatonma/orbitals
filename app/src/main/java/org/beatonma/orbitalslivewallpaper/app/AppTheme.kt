@@ -15,7 +15,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.insets.ProvideWindowInsets
 import org.beatonma.orbitalslivewallpaper.orbitals.options.ColorOptions
-import org.beatonma.orbitalslivewallpaper.orbitals.renderer.util.toComposeColor
+import org.beatonma.orbitalslivewallpaper.orbitals.render.util.toComposeColor
 
 @Composable
 fun AppTheme(

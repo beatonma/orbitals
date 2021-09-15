@@ -1,13 +1,21 @@
-package org.beatonma.orbitalslivewallpaper.orbitals.renderer.trail
+package org.beatonma.orbitalslivewallpaper.orbitals.render.renderer
 
+import android.graphics.Canvas
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import org.beatonma.orbitals.physics.Body
 import org.beatonma.orbitals.physics.InertialBody
 import org.beatonma.orbitals.physics.Position
 import org.beatonma.orbitals.physics.UniqueID
+import org.beatonma.orbitals.physics.metres
+import org.beatonma.orbitalslivewallpaper.orbitals.options.DrawStyle
 import org.beatonma.orbitalslivewallpaper.orbitals.options.VisualOptions
-import org.beatonma.orbitalslivewallpaper.orbitals.renderer.OrbitalsRenderer
+import org.beatonma.orbitalslivewallpaper.orbitals.render.AndroidCanvasDelegate
+import org.beatonma.orbitalslivewallpaper.orbitals.render.CanvasDelegate
+import org.beatonma.orbitalslivewallpaper.orbitals.render.ComposeDelegate
+import org.beatonma.orbitalslivewallpaper.orbitals.render.OrbitalsRenderer
 
-abstract class BaseTrailRenderer<Canvas>(
+abstract class BaseTrailRenderer<Canvas> internal constructor(
+    override val delegate: CanvasDelegate<Canvas>,
     options: VisualOptions,
 ) : OrbitalsRenderer<Canvas> {
     val bodyPaths: MutableMap<UniqueID, MutableList<Position>> = mutableMapOf()
@@ -59,8 +67,32 @@ abstract class BaseTrailRenderer<Canvas>(
         val points = bodyPaths[body.id] ?: throw Exception("remember $body no path")
 
         points.add(body.position.copy())
-        while(points.size > maxPoints) {
+        while (points.size > maxPoints) {
             points.removeAt(0)
         }
     }
+
+    override fun drawBody(canvas: Canvas, body: Body) {
+        val points = bodyPaths[body.id] ?: throw Exception("drawBody $body no path")
+
+        points.forEachIndexed { index, position ->
+            delegate.drawCircle(
+                canvas,
+                color = android.graphics.Color.WHITE,
+                position = position,
+                radius = maxOf(1f, maxOf(traceThickness, body.radius.value / 10f)).metres,
+                alpha = (index.toFloat() / points.size.toFloat()) * maxAlpha,
+                strokeWidth = options.strokeWidth,
+                style = DrawStyle.Solid,
+            )
+        }
+    }
 }
+
+class CanvasTrailRenderer(
+    options: VisualOptions,
+) : BaseTrailRenderer<Canvas>(AndroidCanvasDelegate, options)
+
+class ComposeTrailRenderer(
+    options: VisualOptions,
+) : BaseTrailRenderer<DrawScope>(ComposeDelegate, options)

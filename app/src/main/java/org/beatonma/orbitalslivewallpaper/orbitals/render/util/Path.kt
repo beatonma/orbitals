@@ -1,4 +1,4 @@
-package org.beatonma.orbitalslivewallpaper.orbitals.renderer.util
+package org.beatonma.orbitalslivewallpaper.orbitals.render.util
 
 import androidx.compose.ui.graphics.Path
 import org.beatonma.orbitals.physics.Position

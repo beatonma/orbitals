@@ -1,10 +1,11 @@
-package org.beatonma.orbitalslivewallpaper.orbitals.renderer
+package org.beatonma.orbitalslivewallpaper.orbitals.render
 
 import org.beatonma.orbitals.Space
 import org.beatonma.orbitals.physics.Body
 import org.beatonma.orbitalslivewallpaper.orbitals.options.VisualOptions
 
 interface OrbitalsRenderer<Canvas> {
+    val delegate: CanvasDelegate<Canvas>
     var options: VisualOptions
 
     fun drawBody(canvas: Canvas, body: Body)
