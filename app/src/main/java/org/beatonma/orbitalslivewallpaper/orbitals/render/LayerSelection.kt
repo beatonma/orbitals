@@ -6,21 +6,13 @@ import org.beatonma.orbitalslivewallpaper.debug
 import org.beatonma.orbitalslivewallpaper.orbitals.OrbitalsRenderEngine
 import org.beatonma.orbitalslivewallpaper.orbitals.options.RenderLayer
 import org.beatonma.orbitalslivewallpaper.orbitals.options.VisualOptions
-import org.beatonma.orbitalslivewallpaper.orbitals.render.renderer.BaseAccelerationRenderer
-import org.beatonma.orbitalslivewallpaper.orbitals.render.renderer.CanvasAccelerationRenderer
-import org.beatonma.orbitalslivewallpaper.orbitals.render.renderer.ComposeAccelerationRenderer
+import org.beatonma.orbitalslivewallpaper.orbitals.render.renderer.AccelerationRenderer
+import org.beatonma.orbitalslivewallpaper.orbitals.render.renderer.DripRenderer
+import org.beatonma.orbitalslivewallpaper.orbitals.render.renderer.SimpleRenderer
+import org.beatonma.orbitalslivewallpaper.orbitals.render.renderer.TrailRenderer
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
 import android.graphics.Canvas as AndroidCanvas
-import org.beatonma.orbitalslivewallpaper.orbitals.render.renderer.CanvasDripRenderer
-import org.beatonma.orbitalslivewallpaper.orbitals.render.renderer.CanvasSimpleRenderer
-import org.beatonma.orbitalslivewallpaper.orbitals.render.renderer.CanvasTrailRenderer
-import org.beatonma.orbitalslivewallpaper.orbitals.render.renderer.ComposeDripRenderer
-import org.beatonma.orbitalslivewallpaper.orbitals.render.renderer.ComposeSimpleRenderer
-import org.beatonma.orbitalslivewallpaper.orbitals.render.renderer.ComposeTrailRenderer
-import org.beatonma.orbitalslivewallpaper.orbitals.render.renderer.BaseDripRenderer
-import org.beatonma.orbitalslivewallpaper.orbitals.render.renderer.BaseSimpleRenderer
-import org.beatonma.orbitalslivewallpaper.orbitals.render.renderer.BaseTrailRenderer
 
 private typealias LayerSet = Set<RenderLayer>
 private typealias RenderSet<Canvas> = Set<OrbitalsRenderer<Canvas>>
@@ -32,39 +24,20 @@ private typealias ComposeRenderer = OrbitalsRenderer<DrawScope>
  * Layers must be registered here renderer classes for AndroidCanvas and DrawScope!
  */
 private object LayerRegistry {
-    private val registry: Map<RenderLayer, Layer<*, *, *>> = mapOf(
-        RenderLayer.Default to Layer(
-            BaseSimpleRenderer::class,
-            CanvasSimpleRenderer::class,
-            ComposeSimpleRenderer::class
-        ),
-        RenderLayer.Trails to Layer(
-            BaseTrailRenderer::class,
-            CanvasTrailRenderer::class,
-            ComposeTrailRenderer::class
-        ),
-        RenderLayer.Acceleration to Layer(
-            BaseAccelerationRenderer::class,
-            CanvasAccelerationRenderer::class,
-            ComposeAccelerationRenderer::class
-        ),
-        RenderLayer.Drip to Layer(
-            BaseDripRenderer::class,
-            CanvasDripRenderer::class,
-            ComposeDripRenderer::class
-        )
+    private val registry: Map<RenderLayer, Layer<*>> = mapOf(
+        RenderLayer.Default to Layer(SimpleRenderer::class),
+        RenderLayer.Trails to Layer(TrailRenderer::class),
+        RenderLayer.Acceleration to Layer(AccelerationRenderer::class),
+        RenderLayer.Drip to Layer(DripRenderer::class)
     )
 
-    operator fun get(key: RenderLayer): Layer<*, *, *> {
-        return registry[key]!!
-    }
-
+    operator fun get(key: RenderLayer): Layer<*> = registry[key]!!
 
     fun getLayerType(renderer: OrbitalsRenderer<*>): RenderLayer {
         val cls = renderer::class.java
 
         registry.forEach { (layer, renderers) ->
-            val baseClass = renderers.baseRenderClass
+            val baseClass = renderers.renderClass
             if (baseClass.java.isAssignableFrom(cls)) return layer
         }
 
@@ -72,10 +45,9 @@ private object LayerRegistry {
     }
 }
 
-private data class Layer<B : OrbitalsRenderer<*>, A : AndroidRenderer, C : ComposeRenderer>(
-    val baseRenderClass: KClass<B>,
-    val canvasRenderer: KClass<A>,
-    val composeRenderer: KClass<C>,
+@JvmInline
+private value class Layer<B : OrbitalsRenderer<*>>(
+    val renderClass: KClass<B>,
 )
 
 inline fun <reified Canvas> diffRenderers(
@@ -146,36 +118,48 @@ fun getCanvasRenderers(layers: LayerSet, options: VisualOptions): RenderSet<Andr
 fun getComposeRenderers(layers: LayerSet, options: VisualOptions): RenderSet<DrawScope> =
     layers.map { getComposeRenderer(it, options) }.toSet()
 
+@Suppress("UNCHECKED_CAST")
 private fun getCanvasRenderer(
     layer: RenderLayer,
     options: VisualOptions
 ): AndroidRenderer {
     try {
-        val renderer = LayerRegistry[layer].canvasRenderer
-        return createRenderer(renderer, options)
+        val renderer = LayerRegistry[layer].renderClass as KClass<out AndroidRenderer>
+
+        return createRenderer(renderer, AndroidCanvasDelegate, options)
     } catch (e: NullPointerException) {
         throw Exception("Unimplemented renderer for layer $layer - did you add it to LayerRegistry? : $e")
     }
 }
 
+@Suppress("UNCHECKED_CAST")
 private fun getComposeRenderer(
     layer: RenderLayer,
     options: VisualOptions
 ): ComposeRenderer {
     try {
-        val renderer = LayerRegistry[layer].composeRenderer
-        return createRenderer(renderer, options)
+        val renderer = LayerRegistry[layer].renderClass as KClass<out ComposeRenderer>
+
+        return createRenderer(renderer, ComposeDelegate, options)
     } catch (e: NullPointerException) {
         throw Exception("Unimplemented renderer for layer $layer - did you add it to LayerRegistry? : $e")
     }
 }
 
 private fun <Canvas> createRenderer(
-    rendererKClass: KClass<out OrbitalsRenderer<Canvas>>,
+    abstractRendererClass: KClass<out OrbitalsRenderer<Canvas>>,
+    delegate: CanvasDelegate<Canvas>,
     options: VisualOptions,
 ): OrbitalsRenderer<Canvas> {
-    val constructor = rendererKClass.primaryConstructor!!
+    val constructor = abstractRendererClass.primaryConstructor!!
     val params = constructor.parameters
     val opts = params.find { it.name == "options" }!!
-    return constructor.callBy(mapOf(opts to options))
+    val del = params.find { it.name == "delegate" }!!
+
+    return constructor.callBy(
+        mapOf(
+            opts to options,
+            del to delegate,
+        )
+    )
 }
