@@ -37,7 +37,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import org.beatonma.orbitals.engine.SystemGenerator
 import org.beatonma.orbitals.options.CollisionStyle
+import org.beatonma.orbitals.options.ColorOptions
+import org.beatonma.orbitals.options.DrawStyle
+import org.beatonma.orbitals.options.ObjectColors
 import org.beatonma.orbitals.options.PhysicsOptions
+import org.beatonma.orbitals.options.RenderLayer
+import org.beatonma.orbitals.options.VisualOptions
 import org.beatonma.orbitalslivewallpaper.app.settings.ColorSetting
 import org.beatonma.orbitalslivewallpaper.app.settings.FloatSetting
 import org.beatonma.orbitalslivewallpaper.app.settings.IntegerSetting
@@ -103,7 +108,7 @@ fun SettingsUI(
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun VisualSettingsUI(
-    visualOptions: org.beatonma.orbitals.options.VisualOptions,
+    visualOptions: VisualOptions,
     viewmodel: SettingsViewModel,
 ) {
     SettingsGroup("Visual") {
@@ -111,7 +116,7 @@ private fun VisualSettingsUI(
             name = "Layers",
             key = VisualKeys.renderLayers,
             value = visualOptions.renderLayers,
-            values = org.beatonma.orbitals.options.RenderLayer.values(),
+            values = RenderLayer.values(),
             onValueChange = saveSelections(viewmodel),
         )
 
@@ -119,11 +124,11 @@ private fun VisualSettingsUI(
             name = "Style",
             key = VisualKeys.drawStyle,
             value = visualOptions.drawStyle,
-            values = org.beatonma.orbitals.options.DrawStyle.values(),
+            values = DrawStyle.values(),
             onValueChange = saveSelection(viewmodel),
         )
 
-        Conditional(visualOptions.drawStyle == org.beatonma.orbitals.options.DrawStyle.Wireframe) {
+        Conditional(visualOptions.drawStyle == DrawStyle.Wireframe) {
             FloatSetting(
                 name = "Stroke width",
                 key = VisualKeys.strokeWidth,
@@ -134,7 +139,7 @@ private fun VisualSettingsUI(
             )
         }
 
-        Conditional(org.beatonma.orbitals.options.RenderLayer.Trails in visualOptions.renderLayers) {
+        Conditional(RenderLayer.Trails in visualOptions.renderLayers) {
             IntegerSetting(
                 name = "History length",
                 key = VisualKeys.traceLineLength,
@@ -151,7 +156,7 @@ private fun VisualSettingsUI(
 
 @Composable
 private fun ColorSettingsUI(
-    colorOptions: org.beatonma.orbitals.options.ColorOptions,
+    colorOptions: ColorOptions,
     viewmodel: SettingsViewModel,
 ) {
     SettingsGroup(title = "Colors") {
@@ -166,7 +171,7 @@ private fun ColorSettingsUI(
             name = "Object colors",
             key = ColorKeys.bodies,
             value = colorOptions.bodies,
-            values = org.beatonma.orbitals.options.ObjectColors.values(),
+            values = ObjectColors.values(),
             onValueChange = saveSelections(viewmodel),
         )
     }

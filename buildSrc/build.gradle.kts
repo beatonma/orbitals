@@ -1,6 +1,6 @@
-import org.gradle.kotlin.dsl.`kotlin-dsl`
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+// Versions object is not accessible here.
 val gradleVersion = "7.0.2"
 val kotlinVersion = "1.5.21"
 val kotlinLanguageVersion = "1.5"
@@ -18,6 +18,7 @@ dependencies {
 repositories {
     google()
     mavenCentral()
+    maven("https://dl.bintray.com/kotlin/kotlin-eap")
 }
 
 val compileKotlin: KotlinCompile by tasks

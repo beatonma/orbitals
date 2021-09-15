@@ -4,23 +4,23 @@ plugins {
 }
 
 android {
-    compileSdk = 31 // AppConfig.SdkTarget
+    compileSdk = AppConfig.SdkTarget
 
     defaultConfig {
-        minSdk = 21 //Versions.Sdk.Min
-        targetSdk = 31 //Versions.Sdk.Target
+        minSdk = AppConfig.SdkMin
+        targetSdk = AppConfig.SdkTarget
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = Versions.Java
+        targetCompatibility = Versions.Java
     }
 
     kotlinOptions {
-        jvmTarget = "1.8" // Versions.JAVA.toString()
-        languageVersion = "1.5" //Versions.KOTLIN_LANGUAGE_VERSION
+        jvmTarget = Versions.Java.toString()
+        languageVersion = Versions.KotlinLanguage
         freeCompilerArgs = freeCompilerArgs + listOf(
             "-Xopt-in=kotlin.RequiresOptIn", // Hide warnings about @OptIn annotations.
         )
@@ -28,9 +28,8 @@ android {
 }
 
 dependencies {
-//    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.Kotlin}")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.21")
-    implementation("androidx.annotation:annotation:1.2.0")
+    implementation(Dependencies.KotlinStdLib)
+    implementation(Dependencies.Annotations)
 
-    testImplementation("org.jetbrains.kotlin:kotlin-test")
+    testImplementation(Dependencies.KotlinTest)
 }
