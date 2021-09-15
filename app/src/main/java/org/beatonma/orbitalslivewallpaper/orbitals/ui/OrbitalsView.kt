@@ -4,10 +4,10 @@ import android.content.Context
 import android.graphics.Canvas
 import android.util.AttributeSet
 import android.view.View
+import org.beatonma.orbitals.rendering.getRenderers
 import org.beatonma.orbitalslivewallpaper.orbitals.OrbitalsRenderEngine
+import org.beatonma.orbitalslivewallpaper.orbitals.diffRenderers
 import org.beatonma.orbitalslivewallpaper.orbitals.options.Options
-import org.beatonma.orbitalslivewallpaper.orbitals.render.diffRenderers
-import org.beatonma.orbitalslivewallpaper.orbitals.render.getRenderers
 import org.beatonma.orbitalslivewallpaper.orbitals.timeIt
 
 class OrbitalsView @JvmOverloads constructor(

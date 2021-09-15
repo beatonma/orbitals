@@ -1,8 +1,8 @@
-package org.beatonma.orbitalslivewallpaper.orbitals.render
+package org.beatonma.orbitals.rendering
 
-import org.beatonma.orbitals.Space
+import org.beatonma.orbitals.engine.Space
+import org.beatonma.orbitals.options.VisualOptions
 import org.beatonma.orbitals.physics.Body
-import org.beatonma.orbitalslivewallpaper.orbitals.options.VisualOptions
 
 interface OrbitalsRenderer<Canvas> {
     val delegate: CanvasDelegate<Canvas>

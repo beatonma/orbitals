@@ -1,4 +1,4 @@
-package org.beatonma.orbitalslivewallpaper.color
+package org.beatonma.orbitals.color
 
 import kotlin.random.Random
 

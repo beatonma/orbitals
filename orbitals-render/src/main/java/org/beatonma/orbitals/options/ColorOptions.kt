@@ -1,15 +1,15 @@
-package org.beatonma.orbitalslivewallpaper.orbitals.options
+package org.beatonma.orbitals.options
 
 import android.graphics.Color
-import org.beatonma.orbitalslivewallpaper.color.MaterialBlue
-import org.beatonma.orbitalslivewallpaper.color.MaterialColors
-import org.beatonma.orbitalslivewallpaper.color.MaterialGreen
-import org.beatonma.orbitalslivewallpaper.color.MaterialGrey
-import org.beatonma.orbitalslivewallpaper.color.MaterialOrange
-import org.beatonma.orbitalslivewallpaper.color.MaterialPink
-import org.beatonma.orbitalslivewallpaper.color.MaterialPurple
-import org.beatonma.orbitalslivewallpaper.color.MaterialRed
-import org.beatonma.orbitalslivewallpaper.color.MaterialYellow
+import org.beatonma.orbitals.color.MaterialBlue
+import org.beatonma.orbitals.color.MaterialColors
+import org.beatonma.orbitals.color.MaterialGreen
+import org.beatonma.orbitals.color.MaterialGrey
+import org.beatonma.orbitals.color.MaterialOrange
+import org.beatonma.orbitals.color.MaterialPink
+import org.beatonma.orbitals.color.MaterialPurple
+import org.beatonma.orbitals.color.MaterialRed
+import org.beatonma.orbitals.color.MaterialYellow
 
 data class ColorOptions(
     val background: Int = Color.BLACK,

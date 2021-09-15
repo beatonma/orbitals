@@ -1,4 +1,4 @@
-package org.beatonma.orbitals
+package org.beatonma.orbitals.engine
 
 import androidx.annotation.FloatRange
 import org.beatonma.orbitals.physics.Position

@@ -1,4 +1,4 @@
-package org.beatonma.orbitalslivewallpaper.orbitals.render
+package org.beatonma.orbitals.rendering
 
 import android.graphics.Canvas
 import android.graphics.Paint
@@ -6,11 +6,11 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import org.beatonma.orbitals.options.DrawStyle
 import org.beatonma.orbitals.physics.Distance
 import org.beatonma.orbitals.physics.Position
-import org.beatonma.orbitalslivewallpaper.orbitals.options.DrawStyle
-import org.beatonma.orbitalslivewallpaper.orbitals.render.util.toComposeColor
-import org.beatonma.orbitalslivewallpaper.orbitals.render.util.toOffset
+import org.beatonma.orbitals.rendering.util.toComposeColor
+import org.beatonma.orbitals.rendering.util.toOffset
 import kotlin.math.roundToInt
 
 interface CanvasDelegate<T> {

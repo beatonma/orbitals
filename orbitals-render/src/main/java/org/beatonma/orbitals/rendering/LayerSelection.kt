@@ -1,15 +1,13 @@
-package org.beatonma.orbitalslivewallpaper.orbitals.render
+package org.beatonma.orbitals.rendering
 
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import org.beatonma.orbitals.options.RenderLayer
+import org.beatonma.orbitals.options.VisualOptions
 import org.beatonma.orbitals.physics.Body
-import org.beatonma.orbitalslivewallpaper.debug
-import org.beatonma.orbitalslivewallpaper.orbitals.OrbitalsRenderEngine
-import org.beatonma.orbitalslivewallpaper.orbitals.options.RenderLayer
-import org.beatonma.orbitalslivewallpaper.orbitals.options.VisualOptions
-import org.beatonma.orbitalslivewallpaper.orbitals.render.renderer.AccelerationRenderer
-import org.beatonma.orbitalslivewallpaper.orbitals.render.renderer.DripRenderer
-import org.beatonma.orbitalslivewallpaper.orbitals.render.renderer.SimpleRenderer
-import org.beatonma.orbitalslivewallpaper.orbitals.render.renderer.TrailRenderer
+import org.beatonma.orbitals.rendering.renderer.AccelerationRenderer
+import org.beatonma.orbitals.rendering.renderer.DripRenderer
+import org.beatonma.orbitals.rendering.renderer.SimpleRenderer
+import org.beatonma.orbitals.rendering.renderer.TrailRenderer
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
 import android.graphics.Canvas as AndroidCanvas
@@ -50,14 +48,6 @@ private value class Layer<B : OrbitalsRenderer<*>>(
     val renderClass: KClass<B>,
 )
 
-inline fun <reified Canvas> diffRenderers(
-    engine: OrbitalsRenderEngine<Canvas>,
-) = diffRenderers(
-    engine.renderers,
-    engine.options.visualOptions.renderLayers,
-    engine.options.visualOptions,
-    engine.bodies,
-)
 
 /**
  * Return a set of required renderers, keeping pre-existing renderers where possible and creating
@@ -73,15 +63,11 @@ inline fun <reified Canvas> diffRenderers(
 
     if (existingLayers == required.sortedBy { it.ordinal }) {
         // No change to requirements
-        debug("No layer changes")
         return existing
     }
 
     val keepLayers = existingLayers.filter { it in required }.toSet()
     val newLayers = required.filter { it !in existingLayers }.toSet()
-
-    debug("keep $keepLayers")
-    debug("add $newLayers")
 
     val newRenderers = getRenderers<Canvas>(newLayers, options)
     newRenderers.forEach { r -> bodies.forEach { b -> r.onBodyCreated(b) } }

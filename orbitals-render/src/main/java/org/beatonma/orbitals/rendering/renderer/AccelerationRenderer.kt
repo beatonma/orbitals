@@ -1,14 +1,14 @@
-package org.beatonma.orbitalslivewallpaper.orbitals.render.renderer
+package org.beatonma.orbitals.rendering.renderer
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.toArgb
+import org.beatonma.orbitals.options.VisualOptions
 import org.beatonma.orbitals.physics.Body
-import org.beatonma.orbitalslivewallpaper.orbitals.options.VisualOptions
-import org.beatonma.orbitalslivewallpaper.orbitals.render.CanvasDelegate
-import org.beatonma.orbitalslivewallpaper.orbitals.render.OrbitalsRenderer
-import org.beatonma.orbitalslivewallpaper.orbitals.render.util.toOffset
+import org.beatonma.orbitals.rendering.CanvasDelegate
+import org.beatonma.orbitals.rendering.OrbitalsRenderer
+import org.beatonma.orbitals.rendering.util.toOffset
 
 
 class AccelerationRenderer<Canvas> internal constructor(

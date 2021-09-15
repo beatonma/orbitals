@@ -17,11 +17,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.input.pointer.pointerInput
-import org.beatonma.orbitals.Region
+import org.beatonma.orbitals.engine.Region
 import org.beatonma.orbitalslivewallpaper.orbitals.OrbitalsRenderEngine
+import org.beatonma.orbitalslivewallpaper.orbitals.diffRenderers
 import org.beatonma.orbitalslivewallpaper.orbitals.options.Options
-import org.beatonma.orbitalslivewallpaper.orbitals.render.diffRenderers
-import org.beatonma.orbitalslivewallpaper.orbitals.render.getRenderers
 import kotlin.math.roundToInt
 import kotlin.time.ExperimentalTime
 
@@ -86,7 +85,7 @@ private fun rememberRenderEngine(
 ): OrbitalsRenderEngine<DrawScope> {
     return remember {
         OrbitalsRenderEngine(
-            renderers = getRenderers(options.visualOptions),
+            renderers = org.beatonma.orbitals.rendering.getRenderers(options.visualOptions),
             options = options,
             onOptionsChange = {
                 renderers = diffRenderers(this)

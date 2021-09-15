@@ -1,6 +1,6 @@
 package org.beatonma.orbitals.physics
 
-import org.beatonma.orbitals.Space
+import org.beatonma.orbitals.engine.Space
 import kotlin.math.atan2
 import kotlin.math.roundToInt
 

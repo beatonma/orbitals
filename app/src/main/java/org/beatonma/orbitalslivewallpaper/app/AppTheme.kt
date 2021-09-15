@@ -14,8 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.insets.ProvideWindowInsets
-import org.beatonma.orbitalslivewallpaper.orbitals.options.ColorOptions
-import org.beatonma.orbitalslivewallpaper.orbitals.render.util.toComposeColor
+import org.beatonma.orbitals.rendering.util.toComposeColor
 
 @Composable
 fun AppTheme(
@@ -25,7 +24,7 @@ fun AppTheme(
     val colorsOptions by getSavedColors(
         LocalContext.current.dataStore(Settings.Wallpaper)
     ).collectAsState(
-        initial = ColorOptions()
+        initial = org.beatonma.orbitals.options.ColorOptions()
     )
 
     MaterialTheme(

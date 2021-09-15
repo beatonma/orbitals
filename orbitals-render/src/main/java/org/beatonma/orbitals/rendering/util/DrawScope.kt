@@ -1,4 +1,4 @@
-package org.beatonma.orbitalslivewallpaper.orbitals.render.util
+package org.beatonma.orbitals.rendering.util
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.BlendMode

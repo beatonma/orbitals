@@ -13,15 +13,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
-import org.beatonma.orbitals.SystemGenerator
+import org.beatonma.orbitals.engine.SystemGenerator
 import org.beatonma.orbitals.options.CollisionStyle
+import org.beatonma.orbitals.options.ColorOptions
 import org.beatonma.orbitals.options.PhysicsOptions
-import org.beatonma.orbitalslivewallpaper.orbitals.options.ColorOptions
-import org.beatonma.orbitalslivewallpaper.orbitals.options.DrawStyle
-import org.beatonma.orbitalslivewallpaper.orbitals.options.ObjectColors
 import org.beatonma.orbitalslivewallpaper.orbitals.options.Options
-import org.beatonma.orbitalslivewallpaper.orbitals.options.RenderLayer
-import org.beatonma.orbitalslivewallpaper.orbitals.options.VisualOptions
 import org.beatonma.orbitalslivewallpaper.warn
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -85,35 +81,40 @@ object ColorKeys {
     val foregroundAlpha = floatPreferencesKey("foreground_alpha")
 }
 
-private fun loadColors(preferences: Preferences): ColorOptions =
+private fun loadColors(preferences: Preferences): org.beatonma.orbitals.options.ColorOptions =
     with(ColorKeys) {
-        ColorOptions(
+        org.beatonma.orbitals.options.ColorOptions(
             background = preferences[background] ?: Color.BLACK,
             foregroundAlpha = preferences[foregroundAlpha] ?: 1f,
             bodies = preferences[bodies]
-                ?.map { safeValueOf(it, default = ObjectColors.Greyscale) }
+                ?.map {
+                    safeValueOf(
+                        it,
+                        default = org.beatonma.orbitals.options.ObjectColors.Greyscale
+                    )
+                }
                 ?.toSet()
                 ?: setOf(
-                    ObjectColors.Red,
-                    ObjectColors.Purple,
+                    org.beatonma.orbitals.options.ObjectColors.Red,
+                    org.beatonma.orbitals.options.ObjectColors.Purple,
                 ),
         )
     }
 
 private fun loadVisualOptions(
     preferences: Preferences,
-    colors: ColorOptions = loadColors(preferences),
-): VisualOptions = with(VisualKeys) {
-    VisualOptions(
+    colors: org.beatonma.orbitals.options.ColorOptions = loadColors(preferences),
+): org.beatonma.orbitals.options.VisualOptions = with(VisualKeys) {
+    org.beatonma.orbitals.options.VisualOptions(
         renderLayers = preferences[renderLayers]
-            ?.map { safeValueOf(it, default = RenderLayer.Default) }
+            ?.map { safeValueOf(it, default = org.beatonma.orbitals.options.RenderLayer.Default) }
             ?.toSet()
-            ?: setOf(RenderLayer.Default),
+            ?: setOf(org.beatonma.orbitals.options.RenderLayer.Default),
         colorOptions = colors,
         traceLineLength = preferences[traceLineLength] ?: 50,
         drawStyle = preferences[drawStyle]
-            ?.let { safeValueOf(it, default = DrawStyle.Solid) }
-            ?: DrawStyle.Solid,
+            ?.let { safeValueOf(it, default = org.beatonma.orbitals.options.DrawStyle.Solid) }
+            ?: org.beatonma.orbitals.options.DrawStyle.Solid,
         strokeWidth = preferences[strokeWidth] ?: 4f,
     )
 }

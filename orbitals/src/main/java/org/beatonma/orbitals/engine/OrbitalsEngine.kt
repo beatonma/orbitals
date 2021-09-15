@@ -1,6 +1,8 @@
-package org.beatonma.orbitals
+package org.beatonma.orbitals.engine
 
+import org.beatonma.orbitals.chance
 import org.beatonma.orbitals.options.PhysicsOptions
+import org.beatonma.orbitals.percent
 import org.beatonma.orbitals.physics.Body
 import org.beatonma.orbitals.physics.FixedBody
 import org.beatonma.orbitals.physics.ZeroAcceleration

@@ -1,11 +1,11 @@
-package org.beatonma.orbitalslivewallpaper.orbitals.render.renderer
+package org.beatonma.orbitals.rendering.renderer
 
+import org.beatonma.orbitals.color.getAnyMaterialColor
+import org.beatonma.orbitals.options.VisualOptions
 import org.beatonma.orbitals.physics.Body
 import org.beatonma.orbitals.physics.UniqueID
-import org.beatonma.orbitalslivewallpaper.color.getAnyMaterialColor
-import org.beatonma.orbitalslivewallpaper.orbitals.options.VisualOptions
-import org.beatonma.orbitalslivewallpaper.orbitals.render.CanvasDelegate
-import org.beatonma.orbitalslivewallpaper.orbitals.render.OrbitalsRenderer
+import org.beatonma.orbitals.rendering.CanvasDelegate
+import org.beatonma.orbitals.rendering.OrbitalsRenderer
 
 
 class SimpleRenderer<Canvas> internal constructor(

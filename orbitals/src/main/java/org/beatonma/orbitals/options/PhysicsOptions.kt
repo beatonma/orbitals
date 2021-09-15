@@ -1,6 +1,6 @@
 package org.beatonma.orbitals.options
 
-import org.beatonma.orbitals.SystemGenerator
+import org.beatonma.orbitals.engine.SystemGenerator
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 

@@ -1,14 +1,14 @@
-package org.beatonma.orbitalslivewallpaper.orbitals.render.renderer
+package org.beatonma.orbitals.rendering.renderer
 
+import org.beatonma.orbitals.options.DrawStyle
+import org.beatonma.orbitals.options.VisualOptions
 import org.beatonma.orbitals.physics.Body
 import org.beatonma.orbitals.physics.InertialBody
 import org.beatonma.orbitals.physics.Position
 import org.beatonma.orbitals.physics.UniqueID
 import org.beatonma.orbitals.physics.metres
-import org.beatonma.orbitalslivewallpaper.orbitals.options.DrawStyle
-import org.beatonma.orbitalslivewallpaper.orbitals.options.VisualOptions
-import org.beatonma.orbitalslivewallpaper.orbitals.render.CanvasDelegate
-import org.beatonma.orbitalslivewallpaper.orbitals.render.OrbitalsRenderer
+import org.beatonma.orbitals.rendering.CanvasDelegate
+import org.beatonma.orbitals.rendering.OrbitalsRenderer
 
 class TrailRenderer<Canvas> internal constructor(
     override val delegate: CanvasDelegate<Canvas>,

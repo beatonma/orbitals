@@ -5,13 +5,12 @@ import android.os.Handler
 import android.service.wallpaper.WallpaperService
 import android.view.MotionEvent
 import android.view.SurfaceHolder
-import org.beatonma.orbitalslivewallpaper.app.dataStore
-import org.beatonma.orbitalslivewallpaper.orbitals.OrbitalsRenderEngine
-import org.beatonma.orbitalslivewallpaper.orbitals.options.Options
 import org.beatonma.orbitalslivewallpaper.app.Settings
+import org.beatonma.orbitalslivewallpaper.app.dataStore
 import org.beatonma.orbitalslivewallpaper.app.getSavedOptionsSync
-import org.beatonma.orbitalslivewallpaper.orbitals.render.diffRenderers
-import org.beatonma.orbitalslivewallpaper.orbitals.render.getRenderers
+import org.beatonma.orbitalslivewallpaper.orbitals.OrbitalsRenderEngine
+import org.beatonma.orbitalslivewallpaper.orbitals.diffRenderers
+import org.beatonma.orbitalslivewallpaper.orbitals.options.Options
 import org.beatonma.orbitalslivewallpaper.warn
 
 private const val FPS = 60
@@ -38,7 +37,7 @@ class LwpService : WallpaperService() {
             }
 
         private val renderEngine = OrbitalsRenderEngine<Canvas>(
-            renderers = getRenderers(options.visualOptions),
+            renderers = org.beatonma.orbitals.rendering.getRenderers(options.visualOptions),
             options = options,
             onOptionsChange = {
                 renderers = diffRenderers(this)

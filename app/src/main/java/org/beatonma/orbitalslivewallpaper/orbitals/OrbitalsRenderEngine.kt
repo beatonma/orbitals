@@ -1,18 +1,17 @@
 package org.beatonma.orbitalslivewallpaper.orbitals
 
-import org.beatonma.orbitals.OrbitalsEngine
-import org.beatonma.orbitals.Space
-import org.beatonma.orbitals.Universe
+import org.beatonma.orbitals.engine.OrbitalsEngine
+import org.beatonma.orbitals.engine.Space
+import org.beatonma.orbitals.engine.Universe
 import org.beatonma.orbitals.options.PhysicsOptions
 import org.beatonma.orbitals.physics.Body
 import org.beatonma.orbitalslivewallpaper.orbitals.options.Options
-import org.beatonma.orbitalslivewallpaper.orbitals.render.OrbitalsRenderer
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
 class OrbitalsRenderEngine<T>(
-    var renderers: Set<OrbitalsRenderer<T>>,
+    var renderers: Set<org.beatonma.orbitals.rendering.OrbitalsRenderer<T>>,
     options: Options,
     private val onOptionsChange: OrbitalsRenderEngine<T>.(Options) -> Unit
 ) {
@@ -73,6 +72,15 @@ class OrbitalsRenderEngine<T>(
     }
 
     fun recycle() {
-        renderers.forEach(OrbitalsRenderer<T>::recycle)
+        renderers.forEach(org.beatonma.orbitals.rendering.OrbitalsRenderer<T>::recycle)
     }
 }
+
+inline fun <reified Canvas> diffRenderers(
+    engine: OrbitalsRenderEngine<Canvas>,
+) = org.beatonma.orbitals.rendering.diffRenderers(
+    engine.renderers,
+    engine.options.visualOptions.renderLayers,
+    engine.options.visualOptions,
+    engine.bodies,
+)
