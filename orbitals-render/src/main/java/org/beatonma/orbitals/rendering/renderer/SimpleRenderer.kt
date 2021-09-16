@@ -1,6 +1,5 @@
 package org.beatonma.orbitals.rendering.renderer
 
-import org.beatonma.orbitals.color.getAnyMaterialColor
 import org.beatonma.orbitals.options.VisualOptions
 import org.beatonma.orbitals.physics.Body
 import org.beatonma.orbitals.physics.UniqueID
@@ -14,7 +13,7 @@ class SimpleRenderer<Canvas> internal constructor(
 ) : OrbitalsRenderer<Canvas> {
     private val colors: MutableMap<UniqueID, Int> = mutableMapOf()
 
-    private fun chooseColor(body: Body): Int = getAnyMaterialColor()
+    private fun chooseColor(body: Body): Int = options.colorOptions.colorForBody
 
     override fun onBodyCreated(body: Body) {
         super.onBodyCreated(body)
