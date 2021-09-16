@@ -5,9 +5,12 @@ import android.os.Handler
 import android.service.wallpaper.WallpaperService
 import android.view.MotionEvent
 import android.view.SurfaceHolder
+import androidx.core.view.GestureDetectorCompat
+import org.beatonma.orbitals.rendering.getRenderers
 import org.beatonma.orbitalslivewallpaper.app.Settings
 import org.beatonma.orbitalslivewallpaper.app.dataStore
 import org.beatonma.orbitalslivewallpaper.app.getSavedOptionsSync
+import org.beatonma.orbitalslivewallpaper.orbitals.MotionEventTouchHandler
 import org.beatonma.orbitalslivewallpaper.orbitals.OrbitalsRenderEngine
 import org.beatonma.orbitalslivewallpaper.orbitals.diffRenderers
 import org.beatonma.orbitalslivewallpaper.orbitals.options.Options
@@ -17,6 +20,7 @@ private const val FPS = 60
 private const val FrameDelay: Long = 1000L / FPS
 
 class LwpService : WallpaperService() {
+
     override fun onCreateEngine() = LwpEngine()
 
     inner class LwpEngine : Engine() {
@@ -37,11 +41,16 @@ class LwpService : WallpaperService() {
             }
 
         private val renderEngine = OrbitalsRenderEngine<Canvas>(
-            renderers = org.beatonma.orbitals.rendering.getRenderers(options.visualOptions),
+            renderers = getRenderers(options.visualOptions),
             options = options,
             onOptionsChange = {
                 renderers = diffRenderers(this)
             }
+        )
+
+        private val touchHandler = GestureDetectorCompat(
+            this@LwpService,
+            MotionEventTouchHandler(renderEngine)
         )
 
         override fun onCreate(surfaceHolder: SurfaceHolder?) {
@@ -52,20 +61,7 @@ class LwpService : WallpaperService() {
         }
 
         override fun onTouchEvent(event: MotionEvent?) {
-            when (event?.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    if (event.pointerCount == 3) {
-                        clear()
-                    } else {
-                        renderEngine.addBodies()
-                    }
-                }
-                else -> super.onTouchEvent(event)
-            }
-        }
-
-        private fun clear() {
-            renderEngine.clear()
+            touchHandler.onTouchEvent(event)
         }
 
         override fun onVisibilityChanged(visible: Boolean) {

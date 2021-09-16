@@ -1,10 +1,14 @@
 package org.beatonma.orbitalslivewallpaper.orbitals.ui
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.util.AttributeSet
+import android.view.MotionEvent
 import android.view.View
+import androidx.core.view.GestureDetectorCompat
 import org.beatonma.orbitals.rendering.getRenderers
+import org.beatonma.orbitalslivewallpaper.orbitals.MotionEventTouchHandler
 import org.beatonma.orbitalslivewallpaper.orbitals.OrbitalsRenderEngine
 import org.beatonma.orbitalslivewallpaper.orbitals.diffRenderers
 import org.beatonma.orbitalslivewallpaper.orbitals.options.Options
@@ -24,6 +28,7 @@ class OrbitalsView @JvmOverloads constructor(
             renderers = diffRenderers(this)
         }
     )
+    private val touchHandler = GestureDetectorCompat(context, MotionEventTouchHandler(renderEngine))
 
     init {
         setOnClickListener {
@@ -62,5 +67,10 @@ class OrbitalsView @JvmOverloads constructor(
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         renderEngine.recycle()
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        return touchHandler.onTouchEvent(event)
     }
 }

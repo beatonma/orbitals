@@ -66,9 +66,9 @@ fun Orbitals(
                             )
                         )
                     },
-                    onDoubleTap = { offset ->
+                    onLongPress = { offset ->
                         orbitals.clear()
-                    }
+                    },
                 )
             },
     ) {
