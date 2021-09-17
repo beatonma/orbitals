@@ -19,9 +19,9 @@ interface CanvasDelegate<T> {
         position: Position,
         radius: Distance,
         color: Int,
-        alpha: Float,
         strokeWidth: Float,
         style: DrawStyle,
+        alpha: Float = 1f,
     )
 
     fun drawLine(
@@ -31,7 +31,7 @@ interface CanvasDelegate<T> {
         end: Offset,
         strokeWidth: Float,
         cap: StrokeCap,
-        alpha: Float,
+        alpha: Float = 1f,
     )
 
     fun drawLine(
@@ -41,7 +41,7 @@ interface CanvasDelegate<T> {
         end: Position,
         strokeWidth: Float,
         cap: StrokeCap,
-        alpha: Float,
+        alpha: Float = 1f,
     ) {
         drawLine(
             canvas,
@@ -62,9 +62,9 @@ object ComposeDelegate : CanvasDelegate<DrawScope> {
         position: Position,
         radius: Distance,
         color: Int,
-        alpha: Float,
         strokeWidth: Float,
-        style: DrawStyle
+        style: DrawStyle,
+        alpha: Float,
     ) {
         canvas.drawCircle(
             center = position.toOffset(),
@@ -104,9 +104,9 @@ object AndroidCanvasDelegate : CanvasDelegate<Canvas> {
         position: Position,
         radius: Distance,
         color: Int,
-        alpha: Float,
         strokeWidth: Float,
         style: DrawStyle,
+        alpha: Float,
     ) {
         canvas.drawCircle(
             position.x.value,
