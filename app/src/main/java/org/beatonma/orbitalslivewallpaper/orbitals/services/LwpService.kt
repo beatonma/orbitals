@@ -5,16 +5,17 @@ import android.os.Handler
 import android.service.wallpaper.WallpaperService
 import android.view.MotionEvent
 import android.view.SurfaceHolder
-import androidx.core.view.GestureDetectorCompat
 import org.beatonma.orbitals.rendering.getRenderers
 import org.beatonma.orbitalslivewallpaper.app.Settings
 import org.beatonma.orbitalslivewallpaper.app.dataStore
 import org.beatonma.orbitalslivewallpaper.app.getSavedOptionsSync
-import org.beatonma.orbitalslivewallpaper.orbitals.MotionEventTouchHandler
 import org.beatonma.orbitalslivewallpaper.orbitals.OrbitalsRenderEngine
 import org.beatonma.orbitalslivewallpaper.orbitals.diffRenderers
 import org.beatonma.orbitalslivewallpaper.orbitals.options.Options
+import org.beatonma.orbitalslivewallpaper.orbitals.touch.OrbitalsGestureDetector
 import org.beatonma.orbitalslivewallpaper.warn
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
 
 private const val FPS = 60
 private const val FrameDelay: Long = 1000L / FPS
@@ -31,6 +32,7 @@ class LwpService : WallpaperService() {
             }
         private val handler: Handler = Handler(mainLooper)
         private val drawRunnable: Runnable = Runnable(this@LwpEngine::draw)
+        private var lastFrameMillis = System.currentTimeMillis()
         private var visible = true
             set(value) {
                 field = value
@@ -48,10 +50,7 @@ class LwpService : WallpaperService() {
             }
         )
 
-        private val touchHandler = GestureDetectorCompat(
-            this@LwpService,
-            MotionEventTouchHandler(renderEngine)
-        )
+        private val touchHandler = OrbitalsGestureDetector(this@LwpService, renderEngine)
 
         override fun onCreate(surfaceHolder: SurfaceHolder?) {
             super.onCreate(surfaceHolder)
@@ -60,7 +59,7 @@ class LwpService : WallpaperService() {
             visible = true
         }
 
-        override fun onTouchEvent(event: MotionEvent?) {
+        override fun onTouchEvent(event: MotionEvent) {
             touchHandler.onTouchEvent(event)
         }
 
@@ -90,12 +89,18 @@ class LwpService : WallpaperService() {
             renderEngine.recycle()
         }
 
+        @OptIn(ExperimentalTime::class)
         private fun draw() {
+
+            val now = System.currentTimeMillis()
+            val timeDelta = now - lastFrameMillis
+            lastFrameMillis = now
+
             var canvas: Canvas? = null
             try {
                 canvas = surfaceHolder.lockCanvas()
                 canvas.drawColor(options.visualOptions.colorOptions.background)
-                renderEngine.update(canvas)
+                renderEngine.update(canvas, Duration.milliseconds(timeDelta))
             } catch (e: Exception) {
                 warn(e)
             } finally {

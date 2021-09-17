@@ -6,13 +6,16 @@ import android.graphics.Canvas
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import androidx.core.view.GestureDetectorCompat
 import org.beatonma.orbitals.rendering.getRenderers
-import org.beatonma.orbitalslivewallpaper.orbitals.MotionEventTouchHandler
+import org.beatonma.orbitalslivewallpaper.app.Settings
+import org.beatonma.orbitalslivewallpaper.app.dataStore
+import org.beatonma.orbitalslivewallpaper.app.getSavedOptionsSync
 import org.beatonma.orbitalslivewallpaper.orbitals.OrbitalsRenderEngine
 import org.beatonma.orbitalslivewallpaper.orbitals.diffRenderers
-import org.beatonma.orbitalslivewallpaper.orbitals.options.Options
 import org.beatonma.orbitalslivewallpaper.orbitals.timeIt
+import org.beatonma.orbitalslivewallpaper.orbitals.touch.OrbitalsGestureDetector
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
 
 class OrbitalsView @JvmOverloads constructor(
     context: Context,
@@ -20,7 +23,7 @@ class OrbitalsView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
-    private val options = Options()
+    private val options = getSavedOptionsSync(context.dataStore(Settings.Wallpaper))
     private val renderEngine = OrbitalsRenderEngine<Canvas>(
         renderers = getRenderers(options.visualOptions),
         options = options,
@@ -28,7 +31,8 @@ class OrbitalsView @JvmOverloads constructor(
             renderers = diffRenderers(this)
         }
     )
-    private val touchHandler = GestureDetectorCompat(context, MotionEventTouchHandler(renderEngine))
+    private val touchHandler = OrbitalsGestureDetector(context, renderEngine)
+    private var lastFrameMillis = System.currentTimeMillis()
 
     init {
         setOnClickListener {
@@ -50,10 +54,15 @@ class OrbitalsView @JvmOverloads constructor(
         super.onSizeChanged(w, h, oldw, oldh)
     }
 
+    @OptIn(ExperimentalTime::class)
     override fun onDraw(canvas: Canvas?) {
+        val now = System.currentTimeMillis()
+        val timeDelta = now - lastFrameMillis
+        lastFrameMillis = now
+
         timeIt(maxMillis = 15, label = "OrbitalsView.onDraw") {
             if (canvas != null) {
-                renderEngine.update(canvas)
+                renderEngine.update(canvas, Duration.milliseconds(timeDelta))
             }
         }
         postInvalidateOnAnimation()
@@ -70,7 +79,6 @@ class OrbitalsView @JvmOverloads constructor(
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    override fun onTouchEvent(event: MotionEvent?): Boolean {
-        return touchHandler.onTouchEvent(event)
-    }
+    override fun onTouchEvent(event: MotionEvent): Boolean =
+        touchHandler.onTouchEvent(event)
 }

@@ -3,6 +3,7 @@ package org.beatonma.orbitals.rendering
 import org.beatonma.orbitals.engine.Space
 import org.beatonma.orbitals.options.VisualOptions
 import org.beatonma.orbitals.physics.Body
+import org.beatonma.orbitals.physics.UniqueID
 
 interface OrbitalsRenderer<Canvas> {
     val delegate: CanvasDelegate<Canvas>
@@ -18,7 +19,9 @@ interface OrbitalsRenderer<Canvas> {
     }
 
     fun onBodyCreated(body: Body) {}
-    fun onBodyDestroyed(body: Body) {}
+    fun onBodyDestroyed(body: UniqueID) {}
     fun onSizeChanged(space: Space) {}
     fun recycle() {}
+
+    fun onBodyDestroyed(body: Body) = onBodyDestroyed(body.id)
 }

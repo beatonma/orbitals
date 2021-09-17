@@ -33,3 +33,11 @@ fun chance(@FloatRange(from = 0.0, to = 1.0) likelihood: Float): Boolean =
 
 val Int.percent get() = this.toFloat().percent
 val Float.percent get() = this / 100f
+
+
+inline fun <T> List<T>.fastForEach(action: (T) -> Unit) {
+    for (index in indices) {
+        val item = get(index)
+        action(item)
+    }
+}

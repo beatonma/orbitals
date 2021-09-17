@@ -5,7 +5,7 @@ import org.beatonma.orbitals.percent
 import kotlin.math.sqrt
 import kotlin.random.Random
 
-private const val SCALE = 1e11f
+private const val SCALE = 1e14f
 
 /**
  * Units: m^3 kg^-1 s^-2

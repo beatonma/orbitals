@@ -5,6 +5,7 @@ import org.beatonma.orbitals.engine.Space
 import org.beatonma.orbitals.engine.Universe
 import org.beatonma.orbitals.options.PhysicsOptions
 import org.beatonma.orbitals.physics.Body
+import org.beatonma.orbitals.physics.UniqueID
 import org.beatonma.orbitalslivewallpaper.orbitals.options.Options
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -65,6 +66,16 @@ class OrbitalsRenderEngine<T>(
 
     fun addBodies(space: Space = engine.space) {
         engine.addBodies(space)
+    }
+
+    fun addBody(body: Body) {
+        engine.addBody(body)
+        renderers.forEach { it.onBodyCreated(body) }
+    }
+
+    fun removeBody(id: UniqueID) {
+        engine.removeBody(id)
+        renderers.forEach { it.onBodyDestroyed(id) }
     }
 
     fun clear() {
