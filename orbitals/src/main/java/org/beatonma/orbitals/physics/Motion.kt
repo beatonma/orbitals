@@ -3,7 +3,7 @@ package org.beatonma.orbitals.physics
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
-data class Motion internal constructor(
+data class Motion constructor(
     private var startPosition: Position = ZeroPosition,
     private var startVelocity: Velocity = ZeroVelocity,
 ) {

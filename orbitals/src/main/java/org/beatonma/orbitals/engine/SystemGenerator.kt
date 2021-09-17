@@ -7,16 +7,19 @@ import org.beatonma.orbitals.percent
 import org.beatonma.orbitals.physics.Body
 import org.beatonma.orbitals.physics.Distance
 import org.beatonma.orbitals.physics.FixedBody
+import org.beatonma.orbitals.physics.GreatAttractor
 import org.beatonma.orbitals.physics.InertialBody
 import org.beatonma.orbitals.physics.Mass
 import org.beatonma.orbitals.physics.Motion
 import org.beatonma.orbitals.physics.Position
 import org.beatonma.orbitals.physics.Velocity
+import org.beatonma.orbitals.physics.ZeroVelocity
 import org.beatonma.orbitals.physics.distanceTo
 import org.beatonma.orbitals.physics.getOrbitalMotion
 import org.beatonma.orbitals.physics.kg
 import org.beatonma.orbitals.physics.metres
 import org.beatonma.orbitals.physics.uniqueID
+import kotlin.math.max
 import kotlin.random.Random
 
 private const val MaxFixedBodies = 3
@@ -48,20 +51,40 @@ enum class SystemGenerator {
      * Generate lots of small bodies around an existing large body.
      */
     Asteroids,
+
+    /**
+     * Generate a large mass beyond the edge of our visible 'universe'.
+     */
+    GreatAttractor,
     ;
 
     fun generate(space: Space, bodies: List<Body>, physics: PhysicsOptions): List<Body> {
-        return if (space.isValid) when (this) {
-            IdealStarSystem -> generateIdealStarSystem(space, bodies, physics)
-            StarSystem -> generateStarSystem(space, bodies, physics)
-            Randomized -> generateRandom(space, bodies, physics)
-            Gauntlet -> generateGauntlet(space, bodies, physics)
-            Asteroids -> generateAsteroids(space, bodies, physics)
-        }
-        else {
+        if (!space.isValid) {
             println("Invalid space $space")
-            listOf()
+            return listOf()
         }
+
+        val f = when (this) {
+            IdealStarSystem -> ::generateIdealStarSystem
+            StarSystem -> ::generateStarSystem
+            Randomized -> ::generateRandom
+            Gauntlet -> ::generateGauntlet
+            Asteroids -> ::generateAsteroids
+            GreatAttractor -> ::generateGreatAttractor
+        }
+
+        return f(space, bodies, physics)
+    }
+
+    private fun generateGreatAttractor(space: Space, bodies: List<Body>, physics: PhysicsOptions): List<Body> {
+        return listOf(
+            GreatAttractor(
+                mass = attractorMass(),
+                motion = Motion(
+                    space.relativePosition(direction() * 2f, direction() * 2f)
+                )
+            )
+        )
     }
 
     private fun generateGauntlet(space: Space, bodies: List<Body>, physics: PhysicsOptions): List<Body> {
@@ -70,17 +93,13 @@ enum class SystemGenerator {
         val randomBodies = generateRandom(space, bodies, physics)
         return if (fixedBodies.size > MaxFixedBodies) {
             randomBodies + createBodies(MaxFixedBodies - fixedBodies.size) { index, n ->
-                val mass = largeMass()
-                FixedBody(
-                    id = uniqueID("gauntlet"),
-                    mass = mass,
-                    radius = sizeOf(mass),
-                    motion = Motion(
-                        space.relativePosition(
-                            index * (1f / n),
-                            Random.nextFloat()
-                        )
-                    )
+                createStar(
+                    "gauntlet",
+                    space.relativePosition(
+                        index * (1f / n),
+                        Random.nextFloat()
+                    ),
+                    asFixedBody = true,
                 )
             }
         } else {
@@ -95,13 +114,7 @@ enum class SystemGenerator {
         val sun = if (useExistingStar) {
             fixedBodies.first()
         } else {
-            val mass = 100.kg
-            FixedBody(
-                id = uniqueID("center"),
-                mass = mass,
-                radius = sizeOf(mass),
-                motion = Motion(space.center),
-            )
+            createStar("center", space.center)
         }
 
         val satellites = listOf<Body>(
@@ -168,13 +181,7 @@ enum class SystemGenerator {
             fixedBodies.random()
         } else {
             val position = generateStarPosition(space, bodies) ?: return listOf()
-            val mass = largeMass()
-            FixedBody(
-                id = uniqueID("center"),
-                mass = mass,
-                radius = sizeOf(mass),
-                motion = Motion(position),
-            )
+            createStar("center", position)
         }
 
         val minDistance = (space.radius * .1f).metres
@@ -219,7 +226,7 @@ enum class SystemGenerator {
             satelliteOf(
                 parent = sun,
                 distance = anyDistance(distance.metres, (distance + 5).metres),
-                mass = verySmallMass(),
+                mass = asteroidMass(),
                 G = physics.G,
             )
         }
@@ -227,14 +234,39 @@ enum class SystemGenerator {
 }
 
 private fun createBodies(range: Int = 10, transform: (index: Int, n: Int) -> Body): List<Body> {
-    val size = Random.nextInt(1, range)
+    val size = Random.nextInt(1, max(range, 2))
     return (0..size).map { i -> transform(i, size) }
+}
+
+private fun createStar(
+    name: String,
+    position: Position,
+    mass: Mass = starMass(),
+    velocity: Velocity = ZeroVelocity,
+    asFixedBody: Boolean = chance(10.percent),
+): Body {
+    return if (asFixedBody) {
+        FixedBody(
+            id = uniqueID(name),
+            mass = mass,
+            radius = sizeOf(mass),
+            motion = Motion(position, velocity),
+        )
+    }
+    else {
+        InertialBody(
+            id = uniqueID(name),
+            mass = mass,
+            radius = sizeOf(mass),
+            motion = Motion(position, velocity),
+        )
+    }
 }
 
 private fun satelliteOf(
     parent: Body,
     distance: Distance,
-    mass: Mass = smallMass(),
+    mass: Mass = planetMass(),
     radius: Distance = sizeOf(mass),
     G: Float,
 ): InertialBody =
@@ -249,16 +281,20 @@ private fun anyDistance(min: Distance, max: Distance) =
     Random.nextFloat().mapTo(min.value, max.value).metres
 
 private fun anyMass(): Mass = when {
-    chance(2.percent) -> verySmallMass()
-    chance(5.percent) -> largeMass()
-    else -> smallMass()
+    chance(2.percent) -> asteroidMass()
+    chance(5.percent) -> starMass()
+    else -> planetMass()
 }
 
-private fun verySmallMass(): Mass = Random.nextFloat().kg
-private fun smallMass(): Mass = Random.nextInt(5, 20).kg
-private fun largeMass(): Mass = Random.nextInt(50, 200).kg
+private fun asteroidMass(): Mass = Random.nextFloat().kg
+private fun planetMass(): Mass = Random.nextInt(5, 20).kg
+private fun starMass(): Mass = Random.nextInt(50, 200).kg
+private fun attractorMass(): Mass = Random.nextInt(2500, 5000).kg
 
 private fun sizeOf(mass: Mass): Distance = maxOf(4f, (mass.value * .25f)).metres
 
 private val List<Body>.fixedBodies: List<FixedBody>
     get() = filterIsInstance<FixedBody>()
+
+
+private fun direction(): Int = if (chance(50.percent)) -1 else 1

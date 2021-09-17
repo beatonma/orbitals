@@ -1,6 +1,7 @@
 package org.beatonma.orbitals.options
 
 import org.beatonma.orbitals.engine.SystemGenerator
+import org.beatonma.orbitals.physics.DefaultG
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
@@ -15,7 +16,7 @@ data class PhysicsOptions @OptIn(ExperimentalTime::class) constructor(
     val collisionStyle: CollisionStyle = CollisionStyle.None,
     val tickDelta: Duration = Duration.seconds(1)
 ) {
-    val G = 6.647f * gravityMultiplier
+    val G = DefaultG * gravityMultiplier
 }
 
 enum class CollisionStyle {

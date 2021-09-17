@@ -74,8 +74,8 @@ fun Universe(windowWidth: Int, windowHeight: Int, overflow: Float = .2f): Univer
 
 
 fun Space.relativePosition(
-    @FloatRange(from = 0.0, to = 1.0) x: Float,
-    @FloatRange(from = 0.0, to = 1.0) y: Float,
+    x: Float,
+    y: Float,
 ): Position = Position(
     start.toFloat() + (width.toFloat() * x),
     top.toFloat() + (height.toFloat() * y)

@@ -1,6 +1,8 @@
 package org.beatonma.orbitals.physics
 
+import androidx.annotation.CallSuper
 import androidx.annotation.VisibleForTesting
+import org.beatonma.orbitals.engine.AllowOutOfBounds
 import java.util.*
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -12,15 +14,28 @@ val ZeroVelocity get() = Velocity(0.0.metres.perSecond, 0.0.metres.perSecond)
 val ZeroMotion get() = Motion(ZeroPosition, ZeroVelocity)
 val ZeroAcceleration get() = Acceleration(AccelerationScalar(0f), AccelerationScalar(0f))
 
+
 @OptIn(ExperimentalTime::class)
-interface Body {
+interface Senescent {
+    var age: Duration
+}
+
+interface Fixed
+interface Inertial
+
+@OptIn(ExperimentalTime::class)
+sealed interface Body {
     val id: UniqueID
     val mass: Mass
     val radius: Distance
     val motion: Motion
-    var age: Duration
 
-    val position: Position get() = motion.position
+    var position: Position
+        get() = motion.position
+        set(value) {
+            motion.position.x = value.x
+            motion.position.y = value.y
+        }
     val velocity: Velocity
         get() = motion.velocity
 
@@ -37,11 +52,12 @@ interface Body {
 
     fun distanceTo(other: Body): Distance = position.distanceTo(other.position)
 
+    @CallSuper
     fun tick(duration: Duration) {
-        age += duration
         applyInertia(duration)
     }
 }
+
 
 /**
  * A body that stays in a fixed position.
@@ -53,7 +69,7 @@ data class FixedBody(
     override val radius: Distance = ZeroDistance,
     override val motion: Motion = ZeroMotion,
     override var age: Duration = Duration.seconds(0)
-) : Body {
+) : Body, Fixed, Senescent {
 
     override fun applyInertia(timeDelta: Duration) {
         // N/A
@@ -61,6 +77,11 @@ data class FixedBody(
 
     override fun applyGravity(other: Body, timeDelta: Duration, G: Float) {
         // N/A
+    }
+
+    override fun tick(duration: Duration) {
+        super.tick(duration)
+        age += duration
     }
 }
 
@@ -77,8 +98,7 @@ data class InertialBody(
     override val mass: Mass,
     override val radius: Distance = ZeroDistance,
     override val motion: Motion = ZeroMotion,
-    override var age: Duration = Duration.seconds(0)
-) : Body {
+) : Body, Inertial {
 
     override fun applyInertia(timeDelta: Duration) {
         motion.applyInertia(timeDelta)
@@ -107,11 +127,35 @@ data class InertialBody(
 }
 
 
+@OptIn(ExperimentalTime::class)
+data class GreatAttractor(
+    override val id: UniqueID = uniqueID("GreatAttractor"),
+    override val mass: Mass,
+    override val radius: Distance = ZeroDistance,
+    override val motion: Motion = ZeroMotion,
+    override var age: Duration = Duration.seconds(0)
+) : Body, Fixed, Senescent, AllowOutOfBounds {
+
+    override fun applyInertia(timeDelta: Duration) {
+        // N/A
+    }
+
+    override fun applyGravity(other: Body, timeDelta: Duration, G: Float) {
+        // N/A
+    }
+
+    override fun tick(duration: Duration) {
+        super.tick(duration)
+        age += duration
+    }
+}
+
+
 fun uniqueID(name: Any): UniqueID = UniqueID("$name[$uniqueID]")
 private val uniqueID: String get() = UUID.randomUUID().toString().substring(0, 5)
 
 @JvmInline
-value class UniqueID(val value: String) {
+value class UniqueID internal constructor(val value: String) {
     override fun toString(): String {
         return "id:$value"
     }
