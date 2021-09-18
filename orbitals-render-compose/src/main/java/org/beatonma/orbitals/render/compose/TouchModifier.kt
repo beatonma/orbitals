@@ -1,4 +1,4 @@
-package org.beatonma.orbitalslivewallpaper.orbitals.touch
+package org.beatonma.orbitals.render.compose
 
 import android.view.ViewConfiguration
 import androidx.compose.foundation.gestures.awaitFirstDown
@@ -11,6 +11,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.input.pointer.PointerId
 import androidx.compose.ui.input.pointer.PointerInputChange
@@ -20,8 +21,13 @@ import androidx.compose.ui.input.pointer.positionChangeConsumed
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.beatonma.orbitals.fastForEach
+import org.beatonma.orbitals.physics.Position
 import org.beatonma.orbitals.physics.UniqueID
-import org.beatonma.orbitalslivewallpaper.orbitals.OrbitalsRenderEngine
+import org.beatonma.orbitals.physics.metres
+import org.beatonma.orbitals.rendering.OrbitalsRenderEngine
+import org.beatonma.orbitals.rendering.touch.clearTouchBodies
+import org.beatonma.orbitals.rendering.touch.createTouchAttractor
+import org.beatonma.orbitals.rendering.touch.getTouchRegion
 
 
 fun Modifier.orbitalsPointerInput(orbitals: OrbitalsRenderEngine<DrawScope>) = composed {
@@ -46,11 +52,12 @@ fun Modifier.orbitalsPointerInput(orbitals: OrbitalsRenderEngine<DrawScope>) = c
                     val id = pointerBodies[change.id]
 
                     if (id == null) {
-                        val body = createAttractor(change.position)
+                        val body = createTouchAttractor(change.position.toPosition())
                         pointerBodies[change.id] = body.id
                         orbitals.addBody(body)
                     } else {
-                        val body = orbitals.bodies.find { it.id == id } ?: return@detectDragMultitouch
+                        val body =
+                            orbitals.bodies.find { it.id == id } ?: return@detectDragMultitouch
                         body.position = change.position.toPosition()
                     }
                 }
@@ -64,7 +71,7 @@ fun Modifier.orbitalsPointerInput(orbitals: OrbitalsRenderEngine<DrawScope>) = c
                     }
 
                     orbitals.addBodies(
-                        getTouchRegion(offset)
+                        getTouchRegion(offset.toPosition())
                     )
                 },
                 onPress = {
@@ -111,3 +118,5 @@ suspend fun PointerInputScope.detectDragMultitouch(
         }
     }
 }
+
+private fun Offset.toPosition() = Position(x.metres, y.metres)

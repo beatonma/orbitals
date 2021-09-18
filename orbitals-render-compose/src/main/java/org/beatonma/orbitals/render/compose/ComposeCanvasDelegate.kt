@@ -29,10 +29,10 @@ object ComposeDelegate : CanvasDelegate<DrawScope> {
             color = color.toComposeColor(),
             alpha = alpha,
             style = when (style) {
-                DrawStyle.Wireframe -> Fill
-                DrawStyle.Solid -> Stroke(
+                DrawStyle.Wireframe -> Stroke(
                     width = strokeWidth,
                 )
+                DrawStyle.Solid -> Fill
             },
         )
     }

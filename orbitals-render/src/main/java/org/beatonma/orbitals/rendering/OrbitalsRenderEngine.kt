@@ -1,14 +1,12 @@
-package org.beatonma.orbitalslivewallpaper.orbitals
+package org.beatonma.orbitals.rendering
 
 import org.beatonma.orbitals.engine.OrbitalsEngine
 import org.beatonma.orbitals.engine.Space
 import org.beatonma.orbitals.engine.Universe
+import org.beatonma.orbitals.options.Options
 import org.beatonma.orbitals.options.PhysicsOptions
 import org.beatonma.orbitals.physics.Body
 import org.beatonma.orbitals.physics.UniqueID
-import org.beatonma.orbitals.rendering.CanvasDelegate
-import org.beatonma.orbitals.rendering.OrbitalsRenderer
-import org.beatonma.orbitalslivewallpaper.orbitals.options.Options
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 

@@ -25,7 +25,7 @@ kotlin {
         implementation(project(":${Module.Core}"))
         implementation(project(":${Module.Render}"))
         implementation(compose.ui)
-//        implementation(Dependencies.KotlinReflect)
+        implementation(compose.foundation)
     }
 }
 

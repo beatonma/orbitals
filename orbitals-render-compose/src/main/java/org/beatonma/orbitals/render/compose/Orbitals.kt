@@ -1,27 +1,24 @@
-package org.beatonma.orbitalslivewallpaper.orbitals.ui
+package org.beatonma.orbitals.render.compose
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.withFrameMillis
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.withFrameMillis
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.lifecycle.whenStarted
-import org.beatonma.orbitals.render.compose.ComposeDelegate
+import org.beatonma.orbitals.options.Options
+import org.beatonma.orbitals.rendering.OrbitalsRenderEngine
+import org.beatonma.orbitals.rendering.diffRenderers
 import org.beatonma.orbitals.rendering.getRenderers
-import org.beatonma.orbitalslivewallpaper.orbitals.OrbitalsRenderEngine
-import org.beatonma.orbitalslivewallpaper.orbitals.diffRenderers
-import org.beatonma.orbitalslivewallpaper.orbitals.options.Options
-import org.beatonma.orbitalslivewallpaper.orbitals.touch.orbitalsPointerInput
 import kotlin.math.roundToInt
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
+
 
 @OptIn(ExperimentalTime::class)
 @Composable
@@ -73,21 +70,15 @@ private fun rememberRenderEngine(
 private val frameMillis: Long
     @Composable
     get() {
-        var frameMillis by remember { mutableStateOf(0L) }
         var previousFrameMillis by remember { mutableStateOf(0L) }
-
-        val lifecycleOwner = LocalLifecycleOwner.current
-
-        LaunchedEffect(Unit) {
-            lifecycleOwner.whenStarted {
-                while (true) {
-                    withFrameMillis {
-                        frameMillis = it - previousFrameMillis
-                        previousFrameMillis = it
-                    }
+        var frameMillis by remember { mutableStateOf(0L) }
+        LaunchedEffect(frameMillis) {
+            while (true) {
+                withFrameMillis { frameTime ->
+                    frameMillis = frameTime - previousFrameMillis
+                    previousFrameMillis = frameTime
                 }
             }
         }
-
         return frameMillis
     }
