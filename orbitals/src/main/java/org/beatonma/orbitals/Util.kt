@@ -1,6 +1,5 @@
 package org.beatonma.orbitals
 
-import androidx.annotation.FloatRange
 import kotlin.random.Random
 
 /**
@@ -28,7 +27,7 @@ fun Float.normalizeIn(min: Float, max: Float): Float {
         .coerceIn(0F, 1F)
 }
 
-fun chance(@FloatRange(from = 0.0, to = 1.0) likelihood: Float): Boolean =
+fun chance(likelihood: Float): Boolean =
     Random.nextFloat() < likelihood
 
 val Int.percent get() = this.toFloat().percent

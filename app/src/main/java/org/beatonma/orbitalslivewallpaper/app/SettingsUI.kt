@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -31,6 +32,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -51,6 +53,7 @@ import org.beatonma.orbitalslivewallpaper.app.settings.SingleSelectSetting
 import org.beatonma.orbitalslivewallpaper.app.settings.SwitchSetting
 import org.beatonma.orbitalslivewallpaper.orbitals.options.Options
 import org.beatonma.orbitalslivewallpaper.orbitals.ui.Orbitals
+import org.beatonma.orbitalslivewallpaper.orbitals.ui.OrbitalsView
 import kotlin.time.ExperimentalTime
 
 
@@ -65,6 +68,20 @@ fun SettingsUI(
     )
 ) {
     val options by viewmodel.getOptions().collectAsState(initial = Options())
+
+//    Column(Modifier.fillMaxSize()) {
+//        Orbitals(
+//            options,
+//            Modifier.fillMaxWidth().fillMaxHeight(.5f)
+//        )
+//
+//        AndroidView(
+//            factory = { context ->
+//                OrbitalsView(context)
+//            },
+//            modifier = Modifier.background(Color.DarkGray).fillMaxSize()
+//        )
+//    }
 
     BoxWithConstraints(Modifier.fillMaxSize()) {
         LazyColumn(
@@ -87,6 +104,19 @@ fun SettingsUI(
                         .aspectRatio(16f / 9f)
                 )
             }
+
+//            item {
+//                AndroidView(
+//                    factory = { context ->
+//                        OrbitalsView(context)
+//                    },
+//                    modifier = Modifier
+//                        .background(Color.DarkGray)
+//                        .fillMaxWidth()
+//                        .aspectRatio(16f / 9f)
+//                )
+//            }
+
 
             item {
                 VisualSettingsUI(visualOptions = options.visualOptions, viewmodel = viewmodel)

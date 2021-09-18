@@ -1,8 +1,5 @@
 package org.beatonma.orbitals.physics
 
-import androidx.annotation.CallSuper
-import androidx.annotation.VisibleForTesting
-import org.beatonma.orbitals.engine.AllowOutOfBounds
 import java.util.*
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -52,7 +49,6 @@ sealed interface Body {
 
     fun distanceTo(other: Body): Distance = position.distanceTo(other.position)
 
-    @CallSuper
     fun tick(duration: Duration) {
         applyInertia(duration)
     }
@@ -113,14 +109,12 @@ data class InertialBody(
         this.acceleration += acceleration
     }
 
-    @VisibleForTesting
     internal fun calculateForce(other: Body, G: Float): Force =
         calculateGravitationalForce(this.mass, other.mass, distanceTo(other), G = G)
 
     /**
      * Calculate acceleration due to gravity.
      */
-    @VisibleForTesting
     internal fun calculateAcceleration(force: Force, angle: Angle): Acceleration =
         Acceleration(force / mass, angle)
 
@@ -134,7 +128,7 @@ data class GreatAttractor(
     override val radius: Distance = ZeroDistance,
     override val motion: Motion = ZeroMotion,
     override var age: Duration = Duration.seconds(0)
-) : Body, Fixed, Senescent, AllowOutOfBounds {
+) : Body, Fixed, Senescent {
 
     override fun applyInertia(timeDelta: Duration) {
         // N/A

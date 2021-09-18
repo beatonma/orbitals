@@ -11,10 +11,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.insets.ProvideWindowInsets
-import org.beatonma.orbitals.rendering.util.toComposeColor
+import org.beatonma.orbitals.render.compose.toComposeColor
 
 @Composable
 fun AppTheme(
@@ -74,3 +75,10 @@ private fun darkColors(
     secondary = secondaryColors[secondaryColors.size / 2].toComposeColor(),
     secondaryVariant = secondaryColors[secondaryColors.size / 4].toComposeColor(),
 )
+
+
+//private fun Int.toComposeColor(): Color = Color(
+//    red = (this shr 16) and 0xff,
+//    green = (this shr 8) and 0xff,
+//    blue = this and 0xff,
+//)

@@ -5,6 +5,7 @@ import android.os.Handler
 import android.service.wallpaper.WallpaperService
 import android.view.MotionEvent
 import android.view.SurfaceHolder
+import org.beatonma.orbitals.render.android.AndroidCanvasDelegate
 import org.beatonma.orbitals.rendering.getRenderers
 import org.beatonma.orbitalslivewallpaper.app.Settings
 import org.beatonma.orbitalslivewallpaper.app.dataStore
@@ -43,10 +44,10 @@ class LwpService : WallpaperService() {
             }
 
         private val renderEngine = OrbitalsRenderEngine<Canvas>(
-            renderers = getRenderers(options.visualOptions),
+            renderers = getRenderers(options.visualOptions, AndroidCanvasDelegate),
             options = options,
             onOptionsChange = {
-                renderers = diffRenderers(this)
+                renderers = diffRenderers(this, AndroidCanvasDelegate)
             }
         )
 

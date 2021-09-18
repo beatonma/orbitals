@@ -1,8 +1,32 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
     id("com.android.library")
     id("kotlin-multiplatform")
+    id("org.jetbrains.compose") version Versions.Desktop.Compose
+}
+
+
+repositories {
+    mavenCentral()
+    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+    google()
+}
+
+kotlin {
+    android {
+
+    }
+    jvm {
+
+    }
+
+
+
+    sourceSets["commonMain"].dependencies {
+        implementation(project(":${Module.Core}"))
+        implementation(project(":${Module.Render}"))
+        implementation(compose.ui)
+//        implementation(Dependencies.KotlinReflect)
+    }
 }
 
 android {
@@ -21,16 +45,7 @@ android {
     }
 }
 
-kotlin {
-    android {
-
-    }
-    jvm {
-
-    }
-}
-
-tasks.withType<KotlinCompile>().all {
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().all {
     kotlinOptions {
         jvmTarget = Versions.Java.toString()
         languageVersion = Versions.KotlinLanguage

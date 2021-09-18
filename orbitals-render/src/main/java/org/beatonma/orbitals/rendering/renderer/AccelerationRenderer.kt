@@ -1,34 +1,31 @@
 package org.beatonma.orbitals.rendering.renderer
 
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.toArgb
+import org.beatonma.orbitals.options.CapStyle
 import org.beatonma.orbitals.options.VisualOptions
 import org.beatonma.orbitals.physics.Body
+import org.beatonma.orbitals.physics.Position
 import org.beatonma.orbitals.rendering.CanvasDelegate
 import org.beatonma.orbitals.rendering.OrbitalsRenderer
-import org.beatonma.orbitals.rendering.util.toOffset
 
 
 class AccelerationRenderer<Canvas> internal constructor(
     override val delegate: CanvasDelegate<Canvas>,
     override var options: VisualOptions,
 ) : OrbitalsRenderer<Canvas> {
-    private val Scale = 1e2F
+    private val scale = 1e2F
 
     override fun drawBody(canvas: Canvas, body: Body) {
         delegate.drawLine(
             canvas,
-            color = Color.Green.toArgb(),
-            start = body.position.toOffset(),
-            end = Offset(
-                body.acceleration.x.value * Scale,
-                body.acceleration.y.value * Scale,
-            ) + body.position.toOffset(),
+            color = 0xff_00ff00.toInt(),
+            start = body.position,
+            end = Position(
+                body.acceleration.x.value * scale,
+                body.acceleration.y.value * scale,
+            ) + body.position,
             alpha = 1f,
             strokeWidth = options.strokeWidth,
-            cap = StrokeCap.Round,
+            cap = CapStyle.Round,
         )
     }
 }

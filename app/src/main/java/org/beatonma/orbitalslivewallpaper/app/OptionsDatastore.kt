@@ -16,7 +16,11 @@ import kotlinx.coroutines.runBlocking
 import org.beatonma.orbitals.engine.SystemGenerator
 import org.beatonma.orbitals.options.CollisionStyle
 import org.beatonma.orbitals.options.ColorOptions
+import org.beatonma.orbitals.options.DrawStyle
+import org.beatonma.orbitals.options.ObjectColors
 import org.beatonma.orbitals.options.PhysicsOptions
+import org.beatonma.orbitals.options.RenderLayer
+import org.beatonma.orbitals.options.VisualOptions
 import org.beatonma.orbitalslivewallpaper.orbitals.options.Options
 import org.beatonma.orbitalslivewallpaper.warn
 import kotlin.time.Duration
@@ -81,40 +85,40 @@ object ColorKeys {
     val foregroundAlpha = floatPreferencesKey("foreground_alpha")
 }
 
-private fun loadColors(preferences: Preferences): org.beatonma.orbitals.options.ColorOptions =
+private fun loadColors(preferences: Preferences): ColorOptions =
     with(ColorKeys) {
-        org.beatonma.orbitals.options.ColorOptions(
+        ColorOptions(
             background = preferences[background] ?: Color.BLACK,
             foregroundAlpha = preferences[foregroundAlpha] ?: 1f,
             bodies = preferences[bodies]
                 ?.map {
                     safeValueOf(
                         it,
-                        default = org.beatonma.orbitals.options.ObjectColors.Greyscale
+                        default = ObjectColors.Greyscale
                     )
                 }
                 ?.toSet()
                 ?: setOf(
-                    org.beatonma.orbitals.options.ObjectColors.Red,
-                    org.beatonma.orbitals.options.ObjectColors.Purple,
+                    ObjectColors.Red,
+                    ObjectColors.Purple,
                 ),
         )
     }
 
 private fun loadVisualOptions(
     preferences: Preferences,
-    colors: org.beatonma.orbitals.options.ColorOptions = loadColors(preferences),
-): org.beatonma.orbitals.options.VisualOptions = with(VisualKeys) {
-    org.beatonma.orbitals.options.VisualOptions(
+    colors: ColorOptions = loadColors(preferences),
+): VisualOptions = with(VisualKeys) {
+    VisualOptions(
         renderLayers = preferences[renderLayers]
-            ?.map { safeValueOf(it, default = org.beatonma.orbitals.options.RenderLayer.Default) }
+            ?.map { safeValueOf(it, default = RenderLayer.Default) }
             ?.toSet()
-            ?: setOf(org.beatonma.orbitals.options.RenderLayer.Default),
+            ?: setOf(RenderLayer.Default),
         colorOptions = colors,
         traceLineLength = preferences[traceLineLength] ?: 50,
         drawStyle = preferences[drawStyle]
-            ?.let { safeValueOf(it, default = org.beatonma.orbitals.options.DrawStyle.Solid) }
-            ?: org.beatonma.orbitals.options.DrawStyle.Solid,
+            ?.let { safeValueOf(it, default = DrawStyle.Solid) }
+            ?: DrawStyle.Solid,
         strokeWidth = preferences[strokeWidth] ?: 4f,
     )
 }
@@ -126,7 +130,7 @@ private fun loadPhysicsOptions(
     PhysicsOptions(
         autoAddBodies = preferences[autoAddBodies] ?: true,
         maxEntities = preferences[maxEntities] ?: 25,
-        maxFixedBodyAgeMinutes = Duration.hours(preferences[maxFixedBodyAgeMinutes] ?: 1),
+        maxFixedBodyAgeMinutes = Duration.minutes(preferences[maxFixedBodyAgeMinutes] ?: 1),
         systemGenerators = preferences[systemGenerators]
             ?.map { safeValueOf(it, default = SystemGenerator.StarSystem) }
             ?.toSet()

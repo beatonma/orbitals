@@ -1,6 +1,5 @@
 package org.beatonma.orbitals.engine
 
-import androidx.annotation.FloatRange
 import org.beatonma.orbitals.physics.Position
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -46,14 +45,22 @@ data class Universe internal constructor(
     override val end: Int,
     override val bottom: Int,
     val visibleSpace: Region,
-) : Space
+) : Space {
+    override fun toString(): String {
+        return "Universe($start, $top, $end, $bottom)"
+    }
+}
 
 data class Region(
     override val start: Int,
     override val top: Int,
     override val end: Int,
     override val bottom: Int,
-) : Space
+) : Space {
+    override fun toString(): String {
+        return "Region($start, $top, $end, $bottom)"
+    }
+}
 
 /**
  * Return a [Universe] centered on the region (0, 0, focusWidth, focusHeight) with a surrounding
@@ -82,9 +89,12 @@ fun Space.relativePosition(
 )
 
 fun Universe.relativeVisiblePosition(
-    @FloatRange(from = 0.0, to = 1.0) x: Float,
-    @FloatRange(from = 0.0, to = 1.0) y: Float,
-): Position = visibleSpace.relativePosition(x, y)
+    x: Float,
+    y: Float,
+): Position {
+    check(x in 0f..1f && y in 0f..1f)
+    return visibleSpace.relativePosition(x, y)
+}
 
 fun Universe.anyVisiblePosition(): Position =
     relativeVisiblePosition(

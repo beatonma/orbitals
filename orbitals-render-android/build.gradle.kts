@@ -1,8 +1,6 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
     id("com.android.library")
-    id("kotlin-multiplatform")
+    id("kotlin-android")
 }
 
 android {
@@ -19,24 +17,22 @@ android {
         sourceCompatibility = Versions.Java
         targetCompatibility = Versions.Java
     }
-}
 
-kotlin {
-    android {
-
-    }
-    jvm {
-
-    }
-}
-
-tasks.withType<KotlinCompile>().all {
     kotlinOptions {
         jvmTarget = Versions.Java.toString()
         languageVersion = Versions.KotlinLanguage
-        apiVersion = Versions.KotlinLanguage
         freeCompilerArgs = freeCompilerArgs + listOf(
             "-Xopt-in=kotlin.RequiresOptIn", // Hide warnings about @OptIn annotations.
         )
     }
+}
+
+dependencies {
+    implementation(Dependencies.KotlinStdLib)
+    implementation(Dependencies.KotlinReflect)
+
+    implementation(project(Module.Core))
+    implementation(project(Module.Render))
+
+    testImplementation(Dependencies.KotlinTest)
 }

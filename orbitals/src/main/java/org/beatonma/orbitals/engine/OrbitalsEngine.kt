@@ -1,6 +1,5 @@
 package org.beatonma.orbitals.engine
 
-import androidx.annotation.VisibleForTesting
 import org.beatonma.orbitals.chance
 import org.beatonma.orbitals.options.PhysicsOptions
 import org.beatonma.orbitals.percent
@@ -15,14 +14,13 @@ import org.beatonma.orbitals.physics.toInertialBody
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
-interface AllowOutOfBounds
-
 
 interface OrbitalsEngine {
     var space: Universe
     var physics: PhysicsOptions
     var bodies: List<Body>
     val bodyCount: Int get() = bodies.size
+    val visibleBodyCount: Int get() = bodies.count { space.contains(it.position) }
     var pruneCounter: Int
     val pruneFrequency: Int
 
@@ -116,7 +114,6 @@ interface OrbitalsEngine {
 
 
 @OptIn(ExperimentalTime::class)
-@VisibleForTesting
 internal fun pruneBodies(
     bodies: List<Body>,
     space: Space,
@@ -145,4 +142,19 @@ internal fun pruneBodies(
         keep + (toBeConverted as List<FixedBody>).map(FixedBody::toInertialBody),
         toDestroy
     )
+//        .also {
+//        if (it.second.isEmpty()) return@also
+//        println(space)
+//        println("KEEP")
+//        it.first.forEach { body ->
+//            println(body.position)
+//        }
+//
+//        println("DESTROY")
+//        it.second.forEach { body ->
+//            println(body.position)
+//        }
+//        println(".")
+//        println(".")
+//    }
 }

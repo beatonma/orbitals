@@ -19,4 +19,8 @@ object Versions {
         const val NavigationCompose = "2.4.0-alpha08"
         const val Accompanist = "0.17.0"
     }
+
+    object Desktop {
+        const val Compose = "1.0.0-alpha3"
+    }
 }

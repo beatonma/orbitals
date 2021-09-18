@@ -6,6 +6,7 @@ import android.graphics.Canvas
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import org.beatonma.orbitals.render.android.AndroidCanvasDelegate
 import org.beatonma.orbitals.rendering.getRenderers
 import org.beatonma.orbitalslivewallpaper.app.Settings
 import org.beatonma.orbitalslivewallpaper.app.dataStore
@@ -24,11 +25,11 @@ class OrbitalsView @JvmOverloads constructor(
 ) : View(context, attrs, defStyleAttr) {
 
     private val options = getSavedOptionsSync(context.dataStore(Settings.Wallpaper))
-    private val renderEngine = OrbitalsRenderEngine<Canvas>(
-        renderers = getRenderers(options.visualOptions),
+    private val renderEngine = OrbitalsRenderEngine(
+        renderers = getRenderers(options.visualOptions, AndroidCanvasDelegate),
         options = options,
         onOptionsChange = {
-            renderers = diffRenderers(this)
+            renderers = diffRenderers(this, AndroidCanvasDelegate)
         }
     )
     private val touchHandler = OrbitalsGestureDetector(context, renderEngine)

@@ -1,6 +1,13 @@
 plugins {
     id("com.android.application")
     id("kotlin-android")
+    id("org.jetbrains.compose") version Versions.Desktop.Compose
+}
+
+repositories {
+    mavenCentral()
+    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+    google()
 }
 
 
@@ -38,9 +45,9 @@ dependencies {
     implementation(Dependencies.CoreKtx)
 
     // Compose
-    implementation(Dependencies.ComposeMaterial)
-    implementation(Dependencies.ComposeUI)
-    implementation(Dependencies.ComposeFoundation)
+    implementation(compose.material)
+    implementation(compose.ui)
+    implementation(compose.foundation)
 
     implementation(Dependencies.ActivityKtx)
     implementation(Dependencies.ActivityCompose)
@@ -50,8 +57,10 @@ dependencies {
 
     implementation(Dependencies.DataStore)
 
-    implementation(project(":orbitals"))
-    implementation(project(":orbitals-render"))
+    implementation(project(Module.Core))
+    implementation(project(Module.Render))
+    implementation(project(Module.AndroidRender))
+    implementation(project(Module.Compose))
 
     testImplementation(Dependencies.KotlinTest)
 }

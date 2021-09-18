@@ -7,7 +7,7 @@ import kotlin.time.ExperimentalTime
 
 data class PhysicsOptions @OptIn(ExperimentalTime::class) constructor(
     val autoAddBodies: Boolean = true,
-    val maxFixedBodyAgeMinutes: Duration = Duration.hours(1),
+    val maxFixedBodyAgeMinutes: Duration = Duration.minutes(1),
     val maxEntities: Int = 50,
     val systemGenerators: Set<SystemGenerator> = setOf(
         SystemGenerator.StarSystem,

@@ -13,6 +13,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.lifecycle.whenStarted
+import org.beatonma.orbitals.render.compose.ComposeDelegate
 import org.beatonma.orbitals.rendering.getRenderers
 import org.beatonma.orbitalslivewallpaper.orbitals.OrbitalsRenderEngine
 import org.beatonma.orbitalslivewallpaper.orbitals.diffRenderers
@@ -59,10 +60,10 @@ private fun rememberRenderEngine(
 ): OrbitalsRenderEngine<DrawScope> {
     return remember {
         OrbitalsRenderEngine(
-            renderers = getRenderers(options.visualOptions),
+            renderers = getRenderers(options.visualOptions, ComposeDelegate),
             options = options,
             onOptionsChange = {
-                renderers = diffRenderers(this)
+                renderers = diffRenderers(this, ComposeDelegate)
             }
         )
     }
