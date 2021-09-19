@@ -1,10 +1,12 @@
 package org.beatonma.orbitals.core.physics
 
+import kotlin.jvm.JvmInline
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 
 /** ms^-2 */
+@JvmInline
 value class AccelerationScalar internal constructor(override val value: Float) : Scalar {
     operator fun plus(other: AccelerationScalar): AccelerationScalar =
         AccelerationScalar(value + other.value)

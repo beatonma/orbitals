@@ -1,11 +1,14 @@
 package org.beatonma.orbitals.core.physics
 
+import kotlin.jvm.JvmInline
+
 val Float.kg: Mass get() = Mass(this)
 val Number.kg: Mass get() = this.toFloat().kg
 
 /**
  * Kilograms
  */
+@JvmInline
 value class Mass internal constructor(override val value: Float): Scalar {
     operator fun plus(other: Mass) = Mass(value + other.value)
 

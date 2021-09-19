@@ -1,5 +1,6 @@
 package org.beatonma.orbitals.core.physics
 
+import kotlin.jvm.JvmInline
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
@@ -7,6 +8,7 @@ import kotlin.math.sin
 private const val PI_FLOAT = PI.toFloat()
 private const val CIRCLE_RADIANS = (2.0 * PI).toFloat()
 
+@JvmInline
 value class Angle internal constructor(override val value: Float): Scalar {
     val asRadians: Float get() = value
     val asDegrees: Float get() = value * (180f / PI_FLOAT)

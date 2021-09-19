@@ -1,10 +1,13 @@
 package org.beatonma.orbitals.core.physics
 
+import kotlin.jvm.JvmInline
+
 val Float.newtons: Force get() = Force(this)
 
 /**
  * Newtons
  */
+@JvmInline
 value class Force internal constructor(
     /** kg·m/s2 */
     override val value: Float,

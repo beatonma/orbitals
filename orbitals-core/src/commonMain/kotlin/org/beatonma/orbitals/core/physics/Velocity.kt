@@ -5,6 +5,8 @@ import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 
+private const val PI = 3.141592653589793
+
 @OptIn(ExperimentalTime::class)
 val Distance.perSecond: Speed
     get() = this / Duration.seconds(1)
@@ -30,7 +32,7 @@ data class Velocity internal constructor(
     val angle: Angle
         get() {
             val a = atan2(y.value, x.value)
-            return if (a < 0f) ((Math.PI * 2f).toFloat() + a).radians
+            return if (a < 0f) ((PI * 2f).toFloat() + a).radians
             else a.radians
         }
 

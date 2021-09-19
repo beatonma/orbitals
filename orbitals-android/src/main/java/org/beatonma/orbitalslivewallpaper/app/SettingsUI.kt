@@ -104,17 +104,17 @@ fun SettingsUI(
                 )
             }
 
-            item {
-                AndroidView(
-                    factory = { context ->
-                        OrbitalsView(context)
-                    },
-                    modifier = Modifier
-                        .background(Color.DarkGray)
-                        .fillMaxWidth()
-                        .aspectRatio(16f / 9f)
-                )
-            }
+//            item {
+//                AndroidView(
+//                    factory = { context ->
+//                        OrbitalsView(context)
+//                    },
+//                    modifier = Modifier
+//                        .background(Color.DarkGray)
+//                        .fillMaxWidth()
+//                        .aspectRatio(16f / 9f)
+//                )
+//            }
 
 
             item {
