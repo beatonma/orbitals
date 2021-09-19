@@ -1,36 +1,8 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
-    id("org.jetbrains.compose") version Versions.Desktop.Compose
-}
-
-
-repositories {
-    mavenCentral()
-    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-    google()
-}
-
-kotlin {
-    android {
-
-    }
-
-    jvm {
-
-    }
-
-    sourceSets {
-        val androidMain by getting {}
-        val commonMain by getting {
-            dependencies {
-                implementation(project(":${Module.Core}"))
-                implementation(project(":${Module.Render}"))
-                implementation(compose.ui)
-                implementation(compose.foundation)
-            }
-        }
-    }
 }
 
 android {
@@ -51,7 +23,27 @@ android {
     }
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().all {
+kotlin {
+    android {
+
+    }
+
+    jvm {
+
+    }
+
+    sourceSets {
+        val commonMain by getting {}
+        val androidMain by getting {}
+//        val jvmTest by getting {
+//            dependencies {
+//                implementation(Dependencies.KotlinTest)
+//            }
+//        }
+    }
+}
+
+tasks.withType<KotlinCompile>().all {
     kotlinOptions {
         jvmTarget = Versions.Java.toString()
         languageVersion = Versions.KotlinLanguage

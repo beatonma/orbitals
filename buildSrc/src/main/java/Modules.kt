@@ -3,16 +3,18 @@ import org.gradle.kotlin.dsl.project
 import org.gradle.kotlin.dsl.support.delegates.SettingsDelegate
 
 enum class Module(private val moduleName: String) {
-    Android("app"),
-    AndroidRender("orbitals-render-android"),
-    Compose("orbitals-render-compose"),
-    Core("orbitals"),
+    Android("orbitals-android"),
+    Desktop("orbitals-desktop"),
+    Web("orbitals-web"),
+
     Render("orbitals-render"),
+    AndroidRender("orbitals-render-android"),
+    ComposeRender("orbitals-render-compose"),
+
+    Core("orbitals-core"),
     ;
 
-    override fun toString(): String {
-        return moduleName
-    }
+    override fun toString(): String = moduleName
 }
 
 fun DependencyHandler.project(module: Module) =

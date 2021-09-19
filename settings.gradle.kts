@@ -8,8 +8,9 @@ pluginManagement {
     }
 }
 
-include(":app")
-include(":orbitals")
+include(":orbitals-core")
 include(":orbitals-render")
 include(":orbitals-render-android")
 include(":orbitals-render-compose")
+include(":orbitals-android")
+include(":orbitals-desktop")
