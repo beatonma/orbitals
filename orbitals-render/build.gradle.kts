@@ -32,6 +32,13 @@ kotlin {
 
     }
 
+    js(IR) {
+        browser {
+
+        }
+        binaries.executable()
+    }
+
     sourceSets {
         val commonMain by getting {
             dependencies {
@@ -45,6 +52,7 @@ kotlin {
                 implementation(Dependencies.KotlinReflect)
             }
         }
+        val jsMain by getting {}
     }
 }
 

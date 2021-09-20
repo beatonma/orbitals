@@ -1,9 +1,7 @@
 plugins {
     kotlin("multiplatform")
-    id("com.android.library")
     id("org.jetbrains.compose") version Versions.Desktop.Compose
 }
-
 
 repositories {
     mavenCentral()
@@ -12,14 +10,6 @@ repositories {
 }
 
 kotlin {
-    android {
-
-    }
-
-    jvm {
-
-    }
-
     js(IR) {
         browser {
 
@@ -28,34 +18,16 @@ kotlin {
     }
 
     sourceSets {
-        val androidMain by getting {}
-        val commonMain by getting {
+        val jsMain by getting {
             dependencies {
+                implementation(compose.web.core)
+                implementation(compose.web.widgets)
+                implementation(compose.runtime)
+
                 implementation(project(":${Module.Core}"))
                 implementation(project(":${Module.Render}"))
-                implementation(compose.ui)
-                implementation(compose.foundation)
             }
         }
-        val jsMain by getting {}
-    }
-}
-
-android {
-    compileSdk = AppConfig.SdkTarget
-
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-
-    defaultConfig {
-        minSdk = AppConfig.SdkMin
-        targetSdk = AppConfig.SdkTarget
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    compileOptions {
-        sourceCompatibility = Versions.Java
-        targetCompatibility = Versions.Java
     }
 }
 

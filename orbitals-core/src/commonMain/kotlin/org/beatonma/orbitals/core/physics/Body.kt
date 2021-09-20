@@ -1,7 +1,5 @@
 package org.beatonma.orbitals.core.physics
 
-import java.util.*
-import kotlin.jvm.JvmInline
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
@@ -142,16 +140,5 @@ data class GreatAttractor(
     override fun tick(duration: Duration) {
         super.tick(duration)
         age += duration
-    }
-}
-
-
-fun uniqueID(name: Any): UniqueID = UniqueID("$name[$uniqueID]")
-private val uniqueID: String get() = UUID.randomUUID().toString().substring(0, 5)
-
-@JvmInline
-value class UniqueID internal constructor(val value: String) {
-    override fun toString(): String {
-        return "id:$value"
     }
 }
