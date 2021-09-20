@@ -43,7 +43,7 @@ kotlin {
         val commonMain by getting {}
         val androidMain by getting {}
         val jsMain by getting {}
-        val jvmTest by getting {
+        val commonTest by getting {
             dependencies {
                 implementation(Dependencies.KotlinTest)
             }
