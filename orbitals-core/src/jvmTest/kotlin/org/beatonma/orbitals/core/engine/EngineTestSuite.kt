@@ -1,4 +1,4 @@
-package org.beatonma.orbitals.core
+package org.beatonma.orbitals.core.engine
 
 import org.junit.runner.RunWith
 import org.junit.runners.Suite

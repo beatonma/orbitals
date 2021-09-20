@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalTime::class)
 
-package org.beatonma.orbitals.core
+package org.beatonma.orbitals.core.engine
 
 import org.beatonma.orbitals.core.physics.FixedBody
 import org.beatonma.orbitals.core.physics.GreatAttractor
@@ -9,6 +9,7 @@ import org.beatonma.orbitals.core.physics.Motion
 import org.beatonma.orbitals.core.physics.Position
 import org.beatonma.orbitals.core.physics.UniqueID
 import org.beatonma.orbitals.core.physics.kg
+import org.beatonma.orbitals.test.shouldbe
 import org.junit.Test
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime

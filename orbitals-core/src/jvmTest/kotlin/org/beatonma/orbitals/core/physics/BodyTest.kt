@@ -7,6 +7,8 @@ import kotlin.test.assertTrue
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
+private const val TestG = 6.674f
+
 @OptIn(ExperimentalTime::class)
 class BodyTest {
     private val body
@@ -50,7 +52,7 @@ class BodyTest {
                 )
             )
 
-            val force: Force = body.calculateForce(other, DefaultG)
+            val force: Force = body.calculateForce(other, TestG)
             force.value.shouldbe(5.606e2f, delta = 1f)
         }
     }
@@ -67,7 +69,7 @@ class BodyTest {
 
             val angle = body.position.angleTo(other.position)
 //
-            val force = body.calculateForce(other, DefaultG)
+            val force = body.calculateForce(other, TestG)
             val acceleration = body.calculateAcceleration(force, angle)
 
             val absAcceleration = force / body.mass
@@ -96,7 +98,7 @@ class BodyTest {
             val distanceBefore = body.distanceTo(other)
             distanceBefore.value.shouldbe(100f, delta = 0.0001f)
 
-            body.applyGravity(other, 1000.ms, DefaultG)
+            body.applyGravity(other, 1000.ms, TestG)
             body.applyInertia(1000.ms)
 
             val distanceAfter = body.distanceTo(other)
