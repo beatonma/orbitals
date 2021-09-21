@@ -1,36 +1,76 @@
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import org.jetbrains.compose.web.css.padding
-import org.jetbrains.compose.web.css.px
-import org.jetbrains.compose.web.dom.Button
-import org.jetbrains.compose.web.dom.Div
-import org.jetbrains.compose.web.dom.Span
-import org.jetbrains.compose.web.dom.Text
-import org.jetbrains.compose.web.renderComposable
+import kotlin.time.Duration
+import kotlinx.browser.document
+import kotlinx.browser.window
+import kotlinx.css.*
+import org.beatonma.orbitals.render.OrbitalsRenderEngine
+import org.beatonma.orbitals.render.diffRenderers
+import org.beatonma.orbitals.render.getRenderers
+import org.beatonma.orbitals.render.options.CapStyle
+import org.beatonma.orbitals.render.options.DrawStyle
+import org.beatonma.orbitals.render.options.Options
+import org.w3c.dom.CanvasRenderingContext2D
+import org.w3c.dom.HTMLCanvasElement
+import react.*
+import react.dom.*
+import styled.*
+
+private val options = Options()
 
 fun main() {
-    var count: Int by mutableStateOf(0)
+    render(document.body) {
+        child(App)
+    }
+}
 
-    renderComposable(rootElementId = "root") {
-        Div {
-            Text("I don't think canvas operations are possible in Compose for Web yet..?")
+@OptIn(kotlin.time.ExperimentalTime::class)
+val App = functionalComponent<PropsWithChildren> {
+    val canvasRef = useRef(null)
+    val (invalidated, setInvalidated) = useState(false)
+
+    val (orbitals, setOrbitals) = useState {
+        OrbitalsRenderEngine(
+            renderers = getRenderers(options.visualOptions, JsCanvasDelegate),
+            options = options,
+            onOptionsChange = {
+                renderers = diffRenderers(this, JsCanvasDelegate)
+            }
+        )
+    }
+
+    useEffect(arrayOf(invalidated)) {
+        val currentCanvas = canvasRef.current as HTMLCanvasElement
+
+        currentCanvas.width = window.innerWidth
+        currentCanvas.height = window.innerHeight
+
+        orbitals.onSizeChanged(currentCanvas.width, currentCanvas.height)
+        val ctx = currentCanvas.getContext("2d") as CanvasRenderingContext2D
+
+        ctx.apply {
+            clearRect(0.0, 0.0, currentCanvas.width.toDouble(), currentCanvas.height.toDouble())
+            lineWidth = options.visualOptions.strokeWidth.toDouble()
         }
-        Div({ style { padding(25.px) } }) {
-            Button(attrs = {
-                onClick { count -= 1 }
-            }) {
-                Text("-")
-            }
+        orbitals.update(ctx, Duration.milliseconds(15))
 
-            Span({ style { padding(15.px) } }) {
-                Text("$count")
-            }
+        window.setTimeout(timeout = 15, handler = {
+            setInvalidated(!invalidated)
+        })
 
-            Button(attrs = {
-                onClick { count += 1 }
-            }) {
-                Text("+")
+        Unit
+    }
+
+    styledCanvas {
+        css {
+            position = Position.absolute
+            top = 0.px
+            left = 0.px
+            background = options.visualOptions.colorOptions.background.toHexString()
+        }
+
+        attrs {
+            ref = canvasRef
+            onClick = {
+
             }
         }
     }

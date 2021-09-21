@@ -1,7 +1,7 @@
 plugins {
     id("com.android.application")
     id("kotlin-android")
-    id("org.jetbrains.compose") version Versions.Desktop.Compose
+    id("org.jetbrains.compose") version Versions.Compose
 }
 
 repositories {
@@ -30,7 +30,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = Versions.Jetpack.Compose
+        kotlinCompilerExtensionVersion = Versions.Android.Compose
     }
 }
 
@@ -39,10 +39,10 @@ dependencies {
     implementation(Dependencies.KotlinStdLib)
 
     implementation(Dependencies.CoroutinesCore)
-    implementation(Dependencies.CoroutinesAndroid)
+    implementation(Dependencies.Android.CoroutinesAndroid)
 
-    implementation(Dependencies.AppCompat)
-    implementation(Dependencies.CoreKtx)
+    implementation(Dependencies.Android.AppCompat)
+    implementation(Dependencies.Android.CoreKtx)
 
     // Compose
     implementation(compose.material)
@@ -50,13 +50,13 @@ dependencies {
     implementation(compose.foundation)
     implementation(compose.runtime)
 
-    implementation(Dependencies.ActivityKtx)
-    implementation(Dependencies.ActivityCompose)
-    implementation(Dependencies.ViewModelCompose)
-    implementation(Dependencies.NavigationCompose)
-    implementation(Dependencies.Accompanist)
+    implementation(Dependencies.Android.ActivityKtx)
+    implementation(Dependencies.Android.ActivityCompose)
+    implementation(Dependencies.Android.ViewModelCompose)
+    implementation(Dependencies.Android.NavigationCompose)
+    implementation(Dependencies.Android.Accompanist)
 
-    implementation(Dependencies.DataStore)
+    implementation(Dependencies.Android.DataStore)
 
     implementation(project(Module.Core))
     implementation(project(Module.Render))
