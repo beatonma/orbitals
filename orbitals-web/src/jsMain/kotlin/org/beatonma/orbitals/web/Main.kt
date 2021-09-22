@@ -29,8 +29,6 @@ fun main() {
 @OptIn(kotlin.time.ExperimentalTime::class)
 val App = functionalComponent<PropsWithChildren> {
     val canvasRef = useRef(null)
-    val (invalidated, setInvalidated) = useState(false)
-    val (frameTimeoutId, setFrameTimeoutId) = useState(0)
     val (backgroundColor, setBackgroundColor) = useState("#000000")
 
     val (orbitals, setOrbitals) = useState {
@@ -45,29 +43,37 @@ val App = functionalComponent<PropsWithChildren> {
         )
     }
 
-    useEffect(arrayOf(invalidated)) {
-        val currentCanvas = canvasRef.current as HTMLCanvasElement
+    useEffect {
+        var previousTimestamp = 0.0
+        var requestId = 0
 
-        currentCanvas.width = window.innerWidth
-        currentCanvas.height = window.innerHeight
+        fun render(timestamp: Double) {
+            val currentCanvas = canvasRef.current as HTMLCanvasElement
 
-        orbitals.onSizeChanged(currentCanvas.width, currentCanvas.height)
-        val ctx = currentCanvas.getContext("2d") as CanvasRenderingContext2D
+            val timeDelta = timestamp - previousTimestamp
+            previousTimestamp = timestamp
 
-        ctx.apply {
-            clearRect(0.0, 0.0, currentCanvas.width.toDouble(), currentCanvas.height.toDouble())
-            lineWidth = options.visualOptions.strokeWidth.toDouble()
+            currentCanvas.width = window.innerWidth
+            currentCanvas.height = window.innerHeight
+
+            orbitals.onSizeChanged(currentCanvas.width, currentCanvas.height)
+            val ctx = currentCanvas.getContext("2d") as CanvasRenderingContext2D
+
+            ctx.apply {
+                clearRect(0.0, 0.0, currentCanvas.width.toDouble(), currentCanvas.height.toDouble())
+                lineWidth = options.visualOptions.strokeWidth.toDouble()
+            }
+
+            orbitals.update(ctx, Duration.milliseconds(timeDelta))
+
+            requestId = window.requestAnimationFrame { timestamp -> render(timestamp) }
         }
-        orbitals.update(ctx, Duration.milliseconds(FrameDelay))
-        window.clearTimeout(frameTimeoutId)
-        setFrameTimeoutId(
-            window.setTimeout(
-                timeout = FrameDelay,
-                handler = { setInvalidated(!invalidated) }
-            )
-        )
 
-        Unit
+        render(0.0)
+
+        cleanup {
+            window.cancelAnimationFrame(requestId)
+        }
     }
 
     styledCanvas {
