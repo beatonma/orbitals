@@ -31,7 +31,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -52,7 +51,6 @@ import org.beatonma.orbitalslivewallpaper.app.settings.IntegerSetting
 import org.beatonma.orbitalslivewallpaper.app.settings.MultiSelectSetting
 import org.beatonma.orbitalslivewallpaper.app.settings.SingleSelectSetting
 import org.beatonma.orbitalslivewallpaper.app.settings.SwitchSetting
-import org.beatonma.orbitalslivewallpaper.orbitals.ui.OrbitalsView
 import kotlin.time.ExperimentalTime
 
 
@@ -67,20 +65,6 @@ fun SettingsUI(
     )
 ) {
     val options by viewmodel.getOptions().collectAsState(initial = Options())
-
-//    Column(Modifier.fillMaxSize()) {
-//        Orbitals(
-//            options,
-//            Modifier.fillMaxWidth().fillMaxHeight(.5f)
-//        )
-//
-//        AndroidView(
-//            factory = { context ->
-//                OrbitalsView(context)
-//            },
-//            modifier = Modifier.background(Color.DarkGray).fillMaxSize()
-//        )
-//    }
 
     BoxWithConstraints(Modifier.fillMaxSize()) {
         LazyColumn(
@@ -103,19 +87,6 @@ fun SettingsUI(
                         .aspectRatio(16f / 9f)
                 )
             }
-
-//            item {
-//                AndroidView(
-//                    factory = { context ->
-//                        OrbitalsView(context)
-//                    },
-//                    modifier = Modifier
-//                        .background(Color.DarkGray)
-//                        .fillMaxWidth()
-//                        .aspectRatio(16f / 9f)
-//                )
-//            }
-
 
             item {
                 VisualSettingsUI(visualOptions = options.visualOptions, viewmodel = viewmodel)
@@ -230,21 +201,12 @@ private fun PhysicsSettingsUI(
         )
 
         IntegerSetting(
-            name = "Maximum age of fixed bodies (minutes)",
-            key = PhysicsKeys.maxFixedBodyAgeMinutes,
-            value = physics.maxFixedBodyAgeMinutes.inWholeHours.toInt(),
+            name = "Maximum age of fixed bodies (seconds)",
+            key = PhysicsKeys.maxFixedBodyAgeSeconds,
+            value = physics.maxFixedBodyAge.inWholeSeconds.toInt(),
             onValueChange = viewmodel::updateOption,
-            min = 1,
-            max = 30,
-        )
-
-        IntegerSetting(
-            name = "Tick delta (seconds)",
-            key = PhysicsKeys.tickDelta,
-            value = physics.tickDelta.inWholeSeconds.toInt(),
-            onValueChange = viewmodel::updateOption,
-            min = 1,
-            max = 5,
+            min = 30,
+            max = 300,
         )
 
         FloatSetting(

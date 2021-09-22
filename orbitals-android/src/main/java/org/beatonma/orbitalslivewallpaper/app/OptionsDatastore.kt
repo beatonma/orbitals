@@ -70,12 +70,11 @@ object VisualKeys {
 
 object PhysicsKeys {
     val autoAddBodies = booleanPreferencesKey("auto_add_bodies")
-    val maxFixedBodyAgeMinutes = intPreferencesKey("max_fixedbody_age_minutes")
+    val maxFixedBodyAgeSeconds = intPreferencesKey("max_fixedbody_age_seconds")
     val maxEntities = intPreferencesKey("max_entities")
     val systemGenerators = stringSetPreferencesKey("system_generators")
     val gravityMultiplier = floatPreferencesKey("gravity_multiplier")
     val collisionStyle = stringPreferencesKey("collision_style")
-    val tickDelta = intPreferencesKey("tick_delta")
 }
 
 object ColorKeys {
@@ -129,7 +128,7 @@ private fun loadPhysicsOptions(
     PhysicsOptions(
         autoAddBodies = preferences[autoAddBodies] ?: true,
         maxEntities = preferences[maxEntities] ?: 25,
-        maxFixedBodyAgeMinutes = Duration.minutes(preferences[maxFixedBodyAgeMinutes] ?: 1),
+        maxFixedBodyAge = Duration.seconds(preferences[maxFixedBodyAgeSeconds] ?: 45),
         systemGenerators = preferences[systemGenerators]
             ?.map { safeValueOf(it, default = SystemGenerator.StarSystem) }
             ?.toSet()
@@ -142,7 +141,6 @@ private fun loadPhysicsOptions(
         collisionStyle = preferences[collisionStyle]
             ?.let { safeValueOf(it, CollisionStyle.None) }
             ?: CollisionStyle.None,
-        tickDelta = Duration.seconds(preferences[tickDelta] ?: 1),
     )
 }
 
