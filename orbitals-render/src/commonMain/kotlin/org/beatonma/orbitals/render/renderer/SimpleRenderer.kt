@@ -49,11 +49,11 @@ class SimpleRenderer<Canvas> internal constructor(
         )
     }
 
-    private fun drawAttractor(canvas: Canvas,body: GreatAttractor) {
+    private fun drawAttractor(canvas: Canvas, body: GreatAttractor) {
         delegate.drawCircle(
             canvas,
             body.position,
-            100.metres,
+            body.radius,
             0xffffff,
             strokeWidth = 8f,
             style = DrawStyle.Wireframe

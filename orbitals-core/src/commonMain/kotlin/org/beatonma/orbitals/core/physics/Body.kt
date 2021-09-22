@@ -1,8 +1,10 @@
 package org.beatonma.orbitals.core.physics
 
+import kotlin.math.pow
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
+val DefaultDensity = 0.5
 val ZeroMass get() = 0.0.kg
 val ZeroDistance get() = 0.0.metres
 val ZeroPosition get() = Position(ZeroDistance, ZeroDistance)
@@ -61,7 +63,7 @@ sealed interface Body {
 data class FixedBody(
     override val id: UniqueID = uniqueID("FixedBody"),
     override val mass: Mass,
-    override val radius: Distance = ZeroDistance,
+    override val radius: Distance = sizeOf(mass),
     override val motion: Motion = ZeroMotion,
     override var age: Duration = Duration.seconds(0)
 ) : Body, Fixed, Senescent {
@@ -91,7 +93,7 @@ fun FixedBody.toInertialBody() = InertialBody(
 data class InertialBody(
     override val id: UniqueID = uniqueID("InertialBody"),
     override val mass: Mass,
-    override val radius: Distance = ZeroDistance,
+    override val radius: Distance = sizeOf(mass),
     override val motion: Motion = ZeroMotion,
 ) : Body, Inertial {
 
@@ -124,7 +126,7 @@ data class InertialBody(
 data class GreatAttractor(
     override val id: UniqueID = uniqueID("GreatAttractor"),
     override val mass: Mass,
-    override val radius: Distance = ZeroDistance,
+    override val radius: Distance = sizeOf(mass),
     override val motion: Motion = ZeroMotion,
     override var age: Duration = Duration.seconds(0)
 ) : Body, Fixed, Senescent {
@@ -141,4 +143,11 @@ data class GreatAttractor(
         super.tick(duration)
         age += duration
     }
+}
+
+
+fun sizeOf(mass: Mass, density: Double = DefaultDensity): Distance {
+    val volume = mass.value / density
+    val radius = ((3.0 * volume) / 4.0 * kotlin.math.PI).pow(1.0 / 3.0)
+    return radius.metres
 }
