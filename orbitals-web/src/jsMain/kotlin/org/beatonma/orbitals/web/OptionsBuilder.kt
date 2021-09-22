@@ -82,7 +82,6 @@ private fun String.toColorInt(): Int {
     try {
         return this.toInt(16)
     } catch (e: NumberFormatException) {
-        println(e)
         return 0xff0000
     }
 }
