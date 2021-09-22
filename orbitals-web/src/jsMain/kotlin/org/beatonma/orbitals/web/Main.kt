@@ -10,13 +10,17 @@ import org.beatonma.orbitals.render.options.DrawStyle
 import org.beatonma.orbitals.render.options.Options
 import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.HTMLCanvasElement
+import org.w3c.dom.url.URL
 import react.*
 import react.dom.*
 import styled.*
 
+private const val FrameDelay = 15
+
 private val options = Options()
 
 fun main() {
+
     render(document.body) {
         child(App)
     }
@@ -26,8 +30,12 @@ fun main() {
 val App = functionalComponent<PropsWithChildren> {
     val canvasRef = useRef(null)
     val (invalidated, setInvalidated) = useState(false)
+    val (frameTimeoutId, setFrameTimeoutId) = useState(0)
+    val (backgroundColor, setBackgroundColor) = useState("#000000")
 
     val (orbitals, setOrbitals) = useState {
+        val options = createOptions(URL(document.URL).searchParams)
+        setBackgroundColor(options.visualOptions.colorOptions.background.toHexString())
         OrbitalsRenderEngine(
             renderers = getRenderers(options.visualOptions, JsCanvasDelegate),
             options = options,
@@ -50,11 +58,14 @@ val App = functionalComponent<PropsWithChildren> {
             clearRect(0.0, 0.0, currentCanvas.width.toDouble(), currentCanvas.height.toDouble())
             lineWidth = options.visualOptions.strokeWidth.toDouble()
         }
-        orbitals.update(ctx, Duration.milliseconds(15))
-
-        window.setTimeout(timeout = 15, handler = {
-            setInvalidated(!invalidated)
-        })
+        orbitals.update(ctx, Duration.milliseconds(FrameDelay))
+        window.clearTimeout(frameTimeoutId)
+        setFrameTimeoutId(
+            window.setTimeout(
+                timeout = FrameDelay,
+                handler = { setInvalidated(!invalidated) }
+            )
+        )
 
         Unit
     }
@@ -64,13 +75,13 @@ val App = functionalComponent<PropsWithChildren> {
             position = Position.absolute
             top = 0.px
             left = 0.px
-            background = options.visualOptions.colorOptions.background.toHexString()
+            background = backgroundColor
         }
 
         attrs {
             ref = canvasRef
             onClick = {
-
+                println("clicked!")
             }
         }
     }

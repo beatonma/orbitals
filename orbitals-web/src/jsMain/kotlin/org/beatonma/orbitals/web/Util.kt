@@ -3,5 +3,8 @@ internal fun Int.toHexString(): String {
     val green = (this shr 8) and 0xff
     val blue = this and 0xff
 
-    return "#${red.toString(16)}${green.toString(16)}${blue.toString(16)}"
+    val rgb = listOf(red, green, blue)
+        .map { it.toString(16).padStart(2, padChar = '0') }
+        .joinToString("")
+    return "#$rgb"
 }

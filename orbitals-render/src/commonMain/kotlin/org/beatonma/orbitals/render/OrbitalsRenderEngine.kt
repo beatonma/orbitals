@@ -30,7 +30,6 @@ class OrbitalsRenderEngine<T>(
         override var space: Universe = Universe(1, 1)
         override var physics: PhysicsOptions = options.physics
         override var bodies: List<Body> = listOf()
-        override val tickTimeDelta: Duration = physics.tickDelta
 
         override var pruneCounter = 0
         override val pruneFrequency = 60
@@ -49,8 +48,10 @@ class OrbitalsRenderEngine<T>(
     val bodies get() = engine.bodies
 
     fun onSizeChanged(width: Int, height: Int) {
-        engine.space = Universe(width, height)
-        renderers.forEach { it.onSizeChanged(engine.space.visibleSpace) }
+        if (width != engine.space.visibleSpace.width || height != engine.space.visibleSpace.height) {
+            engine.space = Universe(width, height)
+            renderers.forEach { it.onSizeChanged(engine.space.visibleSpace) }
+        }
     }
 
     fun update(canvas: T, delta: Duration) {
@@ -91,7 +92,7 @@ class OrbitalsRenderEngine<T>(
 inline fun <reified Canvas> diffRenderers(
     engine: OrbitalsRenderEngine<Canvas>,
     delegate: CanvasDelegate<Canvas>
-) = org.beatonma.orbitals.render.diffRenderers(
+) = diffRenderers(
     engine.renderers,
     engine.options.visualOptions.renderLayers,
     engine.options.visualOptions,

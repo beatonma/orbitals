@@ -24,9 +24,6 @@ interface OrbitalsEngine {
     var pruneCounter: Int
     val pruneFrequency: Int
 
-    @OptIn(ExperimentalTime::class)
-    val tickTimeDelta: Duration
-
     fun onBodiesCreated(newBodies: List<Body>) {}
     fun onBodyDestroyed(body: Body) {}
 
@@ -100,7 +97,7 @@ interface OrbitalsEngine {
      */
     @OptIn(ExperimentalTime::class)
     fun pruneBodies(space: Universe = this.space) {
-        val (keep, destroy) = pruneBodies(bodies, space, physics.maxFixedBodyAgeMinutes)
+        val (keep, destroy) = pruneBodies(bodies, space, physics.maxFixedBodyAge)
         destroy.forEach(::onBodyDestroyed)
         bodies = keep
     }
