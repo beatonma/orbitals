@@ -1,4 +1,4 @@
-package org.beatonma.orbitalslivewallpaper.app
+package org.beatonma.orbitalslivewallpaper.ui
 
 import android.app.Application
 import androidx.compose.animation.AnimatedVisibility
@@ -45,12 +45,16 @@ import org.beatonma.orbitals.core.options.PhysicsOptions
 import org.beatonma.orbitals.render.options.RenderLayer
 import org.beatonma.orbitals.render.options.VisualOptions
 import org.beatonma.orbitals.render.compose.Orbitals
-import org.beatonma.orbitalslivewallpaper.app.settings.ColorSetting
-import org.beatonma.orbitalslivewallpaper.app.settings.FloatSetting
-import org.beatonma.orbitalslivewallpaper.app.settings.IntegerSetting
-import org.beatonma.orbitalslivewallpaper.app.settings.MultiSelectSetting
-import org.beatonma.orbitalslivewallpaper.app.settings.SingleSelectSetting
-import org.beatonma.orbitalslivewallpaper.app.settings.SwitchSetting
+import org.beatonma.orbitalslivewallpaper.ColorKeys
+import org.beatonma.orbitalslivewallpaper.PhysicsKeys
+import org.beatonma.orbitalslivewallpaper.Settings
+import org.beatonma.orbitalslivewallpaper.VisualKeys
+import org.beatonma.orbitalslivewallpaper.ui.settings.ColorSetting
+import org.beatonma.orbitalslivewallpaper.ui.settings.FloatSetting
+import org.beatonma.orbitalslivewallpaper.ui.settings.IntegerSetting
+import org.beatonma.orbitalslivewallpaper.ui.settings.MultiSelectSetting
+import org.beatonma.orbitalslivewallpaper.ui.settings.SingleSelectSetting
+import org.beatonma.orbitalslivewallpaper.ui.settings.SwitchSetting
 import kotlin.time.ExperimentalTime
 
 

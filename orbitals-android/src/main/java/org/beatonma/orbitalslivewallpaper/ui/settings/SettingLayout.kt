@@ -1,4 +1,4 @@
-package org.beatonma.orbitalslivewallpaper.app.settings
+package org.beatonma.orbitalslivewallpaper.ui.settings
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth

@@ -608,6 +608,8 @@ fun getAnyMaterialColor(): Int = MaterialColors[Random.nextInt(MaterialColors.si
 
 val MaterialColors
     get() = arrayOf(
+        0x000000,
+        0xffffff,
         *MaterialRed,
         *MaterialPink,
         *MaterialPurple,

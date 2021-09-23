@@ -1,4 +1,4 @@
-package org.beatonma.orbitalslivewallpaper.orbitals.services
+package org.beatonma.orbitalslivewallpaper.services
 
 import android.graphics.Canvas
 import android.os.Handler
@@ -10,10 +10,10 @@ import org.beatonma.orbitals.render.OrbitalsRenderEngine
 import org.beatonma.orbitals.render.diffRenderers
 import org.beatonma.orbitals.render.getRenderers
 import org.beatonma.orbitals.render.options.Options
-import org.beatonma.orbitalslivewallpaper.app.Settings
-import org.beatonma.orbitalslivewallpaper.app.dataStore
-import org.beatonma.orbitalslivewallpaper.app.getSavedOptionsSync
-import org.beatonma.orbitalslivewallpaper.orbitals.touch.OrbitalsGestureDetector
+import org.beatonma.orbitalslivewallpaper.Settings
+import org.beatonma.orbitalslivewallpaper.dataStore
+import org.beatonma.orbitalslivewallpaper.getSavedOptionsSync
+import org.beatonma.orbitalslivewallpaper.ui.orbitals.OrbitalsGestureDetector
 import org.beatonma.orbitalslivewallpaper.warn
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -101,7 +101,7 @@ class LwpService : WallpaperService() {
             var canvas: Canvas? = null
             try {
                 canvas = surfaceHolder.lockCanvas()
-                canvas.drawColor(options.visualOptions.colorOptions.background)
+                canvas.drawColor((options.visualOptions.colorOptions.background) or 0xff000000.toInt())
                 renderEngine.update(canvas, Duration.milliseconds(timeDelta))
             } catch (e: Exception) {
                 warn(e)

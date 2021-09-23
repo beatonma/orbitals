@@ -1,57 +1,21 @@
 <resources>
     <style name="OrbitalsApp" parent="Theme.AppCompat.NoActionBar">
-        <item name="android:colorPrimary">@color/Primary</item>
-        <item name="android:colorPrimaryDark">@color/PrimaryDark</item>"
-        <item name="android:colorAccent">@color/Accent</item>
+        <item name="android:colorPrimary">@color/PrimaryGrey</item>
+        <item name="android:colorPrimaryDark">@color/PrimaryGreyDark</item>"
+        <item name="android:colorAccent">@color/AccentPink</item>
         <item name="android:textColorPrimary">@color/TextPrimary</item>
         <item name="android:textColorSecondary">@color/TextSecondary</item>
-        <item name="android:statusBarColor">@color/PrimaryDark</item>
+        <item name="android:statusBarColor">@color/PrimaryGreyDark</item>
         <item name="android:windowBackground">@color/PrimaryPurpleDark</item>
     </style>
 
-    <color name="Black">#000000</color>
-    <color name="White">#FFFFFF</color>
-
     <color name="PrimaryGrey">#616161</color>
     <color name="PrimaryGreyDark">#424242</color>
-    <color name="LightGrey">#bdbdbd</color>
-    <color name="AccentGrey">#9e9e9e</color>
-
-    <color name="PrimaryBlueGrey">#607d8b</color>
-    <color name="PrimaryBlueGreyDark">#455a64</color>
-    <color name="LightBlueGrey">#78909c</color>
-
-    <color name="PrimaryGreenGrey">#586a6a</color>
-    <color name="PrimaryGreenGreyDark">#253737</color>
-    <color name="LightGreenGrey">#8B9D9D</color>
-
-    <color name="PrimaryPurple">#4b394b</color>
     <color name="PrimaryPurpleDark">#180618</color>
-    <color name="LightPurple">#7E6C7E</color>
-    <color name="VeryLightPurple">#988698</color>
-
-    <color name="AccentOrange">#ff5722</color>
     <color name="AccentPink">#e91e63</color>
-    <color name="AccentGreen">#009688</color>
-
-    <color name="OffWhite">#eeeeee</color>
-
-    <!-- Grey and pink -->
-    <color name="Primary">@color/PrimaryGrey</color>
-    <color name="PrimaryDark">@color/PrimaryGreyDark</color>
-    <color name="Light">@color/LightGrey</color>
-    <color name="Accent">@color/AccentPink</color>
-    <color name="VeryLight">@color/LightGrey</color>
 
     <color name="TextPrimary">#000000</color>
     <color name="TextSecondary">#222222</color>
 
-    <color name="fab_primary">@color/Accent</color>
-    <color name="fab_primary_pressed">@color/Primary</color>
-    <color name="fab_ripple">@color/Light</color>
-
     <color name="transparent">#00000000</color>
-    <color name="dialog">#f5f5f5</color>
-    <color name="preview_overlay">#22eeeeee</color>
-    <color name="CardRipple">#21000000</color>
 </resources>

@@ -9,14 +9,14 @@
     </uses-feature>
 
     <application
-        android:name="org.beatonma.orbitalslivewallpaper.app.OrbitalsApplication"
+        android:name="org.beatonma.orbitalslivewallpaper.OrbitalsApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/OrbitalsApp" >
 
         <activity
-            android:name="org.beatonma.orbitalslivewallpaper.app.MainActivity"
+            android:name="org.beatonma.orbitalslivewallpaper.MainActivity"
             android:exported="true"
             >
             <intent-filter>
@@ -27,7 +27,7 @@
 
         <!-- Wallpaper service -->
         <service
-            android:name="org.beatonma.orbitalslivewallpaper.orbitals.services.LwpService"
+            android:name="org.beatonma.orbitalslivewallpaper.services.LwpService"
             android:enabled="true"
             android:label="@string/service_title"
             android:permission="android.permission.BIND_WALLPAPER"
@@ -44,7 +44,7 @@
 
         <!-- Dream service -->
         <service
-            android:name="org.beatonma.orbitalslivewallpaper.orbitals.services.ScreensaverService"
+            android:name="org.beatonma.orbitalslivewallpaper.services.ScreensaverService"
             android:exported="false"
             android:icon="@drawable/ic_launcher"
             android:label="@string/service_title"

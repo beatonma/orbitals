@@ -1,4 +1,4 @@
-package org.beatonma.orbitalslivewallpaper.orbitals.ui
+package org.beatonma.orbitalslivewallpaper.ui.orbitals
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -10,11 +10,9 @@ import org.beatonma.orbitals.render.android.AndroidCanvasDelegate
 import org.beatonma.orbitals.render.OrbitalsRenderEngine
 import org.beatonma.orbitals.render.diffRenderers
 import org.beatonma.orbitals.render.getRenderers
-import org.beatonma.orbitalslivewallpaper.app.Settings
-import org.beatonma.orbitalslivewallpaper.app.dataStore
-import org.beatonma.orbitalslivewallpaper.app.getSavedOptionsSync
-import org.beatonma.orbitalslivewallpaper.orbitals.timeIt
-import org.beatonma.orbitalslivewallpaper.orbitals.touch.OrbitalsGestureDetector
+import org.beatonma.orbitalslivewallpaper.Settings
+import org.beatonma.orbitalslivewallpaper.dataStore
+import org.beatonma.orbitalslivewallpaper.getSavedOptionsSync
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
@@ -61,10 +59,9 @@ class OrbitalsView @JvmOverloads constructor(
         val timeDelta = now - lastFrameMillis
         lastFrameMillis = now
 
-        timeIt(maxMillis = 15, label = "OrbitalsView.onDraw") {
-            if (canvas != null) {
-                renderEngine.update(canvas, Duration.milliseconds(timeDelta))
-            }
+        if (canvas != null) {
+            canvas.drawColor((options.visualOptions.colorOptions.background) or 0xff000000.toInt())
+            renderEngine.update(canvas, Duration.milliseconds(timeDelta))
         }
         postInvalidateOnAnimation()
     }

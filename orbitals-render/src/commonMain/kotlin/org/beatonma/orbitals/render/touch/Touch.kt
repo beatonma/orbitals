@@ -32,7 +32,6 @@ fun <Key, Canvas> clearTouchBodies(
     orbitals: OrbitalsRenderEngine<Canvas>,
     bodyMap: MutableMap<Key, UniqueID>
 ) {
-    println("clearTouchBodies")
     val bodies = bodyMap.values.toList()
     bodyMap.clear()
     bodies.forEach { orbitals.removeBody(it) }

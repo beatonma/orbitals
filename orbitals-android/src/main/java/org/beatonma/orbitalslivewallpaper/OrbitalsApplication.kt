@@ -1,4 +1,4 @@
-package org.beatonma.orbitalslivewallpaper.app
+package org.beatonma.orbitalslivewallpaper
 
 import android.app.Application
 import android.content.Context

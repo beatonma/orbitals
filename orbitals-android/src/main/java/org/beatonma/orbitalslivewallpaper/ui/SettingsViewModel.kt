@@ -1,4 +1,4 @@
-package org.beatonma.orbitalslivewallpaper.app
+package org.beatonma.orbitalslivewallpaper.ui
 
 import android.app.Application
 import android.content.Context
@@ -9,6 +9,9 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import org.beatonma.orbitals.render.options.Options
+import org.beatonma.orbitalslivewallpaper.Settings
+import org.beatonma.orbitalslivewallpaper.dataStore
+import org.beatonma.orbitalslivewallpaper.getSavedOptions
 
 
 class SettingsViewModel(
@@ -21,7 +24,7 @@ class SettingsViewModel(
 
     fun <T> updateOption(key: Preferences.Key<T>, value: T) {
         viewModelScope.launch {
-            updateOption(
+            org.beatonma.orbitalslivewallpaper.updateOption(
                 prefsDatastore,
                 key,
                 value,

@@ -1,4 +1,4 @@
-package org.beatonma.orbitalslivewallpaper.orbitals.services
+package org.beatonma.orbitalslivewallpaper.services
 
 import android.service.dreams.DreamService
 import android.view.View

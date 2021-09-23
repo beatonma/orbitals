@@ -1,4 +1,4 @@
-package org.beatonma.orbitalslivewallpaper.orbitals.touch
+package org.beatonma.orbitalslivewallpaper.ui.orbitals
 
 import android.content.Context
 import android.graphics.Canvas
@@ -13,13 +13,12 @@ import org.beatonma.orbitals.core.physics.UniqueID
 import org.beatonma.orbitals.core.physics.distanceTo
 import org.beatonma.orbitals.core.physics.metres
 import org.beatonma.orbitals.render.OrbitalsRenderEngine
+import org.beatonma.orbitals.render.touch.clearTouchBodies
+import org.beatonma.orbitals.render.touch.createTouchAttractor
+import org.beatonma.orbitals.render.touch.getTouchRegion
 
 
-/**
- * TODO(?):
- * - Double tap
- */
-class OrbitalsGestureDetector internal constructor(
+internal class OrbitalsGestureDetector(
     context: Context,
     private val orbitals: OrbitalsRenderEngine<Canvas>
 ) {
@@ -129,7 +128,7 @@ class OrbitalsGestureDetector internal constructor(
     }
 
     private fun onSingleTapConfirmed(event: MotionEvent): Boolean {
-        orbitals.addBodies(getTouchRegion(event))
+        orbitals.addBodies(getTouchRegion(event.toPosition()))
 
         resetTouchHandler()
 
@@ -154,7 +153,7 @@ class OrbitalsGestureDetector internal constructor(
 
             val id = bodies[pointerId]
             if (id == null) {
-                val body = createAttractor(coords)
+                val body = createTouchAttractor(coords.toPosition())
                 bodies[pointerId] = body.id
                 orbitals.addBody(body)
             } else {
@@ -218,3 +217,6 @@ private enum class GestureMessage {
     LongPress,
     ;
 }
+
+private fun MotionEvent.toPosition() = Position(x, y)
+private fun MotionEvent.PointerCoords.toPosition() = Position(x, y)

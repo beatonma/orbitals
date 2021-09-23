@@ -1,4 +1,4 @@
-package org.beatonma.orbitalslivewallpaper.app
+package org.beatonma.orbitalslivewallpaper
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -21,7 +21,6 @@ import org.beatonma.orbitals.core.options.PhysicsOptions
 import org.beatonma.orbitals.render.options.RenderLayer
 import org.beatonma.orbitals.render.options.VisualOptions
 import org.beatonma.orbitals.render.options.Options
-import org.beatonma.orbitalslivewallpaper.warn
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 

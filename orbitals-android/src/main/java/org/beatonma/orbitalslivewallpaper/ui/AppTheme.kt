@@ -1,4 +1,4 @@
-package org.beatonma.orbitalslivewallpaper.app
+package org.beatonma.orbitalslivewallpaper.ui
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -16,6 +16,9 @@ import androidx.compose.ui.unit.dp
 import com.google.accompanist.insets.ProvideWindowInsets
 import org.beatonma.orbitals.render.compose.toComposeColor
 import org.beatonma.orbitals.render.options.ColorOptions
+import org.beatonma.orbitalslivewallpaper.Settings
+import org.beatonma.orbitalslivewallpaper.dataStore
+import org.beatonma.orbitalslivewallpaper.getSavedColors
 
 @Composable
 fun AppTheme(

@@ -6,6 +6,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.foundation.background
 import androidx.compose.ui.geometry.Size
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -43,7 +44,9 @@ fun Orbitals(
     val duration = Duration.milliseconds(frameMillis)
 
     Canvas(
-        modifier = modifier.orbitalsPointerInput(orbitals)
+        modifier = modifier
+            .background(options.visualOptions.colorOptions.background.toComposeColor())
+            .orbitalsPointerInput(orbitals)
     ) {
         size = this.size
 
