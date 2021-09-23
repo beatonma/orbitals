@@ -17,10 +17,3 @@ data class PhysicsOptions @OptIn(ExperimentalTime::class) constructor(
 ) {
     val G = DefaultG * gravityMultiplier
 }
-
-enum class CollisionStyle {
-    None,
-    Break,
-    Merge,
-    ;
-}

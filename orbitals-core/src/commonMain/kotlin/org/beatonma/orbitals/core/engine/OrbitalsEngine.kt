@@ -10,9 +10,12 @@ import org.beatonma.orbitals.core.physics.InertialBody
 import org.beatonma.orbitals.core.physics.UniqueID
 import org.beatonma.orbitals.core.physics.ZeroAcceleration
 import org.beatonma.orbitals.core.physics.contains
+import org.beatonma.orbitals.core.physics.inContactWith
 import org.beatonma.orbitals.core.physics.toInertialBody
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
+
+private val BodySortBy = Body::mass
 
 
 interface OrbitalsEngine {
@@ -28,32 +31,27 @@ interface OrbitalsEngine {
     fun onBodyDestroyed(body: Body) {}
 
     fun addBodies(space: Space = this.space.visibleSpace) {
-        bodies = bodies + generateBodies(space)
-    }
-
-    fun generateBodies(
-        space: Space = this.space,
-    ): List<Body> {
-        val newBodies = physics.systemGenerators
-            .random()
-            .generate(space, bodies, physics)
-
+        val newBodies = generateBodies(space)
+        bodies = (bodies + newBodies).sortedBy(BodySortBy)
         onBodiesCreated(newBodies)
-
-        return newBodies
     }
 
     fun addBody(body: Body) {
-        bodies = bodies + body
+        bodies = (bodies + body).sortedBy(BodySortBy)
         onBodiesCreated(listOf(body))
     }
 
     fun removeBody(id: UniqueID) {
-        bodies = bodies.filter { it.id != id }
+        bodies = bodies.filter { it.id != id }.sortedBy(BodySortBy)
     }
+
+    private fun removeBody(body: Body) = removeBody(body.id)
 
     @OptIn(ExperimentalTime::class)
     fun tick(timeDelta: Duration) {
+        val addedBodies = mutableListOf<Body>()
+        val removedBodies = mutableListOf<Body>()
+
         bodies.forEach {
             it.motion.acceleration = ZeroAcceleration
             it.tick(timeDelta)
@@ -65,12 +63,39 @@ interface OrbitalsEngine {
                     val other = bodies[i]
                     body.applyGravity(other, timeDelta, G = physics.G)
                     other.applyGravity(body, timeDelta, G = physics.G)
+
+                    if (body.inContactWith(other)) {
+                        val result = onCollision(body, other)
+
+                        if (result != null) {
+                            val (added, removed) = result
+                            addedBodies += added
+                            removedBodies += removed
+                        }
+                    }
                 }
             }
         }
 
+        addedBodies.forEach(::addBody)
+        removedBodies.forEach(::removeBody)
+
         autoAddBodies()
         prune()
+    }
+
+    fun generateBodies(
+        space: Space = this.space,
+    ): List<Body> =
+        physics.systemGenerators
+            .random()
+            .generate(space, bodies, physics)
+
+    private fun onCollision(body: Body, other: Body): CollisionResults? {
+        val bodies = arrayOf(body, other)
+        bodies.sortByDescending(Body::mass)
+
+        return applyCollision(bodies[0], bodies[1], physics.collisionStyle)
     }
 
     private fun autoAddBodies() {
@@ -96,7 +121,7 @@ interface OrbitalsEngine {
      * expelled by later interactions.
      */
     @OptIn(ExperimentalTime::class)
-    fun pruneBodies(space: Universe = this.space) {
+    private fun pruneBodies(space: Universe = this.space) {
         val (keep, destroy) = pruneBodies(bodies, space, physics.maxFixedBodyAge)
         destroy.forEach(::onBodyDestroyed)
         bodies = keep
@@ -108,6 +133,15 @@ interface OrbitalsEngine {
         bodies = listOf()
     }
 }
+
+
+//private class CollisionResults(
+//    val added: List<Body> = listOf(),
+//    val removed: List<Body> = listOf()
+//) {
+//    operator fun component1() = added
+//    operator fun component2() = removed
+//}
 
 
 @OptIn(ExperimentalTime::class)
@@ -139,19 +173,4 @@ internal fun pruneBodies(
         keep + (toBeConverted as List<FixedBody>).map(FixedBody::toInertialBody),
         toDestroy
     )
-//        .also {
-//        if (it.second.isEmpty()) return@also
-//        println(space)
-//        println("KEEP")
-//        it.first.forEach { body ->
-//            println(body.position)
-//        }
-//
-//        println("DESTROY")
-//        it.second.forEach { body ->
-//            println(body.position)
-//        }
-//        println(".")
-//        println(".")
-//    }
 }

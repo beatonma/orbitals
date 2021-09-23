@@ -9,6 +9,7 @@ import org.junit.runners.Suite
     AngleTest::class,
     BodyTest::class,
     MathTest::class,
+    MomentumTest::class,
     PositionTest::class,
     TangentTest::class,
     VelocityTest::class,

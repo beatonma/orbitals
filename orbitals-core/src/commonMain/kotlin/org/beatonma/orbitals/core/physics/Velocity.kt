@@ -1,11 +1,9 @@
 package org.beatonma.orbitals.core.physics
 
-import kotlin.math.atan2
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 
-private const val PI = 3.141592653589793
 
 @OptIn(ExperimentalTime::class)
 val Distance.perSecond: Speed
@@ -17,24 +15,20 @@ data class Velocity internal constructor(
 ) : Vector2D<Speed> {
     constructor(x: Number, y: Number) : this(Speed(x), Speed(y))
 
+    override val magnitude: Speed get() = Speed(magnitude(x, y))
+
     operator fun plus(other: Velocity): Velocity =
         Velocity(
             x = this.x + other.x,
             y = this.y + other.y
         )
 
-    operator fun plusAssign(other: Velocity) {
-        this.x += other.x
-        this.y += other.y
+    operator fun minusAssign(other: Velocity) {
+        this.x -= other.x
+        this.y -= other.y
     }
 
-    override val magnitude: Speed get() = Speed(magnitude(x, y))
-    val angle: Angle
-        get() {
-            val a = atan2(y.value, x.value)
-            return if (a < 0f) ((PI * 2f).toFloat() + a).radians
-            else a.radians
-        }
+    operator fun times(mass: Mass) = Momentum(x * mass, y * mass)
 
     override fun toString(): String = "Velocity($x, $y | $angle)"
 }
@@ -43,7 +37,7 @@ data class Velocity internal constructor(
 /**
  * Metres per second
  */
-data class Speed internal constructor(override var value: Float) : Scalar {
+data class Speed internal constructor(override val value: Float) : Scalar {
     constructor(speed: Number) : this(speed.toFloat())
 
     @OptIn(ExperimentalTime::class)
@@ -51,16 +45,10 @@ data class Speed internal constructor(override var value: Float) : Scalar {
         (this.value * time.toDouble(DurationUnit.SECONDS)).metres
 
     operator fun times(multiplier: Float): Speed = Speed(value * multiplier)
+    operator fun times(mass: Mass): MomentumScalar = MomentumScalar(value * mass.value)
 
     operator fun plus(other: Speed) = Speed(value + other.value)
-
-    operator fun plusAssign(other: Float) {
-        value += other
-    }
-
-    operator fun minusAssign(other: Float) {
-        value -= other
-    }
+    operator fun minus(other: Speed) = Speed(value - other.value)
 
     operator fun unaryMinus(): Speed = Speed(-value)
 

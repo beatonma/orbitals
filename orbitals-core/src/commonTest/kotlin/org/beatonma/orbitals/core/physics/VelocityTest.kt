@@ -57,7 +57,7 @@ class VelocityTest {
     @Test
     fun testVelocityMath() {
         (Velocity(1, 2) + Velocity(7, 11)) shouldbe Velocity(8, 13)
-        val v = Velocity(1, 2)
+        var v = Velocity(1, 2)
         v += Velocity(7, 11)
         v.shouldbe(Velocity(8, 13))
 

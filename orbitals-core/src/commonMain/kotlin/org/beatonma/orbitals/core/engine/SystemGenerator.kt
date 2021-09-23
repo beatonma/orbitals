@@ -18,7 +18,6 @@ import org.beatonma.orbitals.core.physics.distanceTo
 import org.beatonma.orbitals.core.physics.getOrbitalMotion
 import org.beatonma.orbitals.core.physics.kg
 import org.beatonma.orbitals.core.physics.metres
-import org.beatonma.orbitals.core.physics.sizeOf
 import org.beatonma.orbitals.core.physics.uniqueID
 import kotlin.math.max
 import kotlin.random.Random
@@ -57,6 +56,8 @@ enum class SystemGenerator {
      * Generate a large mass beyond the edge of our visible 'universe'.
      */
     GreatAttractor,
+
+    CollisionTester,
     ;
 
     fun generate(space: Space, bodies: List<Body>, physics: PhysicsOptions): List<Body> {
@@ -72,10 +73,32 @@ enum class SystemGenerator {
             Gauntlet -> ::generateGauntlet
             Asteroids -> ::generateAsteroids
             GreatAttractor -> ::generateGreatAttractor
+            CollisionTester -> ::generatorCollisionTester
         }
 
         return f(space, bodies, physics)
     }
+
+    private fun generatorCollisionTester(
+        space: Space,
+        bodies: List<Body>,
+        physics: PhysicsOptions
+    ): List<Body> = listOf(
+        InertialBody(
+            mass = 40.kg,
+            motion = Motion(
+                space.relativePosition(.4f, .5f),
+                Velocity(.5f, 0f)
+            )
+        ),
+        InertialBody(
+            mass = 50.kg,
+            motion = Motion(
+                space.relativePosition(.6f, .5f),
+                Velocity(-.5f, 0f)
+            )
+        )
+    )
 
     private fun generateGreatAttractor(
         space: Space,
@@ -135,14 +158,12 @@ enum class SystemGenerator {
                 sun,
                 space.radius.metres * .5f,
                 1.kg,
-                20.metres,
                 G = physics.G,
             ),
             satelliteOf(
                 sun,
                 space.radius.metres * .3f,
                 20.kg,
-                20.metres,
                 G = physics.G,
             )
         )
@@ -228,7 +249,6 @@ enum class SystemGenerator {
             InertialBody(
                 id = uniqueID("random[$index]"),
                 mass = mass,
-                radius = sizeOf(mass),
                 motion = Motion(
                     space.relativePosition(Random.nextFloat(), Random.nextFloat()),
                     Velocity(Random.nextInt(-5, 5), Random.nextInt(-5, 5))
@@ -273,14 +293,12 @@ private fun createStar(
         FixedBody(
             id = uniqueID(name),
             mass = mass,
-            radius = sizeOf(mass),
             motion = Motion(position, velocity),
         )
     } else {
         InertialBody(
             id = uniqueID(name),
             mass = mass,
-            radius = sizeOf(mass),
             motion = Motion(position, velocity),
         )
     }
@@ -290,13 +308,11 @@ private fun satelliteOf(
     parent: Body,
     distance: Distance,
     mass: Mass = planetMass(),
-    radius: Distance = sizeOf(mass),
     G: Float,
 ): InertialBody =
     InertialBody(
         id = uniqueID("satelliteOf(${parent.id})"),
         mass = mass,
-        radius = radius,
         motion = getOrbitalMotion(mass, distance, parent, G = G),
     )
 

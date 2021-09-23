@@ -24,8 +24,8 @@ interface Inertial
 @OptIn(ExperimentalTime::class)
 sealed interface Body {
     val id: UniqueID
-    val mass: Mass
-    val radius: Distance
+    var mass: Mass
+    var radius: Distance
     val motion: Motion
 
     var position: Position
@@ -34,8 +34,11 @@ sealed interface Body {
             motion.position.x = value.x
             motion.position.y = value.y
         }
-    val velocity: Velocity
+    var velocity: Velocity
         get() = motion.velocity
+        set(value) {
+            motion.velocity = value
+        }
 
     var acceleration: Acceleration
         set(value) {
@@ -43,7 +46,7 @@ sealed interface Body {
         }
         get() = motion.acceleration
 
-    val diameter: Distance get() = radius * 2
+    val momentum: Momentum get() = mass * velocity
 
     fun applyInertia(timeDelta: Duration)
     fun applyGravity(other: Body, timeDelta: Duration, G: Float)
@@ -61,9 +64,9 @@ sealed interface Body {
  */
 @OptIn(ExperimentalTime::class)
 data class FixedBody(
+    override var mass: Mass,
     override val id: UniqueID = uniqueID("FixedBody"),
-    override val mass: Mass,
-    override val radius: Distance = sizeOf(mass),
+    override var radius: Distance = sizeOf(mass),
     override val motion: Motion = ZeroMotion,
     override var age: Duration = Duration.seconds(0)
 ) : Body, Fixed, Senescent {
@@ -92,10 +95,17 @@ fun FixedBody.toInertialBody() = InertialBody(
 @OptIn(ExperimentalTime::class)
 data class InertialBody(
     override val id: UniqueID = uniqueID("InertialBody"),
-    override val mass: Mass,
-    override val radius: Distance = sizeOf(mass),
+    override var mass: Mass,
+    override var radius: Distance = sizeOf(mass),
     override val motion: Motion = ZeroMotion,
 ) : Body, Inertial {
+    constructor(
+        mass: Mass,
+        id: UniqueID = uniqueID("InertialBody"),
+        radius: Distance = sizeOf(mass),
+        position: Position = ZeroPosition,
+        velocity: Velocity = ZeroVelocity,
+    ) : this(id, mass, radius, Motion(position, velocity))
 
     override fun applyInertia(timeDelta: Duration) {
         motion.applyInertia(timeDelta)
@@ -124,9 +134,9 @@ data class InertialBody(
 
 @OptIn(ExperimentalTime::class)
 data class GreatAttractor(
+    override var mass: Mass,
     override val id: UniqueID = uniqueID("GreatAttractor"),
-    override val mass: Mass,
-    override val radius: Distance = sizeOf(mass),
+    override var radius: Distance = sizeOf(mass),
     override val motion: Motion = ZeroMotion,
     override var age: Duration = Duration.seconds(0)
 ) : Body, Fixed, Senescent {
@@ -150,4 +160,9 @@ fun sizeOf(mass: Mass, density: Double = DefaultDensity): Distance {
     val volume = mass.value / density
     val radius = ((3.0 * volume) / 4.0 * kotlin.math.PI).pow(1.0 / 3.0)
     return radius.metres
+}
+
+fun Body.inContactWith(other: Body): Boolean {
+    val distance = this.position.distanceTo(other.position)
+    return distance < radius || distance < other.radius
 }
