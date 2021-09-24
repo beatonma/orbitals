@@ -23,11 +23,18 @@ data class Velocity internal constructor(
             y = this.y + other.y
         )
 
+    operator fun minus(other: Velocity): Velocity =
+        Velocity(
+            x = this.x - other.x,
+            y = this.y - other.y
+        )
+
     operator fun minusAssign(other: Velocity) {
         this.x -= other.x
         this.y -= other.y
     }
 
+    operator fun times(multiplier: Float): Velocity = Velocity(x * multiplier, y * multiplier)
     operator fun times(mass: Mass) = Momentum(x * mass, y * mass)
 
     override fun toString(): String = "Velocity($x, $y | $angle)"

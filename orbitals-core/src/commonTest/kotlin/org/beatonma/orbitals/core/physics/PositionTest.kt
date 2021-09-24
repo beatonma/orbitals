@@ -38,4 +38,15 @@ class PositionTest {
         ZeroPosition.distanceTo(Position(1.0, -1.0)) shouldbe 1.414f
         ZeroPosition.distanceTo(Position(-1.0, -1.0)) shouldbe 1.414f
     }
+
+    @Test
+    fun centerOf() {
+        centerOf(ZeroPosition, Position(1, 3)) shouldbe Position(.5, 1.5)
+        centerOf(ZeroPosition, Position(-2, 1)) shouldbe Position(-1, .5)
+        centerOf(ZeroPosition, Position(1, -7)) shouldbe Position(.5, -3.5)
+        centerOf(ZeroPosition, Position(-31, -11)) shouldbe Position(-15.5, -5.5)
+
+        centerOf(Position(-31, -11), Position(1, -7)) shouldbe Position(-15, -9)
+        centerOf(Position(1, -7), Position(-31, -11)) shouldbe Position(-15, -9)
+    }
 }

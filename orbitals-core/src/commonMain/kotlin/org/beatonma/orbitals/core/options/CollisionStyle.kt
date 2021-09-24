@@ -17,8 +17,13 @@ enum class CollisionStyle {
     Merge,
 
     /**
-     * Bodies are forbidden from overlapping.
+     * Bodies are bouncy.
      */
-    Bounce,
+    Bouncy,
+
+    /**
+     * Bodies are sticky.
+     */
+    Sticky,
     ;
 }

@@ -99,12 +99,12 @@ interface OrbitalsEngine {
     }
 
     private fun autoAddBodies() {
-        if (physics.autoAddBodies) {
-            if (bodyCount == 0
-                || (bodyCount < physics.maxEntities && chance(1.percent))
-            ) {
-                addBodies()
-            }
+        if (bodyCount == 0
+            || (physics.autoAddBodies
+                    && bodyCount < physics.maxEntities
+                    && chance(1.percent))
+        ) {
+            addBodies()
         }
     }
 
@@ -133,16 +133,6 @@ interface OrbitalsEngine {
         bodies = listOf()
     }
 }
-
-
-//private class CollisionResults(
-//    val added: List<Body> = listOf(),
-//    val removed: List<Body> = listOf()
-//) {
-//    operator fun component1() = added
-//    operator fun component2() = removed
-//}
-
 
 @OptIn(ExperimentalTime::class)
 internal fun pruneBodies(
