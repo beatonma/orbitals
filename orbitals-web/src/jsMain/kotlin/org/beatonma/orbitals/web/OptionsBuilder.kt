@@ -11,29 +11,44 @@ import org.w3c.dom.url.URLSearchParams
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
+private enum class Key(val key: String) {
+    Debugging("debugging"),
+    BackgroundColor("background"),
+    Colors("colors"),
+    DrawStyle("drawStyle"),
+    StrokeWidth("strokeWidth"),
+    RenderLayers("layers"),
+    SystemGenerators("generators"),
+    AutoAddBodies("auto"),
+    GravityMultiplier("gravity"),
+    MaxEntities("max"),
+    CollisionStyle("collision")
+    ;
+}
+
+private fun URLSearchParams.get(key: Key) = get(key.key)
+
 fun createOptions(params: URLSearchParams): Options {
-    val visuals = createVisualOptions(params)
-    val physics = createPhysicsOptions(params)
-
-    println(visuals)
-
-    return Options(
-        physics = physics,
-        visualOptions = visuals,
-    )
+    return if (params.get(Key.Debugging) != null) {
+        createDebugOptions(params)
+    } else {
+        Options(
+            physics = createPhysicsOptions(params),
+            visualOptions = createVisualOptions(params),
+        )
+    }.also(::println)
 }
 
 
 private fun createColorOptions(params: URLSearchParams): ColorOptions =
     ColorOptions(
-        background = params.get("background")
+        background = params.get(Key.BackgroundColor)
             ?.toColorInt()
             ?: "111111".toColorInt(),
-        bodies = params.get("colors")
-            ?.split(",")
-            ?.map(ObjectColors::valueOf)
-            ?.toSet()
-            ?: setOf(ObjectColors.Greyscale),
+        bodies = params.mapToSet(Key.Colors, transform = ObjectColors::valueOf)
+            ?: setOf(
+                ObjectColors.Greyscale,
+            ),
     )
 
 
@@ -42,14 +57,10 @@ private fun createVisualOptions(params: URLSearchParams): VisualOptions {
 
     return VisualOptions(
         colorOptions = colors,
-        drawStyle = params.get("drawStyle")
-            ?.let { DrawStyle.valueOf(it) }
+        drawStyle = params.toType(Key.DrawStyle, transform = DrawStyle::valueOf)
             ?: DrawStyle.Solid,
-        strokeWidth = params.get("strokeWidth")?.toFloat() ?: 4f,
-        renderLayers = params.get("layers")
-            ?.split(",")
-            ?.map(RenderLayer::valueOf)
-            ?.toSet()
+        strokeWidth = params.toType(Key.StrokeWidth) ?: 4f,
+        renderLayers = params.mapToSet(Key.RenderLayers, transform = RenderLayer::valueOf)
             ?: setOf(RenderLayer.Default)
     )
 }
@@ -58,24 +69,18 @@ private fun createVisualOptions(params: URLSearchParams): VisualOptions {
 @OptIn(ExperimentalTime::class)
 private fun createPhysicsOptions(params: URLSearchParams): PhysicsOptions {
     return PhysicsOptions(
-        autoAddBodies = params.get("autoAddBodies")?.toBoolean() ?: true,
-        systemGenerators = params.get("generators")
-            ?.split(",")
-            ?.map(SystemGenerator::valueOf)
-            ?.toSet()
+        autoAddBodies = params.toType(Key.AutoAddBodies) ?: true,
+        systemGenerators = params.mapToSet(Key.SystemGenerators, transform = SystemGenerator::valueOf)
             ?: setOf(
                 SystemGenerator.StarSystem,
                 SystemGenerator.Randomized,
                 SystemGenerator.Asteroids,
             ),
-        gravityMultiplier = params.get("gravityMultiplier")?.toFloat() ?: 1f,
-        maxEntities = params.get("maxEntities")?.toInt() ?: 15,
+        gravityMultiplier = params.toType(Key.GravityMultiplier) ?: 1f,
+        maxEntities = params.toType(Key.MaxEntities) ?: 50,
         maxFixedBodyAge = Duration.seconds(20),
-        collisionStyle = params.get("collisionStyle")
-            ?.let(CollisionStyle::valueOf)
-            ?: CollisionStyle.None,
-
-    )
+        collisionStyle = params.toType(Key.CollisionStyle, transform = CollisionStyle::valueOf) ?: CollisionStyle.Merge,
+        )
 }
 
 private fun String.toColorInt(): Int {
@@ -84,4 +89,79 @@ private fun String.toColorInt(): Int {
     } catch (e: NumberFormatException) {
         return 0xff0000
     }
+}
+
+
+/**
+ * Options for debugging specific things
+ */
+private fun createDebugOptions(params: URLSearchParams): Options {
+    return Options(
+        physics = createDebugPhysicsOptions(params),
+        visualOptions = createDebugVisualOptions(params),
+    )
+}
+
+private fun createDebugColorOptions(params: URLSearchParams): ColorOptions =
+    ColorOptions(
+        background = params.get(Key.BackgroundColor)
+            ?.toColorInt()
+            ?: debugBackgroundColor(),
+        bodies = params.mapToSet(Key.Colors, transform = ObjectColors::valueOf)
+            ?: setOf(ObjectColors.Red),
+    )
+
+private fun debugBackgroundColor(): Int =
+    (0..5).map { kotlin.random.Random.nextInt(0, 3) }.joinToString("").toColorInt()
+
+private fun createDebugVisualOptions(params: URLSearchParams): VisualOptions {
+    val colors = createDebugColorOptions(params)
+
+    return VisualOptions(
+        colorOptions = colors,
+        drawStyle = params.toType(Key.DrawStyle, transform = DrawStyle::valueOf)
+            ?: DrawStyle.Solid,
+        strokeWidth = params.toType(Key.StrokeWidth) ?: 4f,
+        renderLayers = params.mapToSet(Key.RenderLayers, transform = RenderLayer::valueOf)
+            ?: setOf(
+                RenderLayer.Default,
+            )
+    )
+}
+
+
+@OptIn(ExperimentalTime::class)
+private fun createDebugPhysicsOptions(params: URLSearchParams): PhysicsOptions {
+    return PhysicsOptions(
+        autoAddBodies = params.toType(Key.AutoAddBodies) ?: false,
+        systemGenerators = params.mapToSet(Key.SystemGenerators, transform = SystemGenerator::valueOf)
+            ?: setOf(
+                SystemGenerator.CollisionTester,
+            ),
+        gravityMultiplier = params.toType(Key.GravityMultiplier) ?: 0.25f,
+        maxEntities = params.toType(Key.MaxEntities) ?: 10,
+        maxFixedBodyAge = Duration.seconds(20),
+        collisionStyle = params.toType(Key.CollisionStyle, transform = CollisionStyle::valueOf)
+            ?: CollisionStyle.Sticky,
+    )
+}
+
+
+private inline fun <reified T> URLSearchParams.toType(key: Key): T? {
+    return get(key.key)?.let { value ->
+        return when (T::class) {
+            Int::class -> value.toInt() as? T
+            Boolean::class -> value.toBoolean() as? T
+            Float::class -> value.toFloat() as? T
+            else -> throw Exception("Unhandled type ${T::class}: toType($key)")
+        }
+    }
+}
+
+private fun <T> URLSearchParams.toType(key: Key, transform: (String) -> T): T? {
+    return get(key.key)?.let(transform)
+}
+
+private fun <T> URLSearchParams.mapToSet(key: Key, transform: (String) -> T): Set<T>? {
+    return get(key.key)?.split(",")?.map(transform)?.toSet()
 }
