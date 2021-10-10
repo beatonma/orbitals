@@ -17,10 +17,13 @@ value class Mass internal constructor(override val value: Float): Scalar {
     operator fun plus(other: Mass) = Mass(value + other.value)
     operator fun minus(other: Mass) = Mass(value - other.value)
 
+    operator fun times(multiplier: Float): Mass = (value * multiplier).kg
     operator fun times(other: Mass): Float = value * other.value
-    operator fun times(factor: Float): Mass = (value * factor).kg
     operator fun times(velocity: Velocity): Momentum = velocity * this
 
     operator fun div(distance: Distance): Float = value / distance.value
     operator fun div(factor: Float): Mass = (value / factor).kg
+    operator fun div(other: Mass): Float = value / other.value
 }
+
+operator fun Float.times(mass: Mass) = mass * this

@@ -61,3 +61,6 @@ data class Speed internal constructor(override val value: Float) : Scalar {
 
     override fun toString(): String = "${value}m/s"
 }
+
+operator fun Float.times(speed: Speed) = speed * this
+operator fun Float.times(velocity: Velocity) = velocity * this

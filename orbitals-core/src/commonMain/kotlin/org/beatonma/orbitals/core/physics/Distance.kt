@@ -44,3 +44,5 @@ val Distance.squared: Float get() = squareOf(this.value)
 fun Distance.coerceAtLeast(min: Distance): Distance {
     return this.value.coerceAtLeast(min.value).metres
 }
+
+operator fun Float.times(distance: Distance) = distance * this

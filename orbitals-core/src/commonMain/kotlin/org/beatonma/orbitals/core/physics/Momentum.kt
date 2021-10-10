@@ -34,3 +34,6 @@ data class Momentum internal constructor(
         return "Momentum(x=${x.value}, y=${y.value})"
     }
 }
+
+operator fun Float.times(momentumScalar: MomentumScalar) = momentumScalar * this
+operator fun Float.times(momentum: Momentum) = momentum * this

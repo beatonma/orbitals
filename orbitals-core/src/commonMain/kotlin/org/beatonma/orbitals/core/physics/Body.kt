@@ -1,8 +1,12 @@
 package org.beatonma.orbitals.core.physics
 
+import org.beatonma.orbitals.core.util.currentTimeMillis
 import kotlin.math.pow
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
+
+@OptIn(ExperimentalTime::class)
+private val CollisionMinimumAge = Duration.seconds(1)
 
 val DefaultDensity = 0.5
 val ZeroMass get() = 0.0.kg
@@ -13,20 +17,21 @@ val ZeroMotion get() = Motion(ZeroPosition, ZeroVelocity)
 val ZeroAcceleration get() = Acceleration(AccelerationScalar(0f), AccelerationScalar(0f))
 
 
-@OptIn(ExperimentalTime::class)
-interface Senescent {
-    var age: Duration
-}
-
 interface Fixed
 interface Inertial
+interface Collider {
+    var lastCollision: Long
+    fun canCollide(now: Long = currentTimeMillis()): Boolean
+}
 
 @OptIn(ExperimentalTime::class)
-sealed interface Body {
+sealed interface Body: Collider {
     val id: UniqueID
     var mass: Mass
     var radius: Distance
     val motion: Motion
+
+    var age: Duration
 
     var position: Position
         get() = motion.position
@@ -48,6 +53,10 @@ sealed interface Body {
 
     val momentum: Momentum get() = mass * velocity
 
+    override var lastCollision: Long
+    override fun canCollide(now: Long): Boolean =
+        now - lastCollision > CollisionMinimumAge.inWholeMilliseconds
+
     fun applyInertia(timeDelta: Duration)
     fun applyGravity(other: Body, timeDelta: Duration, G: Float)
 
@@ -55,6 +64,7 @@ sealed interface Body {
 
     fun tick(duration: Duration) {
         applyInertia(duration)
+        age += duration
     }
 }
 
@@ -69,7 +79,8 @@ data class FixedBody(
     override var radius: Distance = sizeOf(mass),
     override val motion: Motion = ZeroMotion,
     override var age: Duration = Duration.seconds(0)
-) : Body, Fixed, Senescent {
+) : Body, Fixed {
+    override var lastCollision: Long = currentTimeMillis()
 
     override fun applyInertia(timeDelta: Duration) {
         // N/A
@@ -98,7 +109,10 @@ data class InertialBody(
     override var mass: Mass,
     override var radius: Distance = sizeOf(mass),
     override val motion: Motion = ZeroMotion,
+    override var age: Duration = Duration.seconds(0)
 ) : Body, Inertial {
+    override var lastCollision: Long = currentTimeMillis()
+
     constructor(
         mass: Mass,
         id: UniqueID = uniqueID("InertialBody"),
@@ -139,7 +153,8 @@ data class GreatAttractor(
     override var radius: Distance = sizeOf(mass),
     override val motion: Motion = ZeroMotion,
     override var age: Duration = Duration.seconds(0)
-) : Body, Fixed, Senescent {
+) : Body, Fixed {
+    override var lastCollision: Long = currentTimeMillis()
 
     override fun applyInertia(timeDelta: Duration) {
         // N/A
@@ -165,4 +180,16 @@ fun sizeOf(mass: Mass, density: Double = DefaultDensity): Distance {
 fun Body.inContactWith(other: Body): Boolean {
     val distance = this.position.distanceTo(other.position)
     return distance < radius || distance < other.radius
+}
+
+fun centerOfMass(a: Body, b: Body): Position {
+    val totalMass = a.mass + b.mass
+
+    val centerOfMass =
+        (
+                (a.position.toGeneric() * a.mass.toGeneric())
+                        + (b.position.toGeneric() * b.mass.toGeneric())
+                ) * (1f / totalMass.value)
+
+    return Position(centerOfMass.x.value, centerOfMass.y.value)
 }

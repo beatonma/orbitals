@@ -43,3 +43,11 @@ data class Acceleration internal constructor(
     operator fun plus(other: Acceleration) = Acceleration(x + other.x, y + other.y)
     override val magnitude: AccelerationScalar = AccelerationScalar(magnitude(x, y))
 }
+
+operator fun Float.times(acceleration: AccelerationScalar) = acceleration * this
+
+@OptIn(ExperimentalTime::class)
+operator fun Duration.times(acceleration: Acceleration) = acceleration * this
+
+@OptIn(ExperimentalTime::class)
+operator fun Duration.times(acceleration: AccelerationScalar) = acceleration * this
