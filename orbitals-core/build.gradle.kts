@@ -40,7 +40,11 @@ kotlin {
     }
 
     sourceSets {
-        val commonMain by getting {}
+        val commonMain by getting {
+            dependencies {
+                implementation(Dependencies.CoroutinesCore)
+            }
+        }
         val androidMain by getting {}
         val jsMain by getting {}
         val commonTest by getting {
