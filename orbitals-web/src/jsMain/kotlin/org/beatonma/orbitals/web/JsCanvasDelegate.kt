@@ -7,11 +7,12 @@ import org.beatonma.orbitals.render.CanvasDelegate
 import org.w3c.dom.CanvasRenderingContext2D
 
 object JsCanvasDelegate : CanvasDelegate<CanvasRenderingContext2D> {
-    private fun setStyle(canvas: CanvasRenderingContext2D, color: String, strokeWidth: Float) {
+    private fun setStyle(canvas: CanvasRenderingContext2D, color: String, strokeWidth: Float, alpha: Float) {
         canvas.run {
             fillStyle = color
             strokeStyle = color
             lineWidth = strokeWidth.toDouble()
+            globalAlpha = alpha.toDouble()
         }
     }
 
@@ -24,7 +25,7 @@ object JsCanvasDelegate : CanvasDelegate<CanvasRenderingContext2D> {
         style: DrawStyle,
         alpha: Float,
     ) {
-        setStyle(canvas, color.toHexString(), strokeWidth)
+        setStyle(canvas, color.toHexString(), strokeWidth, alpha)
 
         canvas.run {
             beginPath()
@@ -53,7 +54,7 @@ object JsCanvasDelegate : CanvasDelegate<CanvasRenderingContext2D> {
         cap: CapStyle,
         alpha: Float,
     ) {
-        setStyle(canvas, color.toHexString(), strokeWidth)
+        setStyle(canvas, color.toHexString(), strokeWidth, alpha)
         canvas.run {
             beginPath()
             moveTo(start.x.value.toDouble(), start.y.value.toDouble())
@@ -61,6 +62,4 @@ object JsCanvasDelegate : CanvasDelegate<CanvasRenderingContext2D> {
             stroke()
         }
     }
-
-
 }

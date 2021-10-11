@@ -117,15 +117,6 @@ private fun VisualSettingsUI(
             onValueChange = persistence::updateOption,
         )
 
-        FloatSetting(
-            name = "Body scale",
-            key = VisualKey.BodyScale,
-            value = visualOptions.bodyScale,
-            onValueChange = persistence::updateOption,
-            min = .25f,
-            max = 5f,
-        )
-
         Conditional(visualOptions.drawStyle == DrawStyle.Wireframe) {
             FloatSetting(
                 name = "Stroke width",
@@ -147,6 +138,15 @@ private fun VisualSettingsUI(
                 max = 120,
             )
         }
+
+        FloatSetting(
+            name = "Body scale",
+            key = VisualKey.BodyScale,
+            value = visualOptions.bodyScale,
+            onValueChange = persistence::updateOption,
+            min = .25f,
+            max = 5f,
+        )
     }
 
     ColorSettingsUI(visualOptions.colorOptions, persistence)
@@ -171,6 +171,15 @@ private fun ColorSettingsUI(
             value = colorOptions.bodies,
             values = ObjectColors.values(),
             onValueChange = persistence::updateOption,
+        )
+
+        FloatSetting(
+            name = "Opacity",
+            key = ColorKey.BodyAlpha,
+            value = colorOptions.foregroundAlpha,
+            onValueChange = persistence::updateOption,
+            min = 0f,
+            max = 1f,
         )
     }
 }

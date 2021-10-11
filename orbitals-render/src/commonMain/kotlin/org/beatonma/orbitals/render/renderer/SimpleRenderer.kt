@@ -58,6 +58,7 @@ class SimpleRenderer<Canvas> internal constructor(
             color,
             strokeWidth = options.strokeWidth,
             style = options.drawStyle,
+            alpha = options.colorOptions.foregroundAlpha,
         )
     }
 
