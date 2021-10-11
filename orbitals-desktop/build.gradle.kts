@@ -13,10 +13,12 @@ dependencies {
     implementation(compose.desktop.currentOs)
     implementation(compose.ui)
     implementation(compose.foundation)
+    implementation(compose.material)
 
     implementation(project(":${Module.Core}"))
     implementation(project(":${Module.Render}"))
     implementation(project(":${Module.ComposeRender}"))
+    implementation(project(":${Module.ComposeUi}"))
 }
 
 compose.desktop {
