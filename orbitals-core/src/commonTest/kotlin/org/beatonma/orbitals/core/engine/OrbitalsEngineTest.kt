@@ -10,7 +10,7 @@ import org.beatonma.orbitals.core.physics.Position
 import org.beatonma.orbitals.core.physics.UniqueID
 import org.beatonma.orbitals.core.physics.kg
 import org.beatonma.orbitals.test.shouldbe
-import org.junit.Test
+import kotlin.test.Test
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 

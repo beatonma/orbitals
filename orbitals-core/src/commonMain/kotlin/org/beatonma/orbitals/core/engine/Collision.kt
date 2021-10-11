@@ -3,18 +3,23 @@ package org.beatonma.orbitals.core.engine
 import org.beatonma.orbitals.core.options.CollisionStyle
 import org.beatonma.orbitals.core.physics.Body
 import org.beatonma.orbitals.core.physics.Inertial
+import org.beatonma.orbitals.core.physics.InertialBody
+import org.beatonma.orbitals.core.physics.Mass
+import org.beatonma.orbitals.core.physics.Motion
 import org.beatonma.orbitals.core.physics.Velocity
 import org.beatonma.orbitals.core.physics.angleTo
-import org.beatonma.orbitals.core.physics.centerOf
+import org.beatonma.orbitals.core.physics.centerOfMass
+import org.beatonma.orbitals.core.physics.divideUnevenly
 import org.beatonma.orbitals.core.physics.getRadialPosition
 import org.beatonma.orbitals.core.physics.kg
 import org.beatonma.orbitals.core.physics.sizeOf
+import org.beatonma.orbitals.core.physics.times
+import org.beatonma.orbitals.core.util.currentTimeMillis
 import org.beatonma.orbitals.core.util.warn
+import kotlin.random.Random
 
 /**
  * Coefficient of Restitution: https://en.wikipedia.org/wiki/Coefficient_of_restitution
- * 1 -> elastic collision
- * 0 -> inelastic collision
  */
 private enum class CoR(val value: Float) {
     Default(0.1f),
@@ -26,13 +31,20 @@ private enum class CoR(val value: Float) {
 
 
 internal fun applyCollision(
-    larger: Body,
-    smaller: Body,
+    a: Body,
+    b: Body,
     collisionStyle: CollisionStyle
 ): CollisionResults? {
-    check(larger.mass >= smaller.mass) {
-        "applyCollision expects bodies to be ordered by descending mass!"
+    val now = currentTimeMillis()
+    if (!a.canCollide(now) || !b.canCollide(now)) {
+        return null
     }
+    else {
+        a.lastCollision = now
+        b.lastCollision = now
+    }
+
+    val (larger, smaller) = arrayOf(a, b).apply { sortByDescending(Body::mass) }
 
     CollisionResults.clear()
 
@@ -44,18 +56,11 @@ internal fun applyCollision(
             CollisionStyle.Bouncy -> ::applyBounceCollision
             CollisionStyle.Sticky -> ::applyStickyCollision
         }
-        f.invoke(larger, smaller)
+        return f.invoke(larger, smaller)
     } catch (e: IllegalStateException) {
         warn("Error applying collision $collisionStyle: $e")
         null
     }
-}
-
-/**
- * See [CollisionStyle.Break].
- */
-private fun applyBreakCollision(larger: Body, smaller: Body): CollisionResults? {
-    return null
 }
 
 /**
@@ -82,7 +87,7 @@ private fun applySimpleCollision(
     smaller: Body,
     coefficientOfRestitution: CoR,
 ) {
-    val center = centerOf(larger.position, smaller.position)
+    val center = centerOfMass(larger, smaller)
     val (largerV, smallerV) = calculateCollisionVelocities(
         larger,
         smaller,
@@ -99,6 +104,57 @@ private fun applySimpleCollision(
             getRadialPosition(center, smaller.radius, center.angleTo(smaller.position))
         smaller.velocity = smallerV
     }
+}
+
+/**
+ * See [CollisionStyle.Break].
+ */
+private fun applyBreakCollision(larger: Body, smaller: Body): CollisionResults? {
+    if (smaller.mass < 5.kg) {
+        return CollisionResults.removed(smaller)
+    }
+
+    val distance = larger.distanceTo(smaller)
+    val overlapAmount = distance / (larger.radius + smaller.radius)
+    if (overlapAmount <= 0f) return null
+
+    val totalMass = larger.mass + smaller.mass
+    val angle = larger.position.angleTo(smaller.position)
+    val collisionPoint = larger.position + (angle * (distance - smaller.radius))
+
+//    val directionSimilarity = dot(larger.velocity.direction, smaller.velocity.direction)
+    val massRatio = smaller.mass / totalMass
+    val ejectaMass = totalMass * overlapAmount
+    val massFromSmaller = massRatio * ejectaMass
+    val massFromLarger = ejectaMass - massFromSmaller
+
+    larger.updateMassAndSize(larger.mass - massFromLarger)
+    smaller.updateMassAndSize(smaller.mass - massFromSmaller)
+
+    return CollisionResults.added(
+        createEjecta(massFromSmaller) {
+            Motion(
+                position = collisionPoint,
+                velocity = smaller.velocity
+            )
+        } + createEjecta(massFromLarger) {
+            Motion(
+                position = collisionPoint,
+                velocity = larger.velocity
+            )
+        }
+    )
+}
+
+private fun createEjecta(totalMass: Mass, motion: () -> Motion): List<Body> {
+    return totalMass.value.divideUnevenly(Random.nextInt(1, 5))
+        .map(::Mass)
+        .map { mass ->
+            InertialBody(
+                mass = mass,
+                motion = motion(),
+            )
+        }
 }
 
 /**
@@ -119,15 +175,18 @@ private fun applyMergeCollision(larger: Body, smaller: Body): CollisionResults? 
     } else {
         val largeMomentum = larger.momentum + transferredMomentum
 
-        larger.mass += transferredMass
-        larger.velocity = largeMomentum / larger.mass
-        smaller.mass = totalMass - larger.mass
+        larger.updateMassAndSize(larger.mass + transferredMass)
+        smaller.updateMassAndSize(totalMass - larger.mass)
 
-        larger.radius = sizeOf(larger.mass)
-        smaller.radius = sizeOf(smaller.mass)
+        larger.velocity = largeMomentum / larger.mass
 
         null
     }
+}
+
+private fun Body.updateMassAndSize(mass: Mass) {
+    this.mass = mass
+    this.radius = sizeOf(mass)
 }
 
 
@@ -193,4 +252,24 @@ private fun calculateCollisionVelocities(
         velocity(left, right),
         velocity(right, left)
     )
+}
+
+
+fun Body.explode(ejectaCount: Int = Random.nextInt(5, 20)): List<Body> {
+    val ejectaMass = mass.value.divideUnevenly(ejectaCount)
+        .map(::Mass)
+
+    val ejectaMomentum = momentum.divideUnevenly(ejectaCount)
+
+    return ejectaMass.zip(ejectaMomentum) { mass, momentum ->
+        val velocity = momentum / mass
+
+        InertialBody(
+            mass = mass,
+            motion = Motion(
+                position,
+                velocity,
+            )
+        )
+    }
 }

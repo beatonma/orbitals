@@ -85,17 +85,17 @@ enum class SystemGenerator {
         physics: PhysicsOptions
     ): List<Body> = listOf(
         InertialBody(
-            mass = 40.kg,
+            mass = 100.kg,
             motion = Motion(
                 space.relativePosition(.4f, .5f),
-                Velocity(.5f, 0f)
+                Velocity(1f, 0f)
             )
         ),
         InertialBody(
-            mass = 50.kg,
+            mass = 100.kg,
             motion = Motion(
                 space.relativePosition(.6f, .5f),
-                Velocity(-.5f, 0f)
+                Velocity(-1f, 0f)
             )
         )
     )

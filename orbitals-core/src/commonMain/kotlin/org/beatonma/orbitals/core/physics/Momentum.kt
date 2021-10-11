@@ -1,7 +1,7 @@
 package org.beatonma.orbitals.core.physics
 
 data class MomentumScalar(override val value: Float) : Scalar {
-    constructor(value: Number): this(value.toFloat())
+    constructor(value: Number) : this(value.toFloat())
 
     operator fun plus(other: MomentumScalar) = MomentumScalar(value + other.value)
     operator fun times(factor: Float) = MomentumScalar(value * factor)
@@ -24,6 +24,7 @@ data class Momentum internal constructor(
         check(mass.value > 0f) { "Trying to divide Momentum by invalid mass: $mass" }
         return Velocity(x / mass, y / mass)
     }
+
     operator fun div(velocity: Velocity): Mass {
         val velMagnitude = velocity.magnitude.value
         check(velMagnitude > 0f) { "Trying to divide Momentum by invalid velocity $velocity" }
@@ -37,3 +38,14 @@ data class Momentum internal constructor(
 
 operator fun Float.times(momentumScalar: MomentumScalar) = momentumScalar * this
 operator fun Float.times(momentum: Momentum) = momentum * this
+
+fun Momentum.divideUnevenly(divisor: Int): List<Momentum> {
+    val xValue = x.value
+    val yValue = y.value
+
+    return xValue.divideUnevenly(divisor)
+        .zip(yValue.divideUnevenly(divisor))
+        .map { (a, b) ->
+            Momentum(MomentumScalar(a), MomentumScalar(b))
+        }
+}

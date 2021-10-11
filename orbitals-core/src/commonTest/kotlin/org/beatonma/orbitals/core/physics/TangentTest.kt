@@ -1,7 +1,7 @@
 package org.beatonma.orbitals.core.physics
 
 import org.beatonma.orbitals.test.shouldbe
-import org.junit.Test
+import kotlin.test.Test
 
 class TangentTest {
     private infix fun Float.shouldbe(expected: Float) {

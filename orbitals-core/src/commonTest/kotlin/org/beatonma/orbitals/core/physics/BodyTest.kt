@@ -2,7 +2,7 @@ package org.beatonma.orbitals.core.physics
 
 import org.beatonma.orbitals.test.differenceWith
 import org.beatonma.orbitals.test.shouldbe
-import org.junit.Test
+import kotlin.test.Test
 import kotlin.test.assertTrue
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -14,14 +14,12 @@ class BodyTest {
     private val body
         get() = InertialBody(
             mass = 7000.kg,
-            radius = 10.metres,
             motion = ZeroMotion,
         )
 
     private val other
         get() = InertialBody(
             mass = 3000.kg,
-            radius = 4.metres,
             motion = Motion(
                 Position(0, 500),
             )
@@ -143,6 +141,58 @@ class BodyTest {
 
         body.applyInertia(500.ms)
         body.position shouldbe Position(17.5, 45.0)
+    }
+
+    @Test
+    fun testCenterOfMass_withEqualMass() {
+        val mass = 10.kg
+        centerOfMass(
+            InertialBody(mass, position = Position(-10, 0)),
+            InertialBody(mass, position = Position(10, 0))
+        ) shouldbe Position(0,  0)
+
+        centerOfMass(
+            InertialBody(mass, position = Position(-20, 0)),
+            InertialBody(mass, position = Position(10, 0))
+        ) shouldbe Position(-5,  0)
+
+        centerOfMass(
+            InertialBody(mass, position = Position(-10, 0)),
+            InertialBody(mass, position = Position(20, 0))
+        ) shouldbe Position(5,  0)
+
+        centerOfMass(
+            InertialBody(mass, position = Position(5, 10)),
+            InertialBody(mass, position = Position(15, 20))
+        ) shouldbe Position(10,  15)
+
+        centerOfMass(
+            InertialBody(mass, position = Position(-5, 10)),
+            InertialBody(mass, position = Position(15, -20))
+        ) shouldbe Position(5,  -5)
+
+        centerOfMass(
+            InertialBody(mass, position = Position(15, -20)),
+            InertialBody(mass, position = Position(-5, 10))
+        ) shouldbe Position(5,  -5)
+    }
+
+    @Test
+    fun testCenterOfMass_withDifferentMass() {
+        centerOfMass(
+            InertialBody(10.kg, position = Position(-10, 0)),
+            InertialBody(20.kg, position = Position(10, 0))
+        ) shouldbe Position(3.33, 0)
+
+        centerOfMass(
+            InertialBody(20.kg, position = Position(-10, 0)),
+            InertialBody(10.kg, position = Position(10, 0))
+        ) shouldbe Position(-3.33, 0)
+
+        centerOfMass(
+            InertialBody(5.kg, position = Position(-10, 35)),
+            InertialBody(15.kg, position = Position(10, -5))
+        ) shouldbe Position(5, 5)
     }
 }
 

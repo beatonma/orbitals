@@ -36,3 +36,9 @@ infix fun <T : Scalar, V : Vector2D<T>> V.shouldbe(expected: V) {
     x.value.shouldbe(expected.x.value, delta = 0.01f)
     y.value.shouldbe(expected.y.value, delta = 0.01f)
 }
+
+fun Float.shouldbeGreaterThan(other: Float) {
+    assertTrue("$this shouldbe > $other") { this > other }
+}
+
+fun Float.shouldbePositive() = shouldbeGreaterThan(0f)
