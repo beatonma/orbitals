@@ -32,22 +32,28 @@ interface OptionsStore {
                     SystemGenerator.Asteroids,
                     SystemGenerator.GreatAttractor,
                 ),
-            gravityMultiplier = this[PhysicsKey.GravityMultiplier] ?: 1f,
-            collisionStyle = this[PhysicsKey.CollisionStyle]?.let(CollisionStyle::valueOf) ?: CollisionStyle.None,
+            gravityMultiplier = this[PhysicsKey.GravityMultiplier] ?: .25f,
+            collisionStyle = this[PhysicsKey.CollisionStyle]?.let(CollisionStyle::valueOf)
+                ?: CollisionStyle.Merge,
         )
     }
+
     fun loadColors(): ColorOptions {
         return ColorOptions(
             background = this[ColorKey.BackgroundColor] ?: 0xff000000.toInt(),
             foregroundAlpha = this[ColorKey.BodyAlpha] ?: 1f,
-            bodies = this[ColorKey.Colors]?.map(ObjectColors::valueOf)?.toSet() ?: setOf(ObjectColors.Greyscale)
+            bodies = this[ColorKey.Colors]?.map(ObjectColors::valueOf)?.toSet() ?: setOf(
+                ObjectColors.Greyscale,
+                ObjectColors.Red
+            )
         )
     }
 
     fun loadVisuals(colors: ColorOptions = loadColors()): VisualOptions {
         return VisualOptions(
             colorOptions = colors,
-            renderLayers = this[VisualKey.RenderLayers]?.map(RenderLayer::valueOf)?.toSet() ?: setOf(RenderLayer.Default),
+            renderLayers = this[VisualKey.RenderLayers]?.map(RenderLayer::valueOf)?.toSet()
+                ?: setOf(RenderLayer.Default),
             traceLineLength = this[VisualKey.TraceLength] ?: 50,
             drawStyle = this[VisualKey.DrawStyle]?.let(DrawStyle::valueOf) ?: DrawStyle.Solid,
             strokeWidth = this[VisualKey.StrokeWidth] ?: 4f,
