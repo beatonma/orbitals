@@ -6,6 +6,7 @@ enum class Module(private val moduleName: String) {
     Android("orbitals-android"),
     Desktop("orbitals-desktop"),
     Web("orbitals-web"),
+    ComposeUi("orbitals-compose-ui"),
 
     Render("orbitals-render"),
     AndroidRender("orbitals-render-android"),
