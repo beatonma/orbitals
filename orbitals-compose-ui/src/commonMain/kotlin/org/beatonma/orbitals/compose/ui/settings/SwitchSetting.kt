@@ -1,17 +1,17 @@
-package org.beatonma.orbitalslivewallpaper.ui.settings
+package org.beatonma.orbitals.compose.ui.settings
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Switch
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.datastore.preferences.core.Preferences
+import org.beatonma.orbitals.render.options.BooleanKey
 
 @Composable
 fun SwitchSetting(
     name: String,
-    key: Preferences.Key<Boolean>,
+    key: BooleanKey,
     value: Boolean,
-    onValueChange: (key: Preferences.Key<Boolean>, value: Boolean) -> Unit,
+    onValueChange: (key: BooleanKey, value: Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     SettingLayout {

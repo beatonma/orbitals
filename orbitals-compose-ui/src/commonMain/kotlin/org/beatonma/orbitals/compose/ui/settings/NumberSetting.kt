@@ -1,4 +1,4 @@
-package org.beatonma.orbitalslivewallpaper.ui.settings
+package org.beatonma.orbitals.compose.ui.settings
 
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
@@ -17,17 +17,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.datastore.preferences.core.Preferences
 import org.beatonma.orbitals.core.map
+import org.beatonma.orbitals.render.options.FloatKey
+import org.beatonma.orbitals.render.options.IntKey
 import kotlin.math.roundToInt
 
 
 @Composable
 fun IntegerSetting(
     name: String,
-    key: Preferences.Key<Int>,
+    key: IntKey,
     value: Int,
-    onValueChange: (key: Preferences.Key<Int>, newValue: Int) -> Unit,
+    onValueChange: (key: IntKey, newValue: Int) -> Unit,
     min: Int,
     max: Int,
     modifier: Modifier = Modifier,
@@ -48,9 +49,9 @@ fun IntegerSetting(
 @Composable
 fun FloatSetting(
     name: String,
-    key: Preferences.Key<Float>,
+    key: FloatKey,
     value: Float,
-    onValueChange: (key: Preferences.Key<Float>, newValue: Float) -> Unit,
+    onValueChange: (key: FloatKey, newValue: Float) -> Unit,
     min: Float,
     max: Float,
     modifier: Modifier = Modifier,
@@ -69,7 +70,7 @@ fun FloatSetting(
 
 
 @Composable
-private fun <N: Number> NumberSettingLayout(
+private fun <N : Number> NumberSettingLayout(
     name: String,
     value: N,
     onOffsetChange: (Float) -> Unit,

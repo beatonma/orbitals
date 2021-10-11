@@ -7,6 +7,7 @@ data class VisualOptions(
     val traceLineLength: Int = 25,
     val drawStyle: DrawStyle = DrawStyle.Wireframe,
     val strokeWidth: Float = 4f,
+    val bodyScale: Float = 1f,
     val colorOptions: ColorOptions = ColorOptions(),
 )
 

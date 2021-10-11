@@ -12,17 +12,15 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
-import org.beatonma.orbitals.core.engine.SystemGenerator
-import org.beatonma.orbitals.core.options.CollisionStyle
+import org.beatonma.orbitals.render.options.BooleanKey
 import org.beatonma.orbitals.render.options.ColorOptions
-import org.beatonma.orbitals.render.options.DrawStyle
-import org.beatonma.orbitals.render.options.ObjectColors
-import org.beatonma.orbitals.core.options.PhysicsOptions
-import org.beatonma.orbitals.render.options.RenderLayer
-import org.beatonma.orbitals.render.options.VisualOptions
+import org.beatonma.orbitals.render.options.FloatKey
+import org.beatonma.orbitals.render.options.IntKey
+import org.beatonma.orbitals.render.options.Key
 import org.beatonma.orbitals.render.options.Options
-import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
+import org.beatonma.orbitals.render.options.OptionsStore
+import org.beatonma.orbitals.render.options.StringKey
+import org.beatonma.orbitals.render.options.StringSetKey
 
 enum class Settings {
     Wallpaper,
@@ -34,19 +32,22 @@ fun getSavedOptionsSync(dataStore: DataStore<Preferences>): Options = runBlockin
     getSavedOptions(dataStore).first()
 }
 
-@OptIn(ExperimentalTime::class)
-fun getSavedOptions(dataStore: DataStore<Preferences>): Flow<Options> {
-    return dataStore.data.map { preferences ->
-        val physics = loadPhysicsOptions(preferences)
-        val colors = loadColors(preferences)
-        val visuals = loadVisualOptions(preferences, colors)
+private operator fun <T> Preferences.get(key: Key<T>) = get(key.asPreferenceKey)
 
-        Options(physics, visuals)
+private class AndroidOptionsStore(
+    private val preferences: Preferences
+) : OptionsStore {
+    override operator fun <T> get(key: Key<T>): T? = preferences[key]
+}
+
+fun getSavedOptions(dataStore: DataStore<Preferences>): Flow<Options> {
+    return dataStore.data.map {
+        AndroidOptionsStore(it).loadOptions()
     }
 }
 
 fun getSavedColors(dataStore: DataStore<Preferences>): Flow<ColorOptions> {
-    return dataStore.data.map(::loadColors)
+    return dataStore.data.map { AndroidOptionsStore(it).loadColors() }
 }
 
 suspend fun <T> updateOption(
@@ -59,94 +60,21 @@ suspend fun <T> updateOption(
     }
 }
 
-object VisualKeys {
-    val renderLayers = stringSetPreferencesKey("render_layers")
-    val focusCenterOfMass = booleanPreferencesKey("focus_center_of_mass")
-    val traceLineLength = intPreferencesKey("path_history_length")
-    val drawStyle = stringPreferencesKey("draw_style")
-    val strokeWidth = floatPreferencesKey("stroke_width")
-}
 
-object PhysicsKeys {
-    val autoAddBodies = booleanPreferencesKey("auto_add_bodies")
-    val maxFixedBodyAgeSeconds = intPreferencesKey("max_fixedbody_age_seconds")
-    val maxEntities = intPreferencesKey("max_entities")
-    val systemGenerators = stringSetPreferencesKey("system_generators")
-    val gravityMultiplier = floatPreferencesKey("gravity_multiplier")
-    val collisionStyle = stringPreferencesKey("collision_style")
-}
+val <T> Key<T>.asPreferenceKey: Preferences.Key<T>
+    get() = when (this) {
+        is StringKey<*> -> this.asPreferenceKey
+        is StringSetKey<*> -> this.asPreferenceKey
+        is IntKey -> this.asPreferenceKey
+        is FloatKey -> this.asPreferenceKey
+        is BooleanKey -> this.asPreferenceKey
+    } as Preferences.Key<T>
 
-object ColorKeys {
-    val background = intPreferencesKey("background_color")
-    val bodies = stringSetPreferencesKey("body_colors")
-    val foregroundAlpha = floatPreferencesKey("foreground_alpha")
-}
-
-private fun loadColors(preferences: Preferences): ColorOptions =
-    with(ColorKeys) {
-        ColorOptions(
-            background = preferences[background] ?: 0x000000,
-            foregroundAlpha = preferences[foregroundAlpha] ?: 1f,
-            bodies = preferences[bodies]
-                ?.map {
-                    safeValueOf(
-                        it,
-                        default = ObjectColors.Greyscale
-                    )
-                }
-                ?.toSet()
-                ?: setOf(
-                    ObjectColors.Red,
-                    ObjectColors.Purple,
-                ),
-        )
-    }
-
-private fun loadVisualOptions(
-    preferences: Preferences,
-    colors: ColorOptions = loadColors(preferences),
-): VisualOptions = with(VisualKeys) {
-    VisualOptions(
-        renderLayers = preferences[renderLayers]
-            ?.map { safeValueOf(it, default = RenderLayer.Default) }
-            ?.toSet()
-            ?: setOf(RenderLayer.Default),
-        colorOptions = colors,
-        traceLineLength = preferences[traceLineLength] ?: 50,
-        drawStyle = preferences[drawStyle]
-            ?.let { safeValueOf(it, default = DrawStyle.Solid) }
-            ?: DrawStyle.Solid,
-        strokeWidth = preferences[strokeWidth] ?: 4f,
+val StringKey<*>.asPreferenceKey: Preferences.Key<String> get() = stringPreferencesKey(key)
+val StringSetKey<*>.asPreferenceKey: Preferences.Key<Set<String>>
+    get() = stringSetPreferencesKey(
+        key
     )
-}
-
-@OptIn(ExperimentalTime::class)
-private fun loadPhysicsOptions(
-    preferences: Preferences,
-): PhysicsOptions = with(PhysicsKeys) {
-    PhysicsOptions(
-        autoAddBodies = preferences[autoAddBodies] ?: true,
-        maxEntities = preferences[maxEntities] ?: 25,
-        maxFixedBodyAge = Duration.seconds(preferences[maxFixedBodyAgeSeconds] ?: 45),
-        systemGenerators = preferences[systemGenerators]
-            ?.map { safeValueOf(it, default = SystemGenerator.StarSystem) }
-            ?.toSet()
-            ?: setOf(
-                SystemGenerator.Gauntlet,
-                SystemGenerator.Randomized,
-                SystemGenerator.StarSystem,
-            ),
-        gravityMultiplier = preferences[gravityMultiplier] ?: 1f,
-        collisionStyle = preferences[collisionStyle]
-            ?.let { safeValueOf(it, CollisionStyle.None) }
-            ?: CollisionStyle.None,
-    )
-}
-
-private inline fun <reified E : Enum<E>> safeValueOf(value: String, default: E): E =
-    try {
-        java.lang.Enum.valueOf(E::class.java, value)
-    } catch (e: IllegalArgumentException) {
-        warn(e)
-        default
-    }
+val IntKey.asPreferenceKey: Preferences.Key<Int> get() = intPreferencesKey(key)
+val FloatKey.asPreferenceKey: Preferences.Key<Float> get() = floatPreferencesKey(key)
+val BooleanKey.asPreferenceKey: Preferences.Key<Boolean> get() = booleanPreferencesKey(key)

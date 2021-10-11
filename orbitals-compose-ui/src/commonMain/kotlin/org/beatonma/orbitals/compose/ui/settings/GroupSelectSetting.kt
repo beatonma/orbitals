@@ -1,4 +1,4 @@
-package org.beatonma.orbitalslivewallpaper.ui.settings
+package org.beatonma.orbitals.compose.ui.settings
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -35,15 +35,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.unit.dp
-import androidx.datastore.preferences.core.Preferences
+import org.beatonma.orbitals.render.options.StringKey
+import org.beatonma.orbitals.render.options.StringSetKey
 
 @Composable
 fun <E : Enum<E>> SingleSelectSetting(
     name: String,
-    key: Preferences.Key<String>,
+    key: StringKey<E>,
     value: E,
     values: Array<out E>,
-    onValueChange: (key: Preferences.Key<String>, newValue: E) -> Unit,
+    onValueChange: (key: StringKey<E>, newValue: E) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     CollapsibleGroup(name, modifier) {
@@ -66,10 +67,10 @@ fun <E : Enum<E>> SingleSelectSetting(
 @Composable
 fun <E : Enum<E>> MultiSelectSetting(
     name: String,
-    key: Preferences.Key<Set<String>>,
+    key: StringSetKey<E>,
     value: Set<E>,
     values: Array<out E>,
-    onValueChange: (key: Preferences.Key<Set<String>>, newValue: Set<E>) -> Unit,
+    onValueChange: (key: StringSetKey<E>, newValue: Set<E>) -> Unit,
     modifier: Modifier = Modifier,
     defaultValue: E = values.first(),
     allowEmptySet: Boolean = false,
@@ -85,7 +86,7 @@ fun <E : Enum<E>> MultiSelectSetting(
                         onValueChange(key, newValue)
                     }
                 } else {
-                    onValueChange(key, value + v)
+                    onValueChange(key, (value + v).toSet())
                 }
             }
 

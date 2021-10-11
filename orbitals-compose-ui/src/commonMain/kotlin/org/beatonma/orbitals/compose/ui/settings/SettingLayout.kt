@@ -1,4 +1,4 @@
-package org.beatonma.orbitalslivewallpaper.ui.settings
+package org.beatonma.orbitals.compose.ui.settings
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,14 +22,5 @@ internal fun SettingLayout(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         content()
-
-//        Spacer(
-//            Modifier
-//                .background(colors.onBackground.copy(alpha = .4f))
-//                .clip(shapes.small)
-//                .height(1.dp)
-//                .fillMaxWidth(.4f)
-//                .padding(vertical = 2.dp)
-//        )
     }
 }

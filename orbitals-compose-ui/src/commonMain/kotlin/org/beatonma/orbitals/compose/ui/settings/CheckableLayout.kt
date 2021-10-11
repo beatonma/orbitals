@@ -1,4 +1,4 @@
-package org.beatonma.orbitalslivewallpaper.ui.settings
+package org.beatonma.orbitals.compose.ui.settings
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement

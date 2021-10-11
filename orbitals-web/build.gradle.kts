@@ -72,7 +72,7 @@ kotlin {
 // (found here: https://github.com/joreilly/PeopleInSpace/blob/53fbd64c55d58c56dce56ecfb6a6b9ea9824e307/compose-web/build.gradle.kts)
 afterEvaluate {
     rootProject.extensions.configure<org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsRootExtension> {
-        versions.webpackDevServer.version = "4.0.0"
+        versions.webpackDevServer.version = "4.3.1"
     }
 }
 

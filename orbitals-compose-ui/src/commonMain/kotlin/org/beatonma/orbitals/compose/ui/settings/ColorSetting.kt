@@ -1,13 +1,9 @@
-package org.beatonma.orbitalslivewallpaper.ui.settings
+package org.beatonma.orbitals.compose.ui.settings
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import org.beatonma.orbitals.render.compose.toComposeColor
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -22,19 +18,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.unit.dp
-import androidx.datastore.preferences.core.Preferences
 import org.beatonma.orbitals.render.color.MaterialColors
+import org.beatonma.orbitals.render.compose.toComposeColor
+import org.beatonma.orbitals.render.options.IntKey
+
 
 @Composable
 fun ColorSetting(
     name: String,
-    key: Preferences.Key<Int>,
+    key: IntKey,
     value: Int,
-    onValueChange: (key: Preferences.Key<Int>, newValue: Int) -> Unit,
+    onValueChange: (key: IntKey, newValue: Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val state = rememberLazyListState()
@@ -53,8 +50,7 @@ fun ColorSetting(
                     Modifier
                         .padding(8.dp)
                         .clickable { onValueChange(key, color) }
-                        .size(48.dp)
-                    ,
+                        .size(48.dp),
                     color = c,
                     contentColor = contentColor,
                     shape = shapes.small,
