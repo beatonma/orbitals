@@ -42,8 +42,8 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(project(":${Module.Core}"))
                 implementation(Dependencies.KotlinReflect)
+                implementation(project(":${Module.Core}"))
             }
         }
         val androidMain by getting {}
