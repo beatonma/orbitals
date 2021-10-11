@@ -12,7 +12,7 @@ import org.beatonma.orbitals.render.OrbitalsRenderEngine
 fun createTouchAttractor(position: Position) =
     GreatAttractor(
         id = uniqueID("touch"),
-        mass = 10_000.kg,
+        mass = 5_000.kg,
         motion = Motion(position),
     )
 

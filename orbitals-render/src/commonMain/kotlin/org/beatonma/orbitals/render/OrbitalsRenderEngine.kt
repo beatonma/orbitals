@@ -33,6 +33,8 @@ class OrbitalsRenderEngine<T>(
 
         override var pruneCounter = 0
         override val pruneFrequency = 60
+        override val addedBodies: MutableList<Body> = mutableListOf()
+        override val removedBodies: MutableList<Body> = mutableListOf()
 
         override fun onBodiesCreated(newBodies: List<Body>) {
             super.onBodiesCreated(newBodies)
@@ -41,7 +43,7 @@ class OrbitalsRenderEngine<T>(
 
         override fun onBodyDestroyed(body: Body) {
             super.onBodyDestroyed(body)
-            renderers.forEach { it.onBodyDestroyed(body) }
+            renderers.forEach { renderer -> renderer.onBodyDestroyed(body) }
         }
     }
 

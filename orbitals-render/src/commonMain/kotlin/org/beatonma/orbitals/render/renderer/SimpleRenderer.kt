@@ -43,7 +43,7 @@ class SimpleRenderer<Canvas> internal constructor(
         val color = colors[body.id] ?: throw Exception("No color for body ${body.id}")
         val ageMillis = body.age.inWholeMilliseconds
 
-        val radiusMultiplier = easeRadius(
+        val radiusMultiplier = options.bodyScale * easeRadius(
             if (ageMillis > EnterAnimationMillis) 1f
             else {
                 ageMillis.toFloat() / EnterAnimationMillis.toFloat()

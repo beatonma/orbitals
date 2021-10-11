@@ -1,6 +1,5 @@
 package org.beatonma.orbitals.core.engine
 
-import kotlinx.coroutines.CoroutineScope
 import org.beatonma.orbitals.core.chance
 import org.beatonma.orbitals.core.options.PhysicsOptions
 import org.beatonma.orbitals.core.percent
@@ -35,8 +34,6 @@ interface OrbitalsEngine {
 
     val addedBodies: MutableList<Body>
     val removedBodies: MutableList<Body>
-
-    val coroutineScope: CoroutineScope
 
     fun onBodiesCreated(newBodies: List<Body>) {}
     fun onBodyDestroyed(body: Body) {}

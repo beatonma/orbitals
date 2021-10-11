@@ -5,6 +5,7 @@ import android.os.Handler
 import android.service.wallpaper.WallpaperService
 import android.view.MotionEvent
 import android.view.SurfaceHolder
+import org.beatonma.orbitals.core.util.warn
 import org.beatonma.orbitals.render.android.AndroidCanvasDelegate
 import org.beatonma.orbitals.render.OrbitalsRenderEngine
 import org.beatonma.orbitals.render.diffRenderers
@@ -14,7 +15,6 @@ import org.beatonma.orbitalslivewallpaper.Settings
 import org.beatonma.orbitalslivewallpaper.dataStore
 import org.beatonma.orbitalslivewallpaper.getSavedOptionsSync
 import org.beatonma.orbitalslivewallpaper.ui.orbitals.OrbitalsGestureDetector
-import org.beatonma.orbitalslivewallpaper.warn
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
