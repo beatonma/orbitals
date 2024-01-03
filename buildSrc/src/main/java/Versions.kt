@@ -1,7 +1,7 @@
 import org.gradle.api.JavaVersion
 
 object Versions {
-    const val GradlePlugin = "7.0.2"
+    const val GradlePlugin = "7.4.2"
 
     val Java = JavaVersion.VERSION_1_8
 
