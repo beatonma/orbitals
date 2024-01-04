@@ -8,7 +8,6 @@ android {
 
     defaultConfig {
         minSdk = AppConfig.SdkMin
-        targetSdk = AppConfig.SdkTarget
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -21,15 +20,16 @@ android {
     kotlinOptions {
         jvmTarget = Versions.Java.toString()
         languageVersion = Versions.KotlinLanguage
-        freeCompilerArgs = freeCompilerArgs + listOf(
-            "-Xopt-in=kotlin.RequiresOptIn", // Hide warnings about @OptIn annotations.
-        )
+//        freeCompilerArgs = freeCompilerArgs + listOf(
+//            "-Xopt-in=kotlin.RequiresOptIn", // Hide warnings about @OptIn annotations.
+//        )
     }
+    namespace = "org.beatonma.orbitals.render.android"
 }
 
 dependencies {
-    implementation(Dependencies.KotlinStdLib)
-    implementation(Dependencies.KotlinReflect)
+//    implementation(Dependencies.KotlinStdLib)
+//    implementation(Dependencies.KotlinReflect)
 
     implementation(project(Module.Core))
     implementation(project(Module.Render))

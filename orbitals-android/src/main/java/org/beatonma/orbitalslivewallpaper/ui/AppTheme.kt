@@ -13,7 +13,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.insets.ProvideWindowInsets
 import org.beatonma.orbitals.render.compose.toComposeColor
 import org.beatonma.orbitals.render.options.ColorOptions
 import org.beatonma.orbitalslivewallpaper.Settings
@@ -49,12 +48,12 @@ fun AppTheme(
             large = CutCornerShape(8.dp),
         )
     ) {
-        ProvideWindowInsets {
+//        ProvideWindowInsets {
             Surface(
                 Modifier.fillMaxSize(),
                 content = content
             )
-        }
+//        }
     }
 }
 

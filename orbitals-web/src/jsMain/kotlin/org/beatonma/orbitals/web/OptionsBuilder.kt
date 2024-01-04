@@ -14,12 +14,9 @@ import org.beatonma.orbitals.render.options.VisualKey
 import org.beatonma.orbitals.render.options.PhysicsKey
 import org.beatonma.orbitals.render.options.ColorKey
 import org.beatonma.orbitals.render.options.OptionsStore
-import org.beatonma.orbitals.core.options.PhysicsOptions
 import org.beatonma.orbitals.core.options.CollisionStyle
 import org.beatonma.orbitals.core.engine.SystemGenerator
 import org.w3c.dom.url.URLSearchParams
-import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 
 
 fun createOptions(params: URLSearchParams): Options {
@@ -38,7 +35,7 @@ private class UrlOptionsStore(
         val value = params.get(key)
 
         if (key == ColorKey.BackgroundColor) {
-            return (value as? String)?.toColorInt() as? T
+            return value?.toColorInt() as? T
         }
 
         return when (key) {

@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalTime::class)
-
 package org.beatonma.orbitals.core.engine
 
 import org.beatonma.orbitals.core.physics.FixedBody
@@ -12,7 +10,7 @@ import org.beatonma.orbitals.core.physics.kg
 import org.beatonma.orbitals.test.shouldbe
 import kotlin.test.Test
 import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
+import kotlin.time.Duration.Companion.seconds
 
 
 class OrbitalsEngineTest {
@@ -24,15 +22,15 @@ class OrbitalsEngineTest {
             inertialBody(-101, 10), // remove
             inertialBody(-99, 10), // keep
             fixedBody(-15, -15), // keep
-            greatAttractor(0, -300, age = Duration.seconds(100)), // remove
+            greatAttractor(0, -300, age = 100.seconds), // remove
             inertialBody(10, -99), // keep
             inertialBody(10, -101), // remove
-            fixedBody(15, 15, age = Duration.seconds(100)), // keep (convert to InertialBody)
+            fixedBody(15, 15, age = 100.seconds), // keep (convert to InertialBody)
             greatAttractor(300, 0), // keep
         )
 
         val (keep, destroy) =
-            pruneBodies(bodies, space, Duration.seconds(60), keepAgedRandomizer = { false })
+            pruneBodies(bodies, space, 60.seconds, keepAgedRandomizer = { false })
 
         keep.sortedBy { it.position } shouldbe listOf(
             inertialBody(-99, 10),
@@ -44,7 +42,7 @@ class OrbitalsEngineTest {
 
         destroy.sortedBy { it.position } shouldbe listOf(
             inertialBody(-101, 10),
-            greatAttractor(0, -300, Duration.seconds(100)),
+            greatAttractor(0, -300, 100.seconds),
             inertialBody(10, -101),
         )
     }
@@ -64,7 +62,7 @@ private fun inertialBody(
 private fun fixedBody(
     x: Number,
     y: Number,
-    age: Duration = Duration.seconds(0),
+    age: Duration = 0.seconds,
 ) = FixedBody(
     id = UniqueID("FixedID"),
     mass = 100.kg,
@@ -75,7 +73,7 @@ private fun fixedBody(
 private fun greatAttractor(
     x: Number,
     y: Number,
-    age: Duration = Duration.seconds(0),
+    age: Duration = 0.seconds,
 ) = GreatAttractor(
     id = UniqueID("FixedID"),
     mass = 100.kg,

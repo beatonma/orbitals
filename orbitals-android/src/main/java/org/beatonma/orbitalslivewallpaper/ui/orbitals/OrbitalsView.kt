@@ -13,8 +13,7 @@ import org.beatonma.orbitals.render.getRenderers
 import org.beatonma.orbitalslivewallpaper.Settings
 import org.beatonma.orbitalslivewallpaper.dataStore
 import org.beatonma.orbitalslivewallpaper.getSavedOptionsSync
-import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
+import kotlin.time.Duration.Companion.milliseconds
 
 class OrbitalsView @JvmOverloads constructor(
     context: Context,
@@ -53,15 +52,14 @@ class OrbitalsView @JvmOverloads constructor(
         super.onSizeChanged(w, h, oldw, oldh)
     }
 
-    @OptIn(ExperimentalTime::class)
-    override fun onDraw(canvas: Canvas?) {
+    override fun onDraw(canvas: Canvas) {
         val now = System.currentTimeMillis()
         val timeDelta = now - lastFrameMillis
         lastFrameMillis = now
 
         if (canvas != null) {
             canvas.drawColor((options.visualOptions.colorOptions.background) or 0xff000000.toInt())
-            renderEngine.update(canvas, Duration.milliseconds(timeDelta))
+            renderEngine.update(canvas, timeDelta.milliseconds)
         }
         postInvalidateOnAnimation()
     }

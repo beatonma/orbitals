@@ -1,13 +1,16 @@
 package org.beatonma.orbitals.core.physics
 
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
-import kotlin.time.ExperimentalTime
+import org.beatonma.orbitals.core.physics.metres
+import org.beatonma.orbitals.core.physics.Speed
+import org.beatonma.orbitals.core.physics.Momentum
+import org.beatonma.orbitals.core.physics.Velocity
 
 
-@OptIn(ExperimentalTime::class)
 val Distance.perSecond: Speed
-    get() = this / Duration.seconds(1)
+    get() = this / 1.seconds
 
 data class Velocity internal constructor(
     override var x: Speed = Speed(0.0),
@@ -47,7 +50,6 @@ data class Velocity internal constructor(
 data class Speed internal constructor(override val value: Float) : Scalar {
     constructor(speed: Number) : this(speed.toFloat())
 
-    @OptIn(ExperimentalTime::class)
     operator fun times(time: Duration): Distance =
         (this.value * time.toDouble(DurationUnit.SECONDS)).metres
 

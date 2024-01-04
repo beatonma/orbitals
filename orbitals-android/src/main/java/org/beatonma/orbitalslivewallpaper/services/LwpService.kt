@@ -15,8 +15,7 @@ import org.beatonma.orbitalslivewallpaper.Settings
 import org.beatonma.orbitalslivewallpaper.dataStore
 import org.beatonma.orbitalslivewallpaper.getSavedOptionsSync
 import org.beatonma.orbitalslivewallpaper.ui.orbitals.OrbitalsGestureDetector
-import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
+import kotlin.time.Duration.Companion.milliseconds
 
 private const val FPS = 60
 private const val FrameDelay: Long = 1000L / FPS
@@ -91,7 +90,6 @@ class LwpService : WallpaperService() {
             renderEngine.recycle()
         }
 
-        @OptIn(ExperimentalTime::class)
         private fun draw() {
 
             val now = System.currentTimeMillis()
@@ -102,7 +100,7 @@ class LwpService : WallpaperService() {
             try {
                 canvas = surfaceHolder.lockCanvas()
                 canvas.drawColor((options.visualOptions.colorOptions.background) or 0xff000000.toInt())
-                renderEngine.update(canvas, Duration.milliseconds(timeDelta))
+                renderEngine.update(canvas, timeDelta.milliseconds)
             } catch (e: Exception) {
                 warn(e)
             } finally {

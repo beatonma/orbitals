@@ -3,7 +3,6 @@ package org.beatonma.orbitals.core.physics
 import kotlin.jvm.JvmInline
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
-import kotlin.time.ExperimentalTime
 
 val Float.km: Distance get() = Distance(this * 1000f)
 val Number.km: Distance get() = this.toFloat().km
@@ -28,7 +27,6 @@ value class Distance internal constructor(
     operator fun div(other: Distance): Float = value / other.value
     operator fun div(factor: Float): Distance = (value / factor).metres
 
-    @OptIn(ExperimentalTime::class)
     operator fun div(duration: Duration): Speed =
         Speed(this.value / duration.toDouble(DurationUnit.SECONDS))
 

@@ -7,10 +7,9 @@ import org.beatonma.orbitals.render.options.Options
 import org.beatonma.orbitals.core.options.PhysicsOptions
 import org.beatonma.orbitals.core.physics.Body
 import org.beatonma.orbitals.core.physics.UniqueID
+import org.beatonma.orbitals.core.util.info
 import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
 class OrbitalsRenderEngine<T>(
     var renderers: Set<OrbitalsRenderer<T>>,
     options: Options,
@@ -25,7 +24,6 @@ class OrbitalsRenderEngine<T>(
             println(renderers)
         }
 
-    @OptIn(ExperimentalTime::class)
     private val engine: OrbitalsEngine = object : OrbitalsEngine {
         override var space: Universe = Universe(1, 1)
         override var physics: PhysicsOptions = options.physics

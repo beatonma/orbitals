@@ -1,7 +1,6 @@
 package org.beatonma.orbitalslivewallpaper.ui
 
 import android.app.Application
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -14,7 +13,6 @@ import org.beatonma.orbitals.render.compose.Orbitals
 import org.beatonma.orbitals.render.options.Options
 import org.beatonma.orbitalslivewallpaper.Settings
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SettingsUI(
     viewmodel: SettingsViewModel = viewModel(
@@ -34,7 +32,7 @@ private class SettingsViewModelFactory(
     private val settings: Settings
 ) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(SettingsViewModel::class.java)) {
             return SettingsViewModel(application, settings) as T
         }

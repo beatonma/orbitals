@@ -17,11 +17,9 @@ import org.beatonma.orbitals.render.OrbitalsRenderEngine
 import org.beatonma.orbitals.render.diffRenderers
 import org.beatonma.orbitals.render.getRenderers
 import kotlin.math.roundToInt
-import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
+import kotlin.time.Duration.Companion.milliseconds
 
 
-@OptIn(ExperimentalTime::class)
 @Composable
 fun Orbitals(
     options: Options,
@@ -41,7 +39,7 @@ fun Orbitals(
         orbitals.options = options
     }
 
-    val duration = Duration.milliseconds(frameMillis)
+    val duration = frameMillis.milliseconds
 
     Canvas(
         modifier = modifier

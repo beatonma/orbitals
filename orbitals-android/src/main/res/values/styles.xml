@@ -1,5 +1,5 @@
 <resources>
-    <style name="OrbitalsApp" parent="Theme.AppCompat.NoActionBar">
+    <style name="OrbitalsApp" parent="android:Theme.Material.NoActionBar">
         <item name="android:colorPrimary">@color/PrimaryGrey</item>
         <item name="android:colorPrimaryDark">@color/PrimaryGreyDark</item>"
         <item name="android:colorAccent">@color/AccentPink</item>

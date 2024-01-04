@@ -47,7 +47,6 @@ import org.beatonma.orbitals.render.options.VisualKey
 import org.beatonma.orbitals.render.options.VisualOptions
 import org.beatonma.orbitals.render.compose.Orbitals
 import org.beatonma.orbitals.render.options.OptionPersistence
-import kotlin.time.ExperimentalTime
 
 
 @Composable
@@ -94,7 +93,6 @@ fun SettingsUi(
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun VisualSettingsUI(
     visualOptions: VisualOptions,
@@ -184,7 +182,6 @@ private fun ColorSettingsUI(
     }
 }
 
-@OptIn(ExperimentalTime::class)
 @Composable
 private fun PhysicsSettingsUI(
     physics: PhysicsOptions,

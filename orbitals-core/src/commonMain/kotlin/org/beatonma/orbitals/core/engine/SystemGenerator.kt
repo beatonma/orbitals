@@ -79,6 +79,7 @@ enum class SystemGenerator {
         return f(space, bodies, physics)
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun generatorCollisionTester(
         space: Space,
         bodies: List<Body>,
@@ -100,6 +101,7 @@ enum class SystemGenerator {
         )
     )
 
+    @Suppress("UNUSED_PARAMETER")
     private fun generateGreatAttractor(
         space: Space,
         bodies: List<Body>,
@@ -239,6 +241,7 @@ enum class SystemGenerator {
         }
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun generateRandom(
         space: Space,
         bodies: List<Body>,
@@ -257,6 +260,7 @@ enum class SystemGenerator {
         }
     }
 
+    @Suppress("UNUSED_PARAMETER", "UNUSED_ANONYMOUS_PARAMETER")
     private fun generateAsteroids(
         space: Space,
         bodies: List<Body>,

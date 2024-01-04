@@ -1,10 +1,8 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 // Versions object is not accessible here.
-val gradleVersion = "7.4.2"
-val kotlinVersion = "1.5.21"
-val kotlinLanguageVersion = "1.5"
-val javaVersion = "1.8"
+val gradleVersion = "8.0.2"
+val kotlinVersion = "1.8.20"
+val kotlinLanguageVersion = "1.8"
+val javaVersion = "17"
 
 plugins {
     `kotlin-dsl`
@@ -19,16 +17,4 @@ repositories {
     google()
     mavenCentral()
     maven("https://dl.bintray.com/kotlin/kotlin-eap")
-}
-
-val compileKotlin: KotlinCompile by tasks
-val compileTestKotlin: KotlinCompile by tasks
-
-compileKotlin.kotlinOptions {
-    jvmTarget = javaVersion
-    languageVersion = kotlinLanguageVersion
-}
-compileTestKotlin.kotlinOptions {
-    jvmTarget = javaVersion
-    languageVersion = kotlinLanguageVersion
 }

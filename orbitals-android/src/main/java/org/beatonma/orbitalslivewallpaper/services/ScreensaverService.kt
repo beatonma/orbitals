@@ -2,7 +2,7 @@ package org.beatonma.orbitalslivewallpaper.services
 
 import android.service.dreams.DreamService
 import android.view.View
-import com.beatonma.orbitalslivewallpaper.R
+import org.beatonma.orbitalslivewallpaper.R
 
 class ScreensaverService : DreamService() {
 

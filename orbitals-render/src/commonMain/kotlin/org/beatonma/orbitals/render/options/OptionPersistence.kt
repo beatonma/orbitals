@@ -3,8 +3,7 @@ package org.beatonma.orbitals.render.options
 import org.beatonma.orbitals.core.engine.SystemGenerator
 import org.beatonma.orbitals.core.options.CollisionStyle
 import org.beatonma.orbitals.core.options.PhysicsOptions
-import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
+import kotlin.time.Duration.Companion.seconds
 
 interface OptionPersistence {
     fun <E: Enum<E>> updateOption(key: StringKey<E>, value: E)
@@ -17,12 +16,11 @@ interface OptionPersistence {
 interface OptionsStore {
     operator fun <T> get(key: Key<T>): T?
 
-    @OptIn(ExperimentalTime::class)
     fun loadPhysics(): PhysicsOptions {
         return PhysicsOptions(
             autoAddBodies = this[PhysicsKey.AutoAddBodies] ?: true,
             maxEntities = this[PhysicsKey.MaxEntities] ?: 25,
-            maxFixedBodyAge = Duration.seconds(this[PhysicsKey.MaxFixedBodyAgeSeconds] ?: 45),
+            maxFixedBodyAge = (this[PhysicsKey.MaxFixedBodyAgeSeconds] ?: 45).seconds,
             systemGenerators = this[PhysicsKey.Generators]
                 ?.map(SystemGenerator::valueOf)
                 ?.toSet()

@@ -3,7 +3,6 @@ package org.beatonma.orbitals.core.physics
 import kotlin.jvm.JvmInline
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
-import kotlin.time.ExperimentalTime
 
 /** ms^-2 */
 @JvmInline
@@ -14,7 +13,6 @@ value class AccelerationScalar internal constructor(override val value: Float) :
     operator fun times(multiplier: Float): AccelerationScalar =
         AccelerationScalar(value * multiplier)
 
-    @OptIn(ExperimentalTime::class)
     operator fun times(duration: Duration): Speed {
         return Speed(value * duration.toDouble(DurationUnit.SECONDS).toFloat())
     }
@@ -33,7 +31,6 @@ data class Acceleration internal constructor(
     override val x: AccelerationScalar,
     override val y: AccelerationScalar,
 ) : Vector2D<AccelerationScalar> {
-    @OptIn(ExperimentalTime::class)
     operator fun times(duration: Duration): Velocity =
         Velocity(
             x = x * duration,
@@ -46,8 +43,6 @@ data class Acceleration internal constructor(
 
 operator fun Float.times(acceleration: AccelerationScalar) = acceleration * this
 
-@OptIn(ExperimentalTime::class)
 operator fun Duration.times(acceleration: Acceleration) = acceleration * this
 
-@OptIn(ExperimentalTime::class)
 operator fun Duration.times(acceleration: AccelerationScalar) = acceleration * this

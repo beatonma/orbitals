@@ -4,12 +4,10 @@ import org.beatonma.orbitals.test.differenceWith
 import org.beatonma.orbitals.test.shouldbe
 import kotlin.test.Test
 import kotlin.test.assertTrue
-import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
+import kotlin.time.Duration.Companion.milliseconds
 
 private const val TestG = 6.674f
 
-@OptIn(ExperimentalTime::class)
 class BodyTest {
     private val body
         get() = InertialBody(
@@ -196,6 +194,5 @@ class BodyTest {
     }
 }
 
-@OptIn(ExperimentalTime::class)
 private val Int.ms
-    get() = Duration.milliseconds(this)
+    get() = this.milliseconds

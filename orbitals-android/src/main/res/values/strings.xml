@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">[2021]Orbitals LWP &amp; Daydream</string>
-    <string name="service_title">[2021]Orbitals</string>
+    <string name="app_name">Orbitals LWP &amp; Daydream</string>
+    <string name="service_title">Orbitals</string>
 
     <string name="pref_about_changelog_text">
         <b>1.4.8</b> (28 March 2016):\n

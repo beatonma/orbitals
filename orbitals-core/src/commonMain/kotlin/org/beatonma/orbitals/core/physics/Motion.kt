@@ -1,9 +1,8 @@
 package org.beatonma.orbitals.core.physics
 
 import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 
-class Motion constructor(
+class Motion(
     position: Position = ZeroPosition,
     velocity: Velocity = ZeroVelocity,
 ) {
@@ -22,7 +21,6 @@ class Motion constructor(
     /**
      * Warning: With large [timeDelta], position will move in long straight lines
      */
-    @OptIn(ExperimentalTime::class)
     fun applyInertia(timeDelta: Duration) {
         position.x += velocity.x * timeDelta
         position.y += velocity.y * timeDelta

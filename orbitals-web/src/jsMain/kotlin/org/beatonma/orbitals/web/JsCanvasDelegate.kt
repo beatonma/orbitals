@@ -1,4 +1,3 @@
-import org.beatonma.orbitals.render.options.Options
 import org.beatonma.orbitals.render.options.CapStyle
 import org.beatonma.orbitals.render.options.DrawStyle
 import org.beatonma.orbitals.core.physics.Distance
@@ -18,7 +17,7 @@ object JsCanvasDelegate : CanvasDelegate<CanvasRenderingContext2D> {
 
     override fun drawCircle(
         canvas: CanvasRenderingContext2D,
-        position: org.beatonma.orbitals.core.physics.Position,
+        position: Position,
         radius: Distance,
         color: Int,
         strokeWidth: Float,
@@ -48,8 +47,8 @@ object JsCanvasDelegate : CanvasDelegate<CanvasRenderingContext2D> {
     override fun drawLine(
         canvas: CanvasRenderingContext2D,
         color: Int,
-        start: org.beatonma.orbitals.core.physics.Position,
-        end: org.beatonma.orbitals.core.physics.Position,
+        start: Position,
+        end: Position,
         strokeWidth: Float,
         cap: CapStyle,
         alpha: Float,

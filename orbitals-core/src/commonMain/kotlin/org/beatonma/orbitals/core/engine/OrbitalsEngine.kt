@@ -16,11 +16,9 @@ import org.beatonma.orbitals.core.physics.kg
 import org.beatonma.orbitals.core.physics.toInertialBody
 import org.beatonma.orbitals.core.util.timeIt
 import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 
 private val BodySortBy = Body::mass
 
-@OptIn(ExperimentalTime::class)
 private val BodyMassLimit = 1500.kg
 
 
@@ -55,7 +53,6 @@ interface OrbitalsEngine {
 
     private fun removeBody(body: Body) = removeBody(body.id)
 
-    @OptIn(ExperimentalTime::class)
     fun tick(timeDelta: Duration) {
         val duration = timeIt(enabled = true) {
             bodies.forEach {
@@ -138,7 +135,6 @@ interface OrbitalsEngine {
      * Any FixedBody that exceeds a maximum age is converted to an InertialBody so that it might be
      * expelled by later interactions.
      */
-    @OptIn(ExperimentalTime::class)
     private fun pruneBodies(space: Universe = this.space) {
         val (keep, destroy) = pruneBodies(bodies, space, physics.maxFixedBodyAge)
         destroy.forEach(::onBodyDestroyed)
@@ -152,7 +148,6 @@ interface OrbitalsEngine {
     }
 }
 
-@OptIn(ExperimentalTime::class)
 internal fun pruneBodies(
     bodies: List<Body>,
     space: Space,

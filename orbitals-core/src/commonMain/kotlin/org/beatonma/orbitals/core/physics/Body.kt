@@ -3,10 +3,9 @@ package org.beatonma.orbitals.core.physics
 import org.beatonma.orbitals.core.util.currentTimeMillis
 import kotlin.math.pow
 import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
+import kotlin.time.Duration.Companion.seconds
 
-@OptIn(ExperimentalTime::class)
-private val CollisionMinimumAge = Duration.seconds(1)
+private val CollisionMinimumAge = 1.seconds
 
 val DefaultDensity = 0.5
 val ZeroMass get() = 0.0.kg
@@ -24,7 +23,6 @@ interface Collider {
     fun canCollide(now: Long = currentTimeMillis()): Boolean
 }
 
-@OptIn(ExperimentalTime::class)
 sealed interface Body: Collider {
     val id: UniqueID
     var mass: Mass
@@ -72,13 +70,12 @@ sealed interface Body: Collider {
 /**
  * A body that stays in a fixed position.
  */
-@OptIn(ExperimentalTime::class)
 data class FixedBody(
     override var mass: Mass,
     override val id: UniqueID = uniqueID("FixedBody"),
     override var radius: Distance = sizeOf(mass),
     override val motion: Motion = ZeroMotion,
-    override var age: Duration = Duration.seconds(0)
+    override var age: Duration = 0.seconds
 ) : Body, Fixed {
     override var lastCollision: Long = currentTimeMillis()
 
@@ -103,13 +100,12 @@ fun FixedBody.toInertialBody() = InertialBody(
     motion = motion,
 )
 
-@OptIn(ExperimentalTime::class)
 data class InertialBody(
     override val id: UniqueID = uniqueID("InertialBody"),
     override var mass: Mass,
     override var radius: Distance = sizeOf(mass),
     override val motion: Motion = ZeroMotion,
-    override var age: Duration = Duration.seconds(0)
+    override var age: Duration = 0.seconds
 ) : Body, Inertial {
     override var lastCollision: Long = currentTimeMillis()
 
@@ -146,13 +142,12 @@ data class InertialBody(
 }
 
 
-@OptIn(ExperimentalTime::class)
 data class GreatAttractor(
     override var mass: Mass,
     override val id: UniqueID = uniqueID("GreatAttractor"),
     override var radius: Distance = sizeOf(mass),
     override val motion: Motion = ZeroMotion,
-    override var age: Duration = Duration.seconds(0)
+    override var age: Duration = 0.seconds
 ) : Body, Fixed {
     override var lastCollision: Long = currentTimeMillis()
 

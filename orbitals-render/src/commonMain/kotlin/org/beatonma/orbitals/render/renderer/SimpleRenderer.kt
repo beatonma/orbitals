@@ -10,7 +10,6 @@ import org.beatonma.orbitals.render.options.DrawStyle
 import org.beatonma.orbitals.render.options.VisualOptions
 import kotlin.math.pow
 import kotlin.math.sqrt
-import kotlin.time.ExperimentalTime
 
 
 private const val EnterAnimationMillis = 450
@@ -33,7 +32,6 @@ class SimpleRenderer<Canvas> internal constructor(
         colors.remove(body.id)
     }
 
-    @OptIn(ExperimentalTime::class)
     override fun drawBody(canvas: Canvas, body: Body) {
         if (body is GreatAttractor) {
             drawAttractor(canvas, body)
