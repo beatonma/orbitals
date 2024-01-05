@@ -1,7 +1,5 @@
 import org.beatonma.orbitals.render.options.Options
-import org.beatonma.orbitals.render.options.ColorOptions
 import org.beatonma.orbitals.render.options.ObjectColors
-import org.beatonma.orbitals.render.options.VisualOptions
 import org.beatonma.orbitals.render.options.RenderLayer
 import org.beatonma.orbitals.render.options.Key
 import org.beatonma.orbitals.render.options.StringKey
@@ -16,6 +14,8 @@ import org.beatonma.orbitals.render.options.ColorKey
 import org.beatonma.orbitals.render.options.OptionsStore
 import org.beatonma.orbitals.core.options.CollisionStyle
 import org.beatonma.orbitals.core.engine.SystemGenerator
+import org.beatonma.orbitals.core.util.info
+import org.beatonma.orbitals.core.util.warn
 import org.w3c.dom.url.URLSearchParams
 
 
@@ -23,7 +23,7 @@ fun createOptions(params: URLSearchParams): Options {
     return UrlOptionsStore(params)
         .also { it.printCustomisationInstructions() }
         .loadOptions()
-        .also { println("Loaded options: $it") }
+        .also { info("Loaded options: $it") }
 }
 
 
@@ -39,16 +39,16 @@ private class UrlOptionsStore(
         }
 
         return when (key) {
-            is StringKey<*> -> value
-            is StringSetKey<*> -> value?.split(",")?.toSet()
-            is IntKey -> value?.toInt()
-            is FloatKey -> value?.toFloat()
-            is BooleanKey -> value?.toBoolean()
-        } as? T
+            is StringKey<*> -> value as? T
+            is StringSetKey<*> -> value?.split(",")?.toSet() as? T
+            is IntKey -> value?.toInt() as? T
+            is FloatKey -> value?.toFloat() as? T
+            is BooleanKey -> value?.toBoolean() as? T
+        }
     }
 
     fun printCustomisationInstructions() {
-        println(
+        info(
             """|Customisation:
            |
            |- Lists separated by '|' mean you can choose only one item.
@@ -66,15 +66,12 @@ private class UrlOptionsStore(
         )
     }
 
-    private fun String.toColorInt(): Int {
-        try {
-            return this.toInt(16)
-        } catch (e: NumberFormatException) {
-            println(e)
-            return 0xff0000
-        }
+    private fun String.toColorInt(): Int = try {
+        this.toInt(16)
+    } catch (e: NumberFormatException) {
+        warn(e)
+        0xff0000
     }
-
 }
 
 private fun URLSearchParams.get(key: Key<*>) = get(key.key)
@@ -116,26 +113,3 @@ private fun aboutColorOptions(): String {
         ColorKey.BodyAlpha to float(.8f),
     ).join("Color options")
 }
-
-private val AllOptions: Map<Key<*>, Any>
-    get() {
-
-        return mapOf(
-            PhysicsKey.MaxFixedBodyAgeSeconds to 45,
-            PhysicsKey.Generators to SystemGenerator.values().chooseNultiple(),
-            PhysicsKey.AutoAddBodies to true,
-            PhysicsKey.GravityMultiplier to .5f,
-            PhysicsKey.MaxEntities to 90,
-            PhysicsKey.CollisionStyle to CollisionStyle.values().chooseOne(),
-
-            VisualKey.DrawStyle to DrawStyle.values().chooseOne(),
-            VisualKey.TraceLength to 50,
-            VisualKey.StrokeWidth to 4f,
-            VisualKey.RenderLayers to RenderLayer.values().chooseNultiple(),
-            VisualKey.BodyScale to 1.2f,
-
-            ColorKey.BackgroundColor to "220033",
-            ColorKey.Colors to ObjectColors.values().chooseNultiple(),
-            ColorKey.BodyAlpha to .8f,
-        )
-    }

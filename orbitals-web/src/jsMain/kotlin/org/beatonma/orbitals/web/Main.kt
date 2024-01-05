@@ -10,25 +10,27 @@ import kotlinx.browser.document
 import kotlinx.browser.window
 import org.beatonma.orbitals.render.OrbitalsRenderEngine
 import org.beatonma.orbitals.render.getRenderers
-import org.beatonma.orbitals.render.options.Options
 import org.jetbrains.compose.web.renderComposable
 import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.get
+import org.w3c.dom.url.URLSearchParams
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
 
 private data class Size(val width: Int, val height: Int)
-private val options = Options()
 
 fun main() {
-    val canvas = document.getElementById("orbitals") as? HTMLCanvasElement;
+    val options = createOptions(URLSearchParams(window.location.search))
+
+    val canvas = document.getElementById("orbitals") as? HTMLCanvasElement
     val context: CanvasRenderingContext2D =
         canvas?.getContext("2d") as? CanvasRenderingContext2D
             ?: throw Exception("Failed to get canvas context")
 
     canvas.setupSize(canvas.dataset["fullscreen"]?.lowercase() == "true")
+    canvas.style.backgroundColor = options.visualOptions.colorOptions.background.toHexString()
 
     renderComposable("orbitals") {
         var size by remember { mutableStateOf(Size(1, 1)) }
@@ -84,8 +86,7 @@ private fun HTMLCanvasElement.setupSize(isFullscreen: Boolean) {
                 width = it.clientWidth
                 height = it.clientHeight
             }
-        }
-        }
+        }}
     }
 
     func()
