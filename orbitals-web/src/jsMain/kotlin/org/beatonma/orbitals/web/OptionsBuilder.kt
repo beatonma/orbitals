@@ -77,7 +77,7 @@ private class UrlOptionsStore(
 private fun URLSearchParams.get(key: Key<*>) = get(key.key)
 
 private fun <T> Array<T>.chooseOne() = joinToString("|") + " (choose one)"
-private fun <T> Array<T>.chooseNultiple() = joinToString(",") + " (choose many)"
+private fun <T> Array<T>.chooseMultiple() = joinToString(",") + " (choose many)"
 private fun Map<Key<*>, Any>.join(title: String) =
     "$title:\n " + this.map { (key, value) -> "${key.key}=${value}" }.joinToString("\n ")
 
@@ -88,7 +88,7 @@ private fun bool(value: Any) = "$value (true|false)"
 private fun aboutPhysicsOptions(): String {
     return mapOf<Key<*>, Any>(
         PhysicsKey.MaxFixedBodyAgeSeconds to int(45),
-        PhysicsKey.Generators to SystemGenerator.values().chooseNultiple(),
+        PhysicsKey.Generators to SystemGenerator.values().chooseMultiple(),
         PhysicsKey.AutoAddBodies to bool(true),
         PhysicsKey.GravityMultiplier to float(.5f),
         PhysicsKey.MaxEntities to int(90),
@@ -101,15 +101,18 @@ private fun aboutVisualOptions(): String {
         VisualKey.DrawStyle to DrawStyle.values().chooseOne(),
         VisualKey.TraceLength to int(50),
         VisualKey.StrokeWidth to float(4f),
-        VisualKey.RenderLayers to RenderLayer.values().chooseNultiple(),
         VisualKey.BodyScale to float(1.2f),
+        VisualKey.RenderLayers to RenderLayer.values().filterNot {
+            // Alpha compositing issues in the browser make this kind of ugly
+            it == RenderLayer.Drip
+        }.toTypedArray().chooseMultiple(),
     ).join("Visual options")
 }
 
 private fun aboutColorOptions(): String {
     return mapOf<Key<*>, Any>(
         ColorKey.BackgroundColor to "220033 (hex color code)",
-        ColorKey.Colors to ObjectColors.values().chooseNultiple(),
+        ColorKey.Colors to ObjectColors.values().chooseMultiple(),
         ColorKey.BodyAlpha to float(.8f),
     ).join("Color options")
 }
