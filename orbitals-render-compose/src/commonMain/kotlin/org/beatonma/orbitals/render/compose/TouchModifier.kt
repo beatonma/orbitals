@@ -11,7 +11,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.input.pointer.PointerId
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.PointerInputScope
@@ -30,7 +29,7 @@ import org.beatonma.orbitals.render.touch.getTouchRegion
 
 
 fun Modifier.orbitalsPointerInput(
-    orbitals: OrbitalsRenderEngine<DrawScope>,
+    orbitals: OrbitalsRenderEngine<*>,
     tapTimeout: Long = 100L,
 ) = composed {
     val coroutineScope = rememberCoroutineScope()
