@@ -22,7 +22,7 @@ interface CanvasDelegate<T> {
         start: Position,
         end: Position,
         strokeWidth: Float,
-        cap: CapStyle,
+        cap: CapStyle = CapStyle.Round,
         alpha: Float = 1f,
     )
 }

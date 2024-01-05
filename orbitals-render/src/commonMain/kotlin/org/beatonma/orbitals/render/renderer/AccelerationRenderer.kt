@@ -14,10 +14,10 @@ class AccelerationRenderer<Canvas> internal constructor(
 ) : OrbitalsRenderer<Canvas> {
     private val scale = 1e2F
 
-    override fun drawBody(canvas: Canvas, body: Body) {
+    override fun drawBody(canvas: Canvas, body: Body, props: BodyProperties) {
         delegate.drawLine(
             canvas,
-            color = 0xff_00ff00.toInt(),
+            color = props.color,
             start = body.position,
             end = Position(
                 body.acceleration.x.value * scale,
@@ -25,7 +25,6 @@ class AccelerationRenderer<Canvas> internal constructor(
             ) + body.position,
             alpha = 1f,
             strokeWidth = options.strokeWidth,
-            cap = CapStyle.Round,
         )
     }
 }

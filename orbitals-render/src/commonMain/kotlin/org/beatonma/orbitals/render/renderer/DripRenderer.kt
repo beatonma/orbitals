@@ -9,7 +9,7 @@ class DripRenderer<Canvas> internal constructor(
     override val delegate: CanvasDelegate<Canvas>,
     override var options: VisualOptions,
 ) : OrbitalsRenderer<Canvas> {
-    override fun drawBody(canvas: Canvas, body: Body) {
+    override fun drawBody(canvas: Canvas, body: Body, props: BodyProperties) {
 
     }
 }

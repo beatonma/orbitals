@@ -4,17 +4,20 @@ import org.beatonma.orbitals.core.engine.Space
 import org.beatonma.orbitals.render.options.VisualOptions
 import org.beatonma.orbitals.core.physics.Body
 import org.beatonma.orbitals.core.physics.UniqueID
+import org.beatonma.orbitals.render.renderer.BodyProperties
+import org.beatonma.orbitals.render.renderer.BodyPropertyMap
 
 interface OrbitalsRenderer<Canvas> {
     val delegate: CanvasDelegate<Canvas>
     var options: VisualOptions
 
-    fun drawBody(canvas: Canvas, body: Body)
+    fun drawBody(canvas: Canvas, body: Body, props: BodyProperties)
 
-    fun drawBackground(canvas: Canvas, bodies: List<Body>) {}
-    fun drawForeground(canvas: Canvas, bodies: List<Body>) {
+    fun drawBackground(canvas: Canvas, bodies: List<Body>, bodyProps: BodyPropertyMap) {}
+    fun drawForeground(canvas: Canvas, bodies: List<Body>, bodyProps: BodyPropertyMap) {
         bodies.forEach { body ->
-            drawBody(canvas, body)
+            val props = bodyProps[body.id] ?: return@forEach
+            drawBody(canvas, body, props)
         }
     }
 

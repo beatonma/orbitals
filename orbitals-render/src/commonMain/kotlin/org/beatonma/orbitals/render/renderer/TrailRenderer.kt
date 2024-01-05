@@ -9,12 +9,13 @@ import org.beatonma.orbitals.core.physics.UniqueID
 import org.beatonma.orbitals.core.physics.metres
 import org.beatonma.orbitals.render.CanvasDelegate
 import org.beatonma.orbitals.render.OrbitalsRenderer
+import org.beatonma.orbitals.render.options.CapStyle
 
 class TrailRenderer<Canvas> internal constructor(
     override val delegate: CanvasDelegate<Canvas>,
     options: VisualOptions,
 ) : OrbitalsRenderer<Canvas> {
-    val bodyPaths: MutableMap<UniqueID, MutableList<Position>> = mutableMapOf()
+    private val bodyPaths: MutableMap<UniqueID, MutableList<Position>> = mutableMapOf()
     private var trailTicks = 0
     private val trailTickFrequency = 0
 
@@ -41,18 +42,15 @@ class TrailRenderer<Canvas> internal constructor(
         bodyPaths.remove(body.id)
     }
 
-    override fun drawForeground(canvas: Canvas, bodies: List<Body>) {
-
-    }
-
-    override fun drawBackground(canvas: Canvas, bodies: List<Body>) {
+    override fun drawBackground(canvas: Canvas, bodies: List<Body>, bodyProps: BodyPropertyMap) {
         val remember = trailTicks++ > trailTickFrequency
 
         bodies.forEach { body ->
             if (remember && body is InertialBody) {
                 remember(body)
             }
-            drawBody(canvas, body)
+            val props = bodyProps[body.id] ?: return@forEach
+            drawBody(canvas, body, props)
         }
         if (remember) {
             trailTicks = 0
@@ -68,19 +66,33 @@ class TrailRenderer<Canvas> internal constructor(
         }
     }
 
-    override fun drawBody(canvas: Canvas, body: Body) {
+    override fun drawBody(canvas: Canvas, body: Body, props: BodyProperties) {
         val points = bodyPaths[body.id] ?: throw Exception("drawBody $body no path")
+        val size = points.size
 
-        points.forEachIndexed { index, position ->
-            delegate.drawCircle(
-                canvas,
-                color = 0x00ff00,
-                position = position,
-                radius = maxOf(1f, maxOf(traceThickness, body.radius.value / 10f)).metres,
-                alpha = (index.toFloat() / points.size.toFloat()) * maxAlpha,
-                strokeWidth = options.strokeWidth,
-                style = DrawStyle.Solid,
-            )
+        for (index in 0 until size) {
+            when (index) {
+                0, size - 1 -> delegate.drawCircle(
+                    canvas,
+                    color = props.color,
+                    position = points[index],
+                    radius = maxOf(1f, traceThickness, body.radius.value / 10f).metres,
+                    alpha = (index.toFloat() / size.toFloat()) * maxAlpha,
+                    strokeWidth = traceThickness,
+                    style = DrawStyle.Solid
+                )
+                else -> {
+                    delegate.drawLine(
+                        canvas,
+                        color = props.color,
+                        start = points[index -1],
+                        end = points[index],
+                        strokeWidth = maxOf(1f, traceThickness, body.radius.value / 10f),
+                        cap = CapStyle.Round,
+                        alpha = (index.toFloat() / size.toFloat()) * maxAlpha,
+                    )
+                }
+            }
         }
     }
 }

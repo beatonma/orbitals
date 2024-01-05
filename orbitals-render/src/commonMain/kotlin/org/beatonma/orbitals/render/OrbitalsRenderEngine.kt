@@ -7,7 +7,7 @@ import org.beatonma.orbitals.render.options.Options
 import org.beatonma.orbitals.core.options.PhysicsOptions
 import org.beatonma.orbitals.core.physics.Body
 import org.beatonma.orbitals.core.physics.UniqueID
-import org.beatonma.orbitals.core.util.info
+import org.beatonma.orbitals.render.renderer.BodyProperties
 import kotlin.time.Duration
 
 class OrbitalsRenderEngine<T>(
@@ -21,9 +21,9 @@ class OrbitalsRenderEngine<T>(
             onOptionsChange(value)
             engine.physics = value.physics
             renderers.forEach { it.options = value.visualOptions }
-            println(renderers)
         }
 
+    private val bodyProps = mutableMapOf<UniqueID, BodyProperties>()
     private val engine: OrbitalsEngine = object : OrbitalsEngine {
         override var space: Universe = Universe(1, 1)
         override var physics: PhysicsOptions = options.physics
@@ -35,13 +35,15 @@ class OrbitalsRenderEngine<T>(
         override val removedBodies: MutableList<Body> = mutableListOf()
 
         override fun onBodiesCreated(newBodies: List<Body>) {
-            super.onBodiesCreated(newBodies)
-            renderers.forEach { renderer -> newBodies.forEach(renderer::onBodyCreated) }
+            newBodies.forEach { body ->
+                renderers.forEach { it.onBodyCreated(body) }
+                bodyProps[body.id] = BodyProperties(options.visualOptions.colorOptions.colorForBody)
+            }
         }
 
         override fun onBodyDestroyed(body: Body) {
-            super.onBodyDestroyed(body)
-            renderers.forEach { renderer -> renderer.onBodyDestroyed(body) }
+            renderers.forEach { it.onBodyDestroyed(body) }
+            bodyProps.remove(body.id)
         }
     }
 
@@ -58,11 +60,11 @@ class OrbitalsRenderEngine<T>(
         engine.tick(delta)
 
         renderers.forEach {
-            it.drawBackground(canvas, engine.bodies)
+            it.drawBackground(canvas, engine.bodies, bodyProps)
         }
 
         renderers.forEach {
-            it.drawForeground(canvas, engine.bodies)
+            it.drawForeground(canvas, engine.bodies, bodyProps)
         }
     }
 
@@ -72,12 +74,10 @@ class OrbitalsRenderEngine<T>(
 
     fun addBody(body: Body) {
         engine.addBody(body)
-        renderers.forEach { it.onBodyCreated(body) }
     }
 
     fun removeBody(id: UniqueID) {
         engine.removeBody(id)
-        renderers.forEach { it.onBodyDestroyed(id) }
     }
 
     fun clear() {
