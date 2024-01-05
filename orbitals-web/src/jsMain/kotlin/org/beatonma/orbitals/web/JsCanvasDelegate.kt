@@ -57,7 +57,7 @@ object JsCanvasDelegate : CanvasDelegate<CanvasRenderingContext2D> {
         canvas.run {
             beginPath()
             moveTo(start.x.value.toDouble(), start.y.value.toDouble())
-            moveTo(end.x.value.toDouble(), end.y.value.toDouble())
+            lineTo(end.x.value.toDouble(), end.y.value.toDouble())
             stroke()
         }
     }
