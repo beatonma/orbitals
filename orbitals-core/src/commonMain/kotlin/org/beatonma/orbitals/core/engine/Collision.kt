@@ -35,6 +35,7 @@ internal fun applyCollision(
     b: Body,
     collisionStyle: CollisionStyle
 ): CollisionResults? {
+    if (collisionStyle == CollisionStyle.None) return null
     val now = currentTimeMillis()
     if (!a.canCollide(now) || !b.canCollide(now)) {
         return null
