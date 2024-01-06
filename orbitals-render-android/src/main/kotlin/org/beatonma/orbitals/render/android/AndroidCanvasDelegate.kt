@@ -5,9 +5,9 @@ import android.graphics.Paint
 import org.beatonma.orbitals.core.physics.Distance
 import org.beatonma.orbitals.core.physics.Position
 import org.beatonma.orbitals.render.CanvasDelegate
+import org.beatonma.orbitals.render.color.Color
 import org.beatonma.orbitals.render.options.CapStyle
 import org.beatonma.orbitals.render.options.DrawStyle
-import kotlin.math.roundToInt
 
 object AndroidCanvasDelegate : CanvasDelegate<Canvas> {
     private val paint: Paint = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -16,18 +16,17 @@ object AndroidCanvasDelegate : CanvasDelegate<Canvas> {
         canvas: Canvas,
         position: Position,
         radius: Distance,
-        color: Int,
+        color: Color,
         strokeWidth: Float,
         style: DrawStyle,
-        alpha: Float,
     ) {
         canvas.drawCircle(
             position.x.value,
             position.y.value,
             radius.value,
             paint.apply {
-                paint.color = color
-                paint.alpha = alpha.mapToByte()
+                paint.color = color.toRgbInt()
+                paint.alpha = color.alphaInt
 
                 when (style) {
                     DrawStyle.Solid -> {
@@ -44,19 +43,18 @@ object AndroidCanvasDelegate : CanvasDelegate<Canvas> {
 
     override fun drawLine(
         canvas: Canvas,
-        color: Int,
+        color: Color,
         start: Position,
         end: Position,
         strokeWidth: Float,
         cap: CapStyle,
-        alpha: Float,
     ) {
         canvas.drawLine(
             start.x.value, start.y.value,
             end.x.value, end.y.value,
             paint.apply {
-                this.color = color
-                this.alpha = alpha.mapToByte()
+                this.color = color.toRgbInt()
+                this.alpha = color.alphaInt
                 this.strokeWidth = strokeWidth
                 this.strokeCap = when (cap) {
                     CapStyle.Round -> Paint.Cap.ROUND
@@ -66,6 +64,4 @@ object AndroidCanvasDelegate : CanvasDelegate<Canvas> {
             }
         )
     }
-
-    private fun Float.mapToByte() = (this * 255f).roundToInt()
 }

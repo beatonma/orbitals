@@ -74,22 +74,20 @@ class TrailRenderer<Canvas> internal constructor(
             when (index) {
                 0, size - 1 -> delegate.drawCircle(
                     canvas,
-                    color = props.color,
+                    color = props.color.withOpacity((index.toFloat() / size.toFloat()) * maxAlpha),
                     position = points[index],
                     radius = maxOf(1f, traceThickness, body.radius.value / 10f).metres,
-                    alpha = (index.toFloat() / size.toFloat()) * maxAlpha,
                     strokeWidth = traceThickness,
                     style = DrawStyle.Solid
                 )
                 else -> {
                     delegate.drawLine(
                         canvas,
-                        color = props.color,
+                        color = props.color.withOpacity((index.toFloat() / size.toFloat()) * maxAlpha),
                         start = points[index -1],
                         end = points[index],
                         strokeWidth = maxOf(1f, traceThickness, body.radius.value / 10f),
                         cap = CapStyle.Round,
-                        alpha = (index.toFloat() / size.toFloat()) * maxAlpha,
                     )
                 }
             }

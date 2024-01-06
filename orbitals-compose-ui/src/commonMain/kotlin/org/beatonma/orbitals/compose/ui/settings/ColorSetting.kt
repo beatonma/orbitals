@@ -18,9 +18,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color as ComposeColor
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.unit.dp
+import org.beatonma.orbitals.render.color.Color
 import org.beatonma.orbitals.render.color.MaterialColors
 import org.beatonma.orbitals.render.compose.toComposeColor
 import org.beatonma.orbitals.render.options.IntKey
@@ -43,8 +44,8 @@ fun ColorSetting(
             state = state,
         ) {
             items(MaterialColors) { color ->
-                val c: Color = color.toComposeColor()
-                val contentColor = if (c.luminance() > 0.5f) Color.Black else Color.White
+                val c: ComposeColor = Color(color).toComposeColor()
+                val contentColor = if (c.luminance() > 0.5f) ComposeColor.Black else ComposeColor.White
 
                 Surface(
                     Modifier

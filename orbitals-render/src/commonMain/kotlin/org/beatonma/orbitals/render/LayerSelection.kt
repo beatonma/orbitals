@@ -82,7 +82,6 @@ fun <Canvas> getRenderers(
     delegate: CanvasDelegate<Canvas>
 ) = getRenderers(options.renderLayers, options, delegate)
 
-@Suppress("UNCHECKED_CAST")
 fun <Canvas> getRenderers(
     layers: LayerSet,
     options: VisualOptions,

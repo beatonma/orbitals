@@ -3,15 +3,31 @@ import org.beatonma.orbitals.render.options.DrawStyle
 import org.beatonma.orbitals.core.physics.Distance
 import org.beatonma.orbitals.core.physics.Position
 import org.beatonma.orbitals.render.CanvasDelegate
+import org.beatonma.orbitals.render.color.Color
+import org.w3c.dom.BUTT
+import org.w3c.dom.CanvasLineCap
 import org.w3c.dom.CanvasRenderingContext2D
+import org.w3c.dom.ROUND
+import org.w3c.dom.SQUARE
 
 object JsCanvasDelegate : CanvasDelegate<CanvasRenderingContext2D> {
-    private fun setStyle(canvas: CanvasRenderingContext2D, color: String, strokeWidth: Float, alpha: Float) {
+    private fun setStyle(
+        canvas: CanvasRenderingContext2D,
+        color: String,
+        strokeWidth: Float,
+        cap: CapStyle? = null
+    ) {
         canvas.run {
             fillStyle = color
             strokeStyle = color
             lineWidth = strokeWidth.toDouble()
-            globalAlpha = alpha.toDouble()
+            cap?.let {
+                lineCap = when(cap) {
+                    CapStyle.Round -> CanvasLineCap.ROUND
+                    CapStyle.Butt -> CanvasLineCap.BUTT
+                    CapStyle.Square -> CanvasLineCap.SQUARE
+                }
+            }
         }
     }
 
@@ -19,12 +35,11 @@ object JsCanvasDelegate : CanvasDelegate<CanvasRenderingContext2D> {
         canvas: CanvasRenderingContext2D,
         position: Position,
         radius: Distance,
-        color: Int,
+        color: Color,
         strokeWidth: Float,
         style: DrawStyle,
-        alpha: Float,
     ) {
-        setStyle(canvas, color.toHexString(), strokeWidth, alpha)
+        setStyle(canvas, color.toHexString(), strokeWidth)
 
         canvas.run {
             beginPath()
@@ -46,14 +61,13 @@ object JsCanvasDelegate : CanvasDelegate<CanvasRenderingContext2D> {
 
     override fun drawLine(
         canvas: CanvasRenderingContext2D,
-        color: Int,
+        color: Color,
         start: Position,
         end: Position,
         strokeWidth: Float,
         cap: CapStyle,
-        alpha: Float,
     ) {
-        setStyle(canvas, color.toHexString(), strokeWidth, alpha)
+        setStyle(canvas, color.toHexString(), strokeWidth, cap)
         canvas.run {
             beginPath()
             moveTo(start.x.value.toDouble(), start.y.value.toDouble())
@@ -61,4 +75,8 @@ object JsCanvasDelegate : CanvasDelegate<CanvasRenderingContext2D> {
             stroke()
         }
     }
+}
+
+internal fun Color.toHexString(): String {
+    return "#" + rgba().joinToString("") { it.toString(16).padStart(2, padChar = '0') }
 }

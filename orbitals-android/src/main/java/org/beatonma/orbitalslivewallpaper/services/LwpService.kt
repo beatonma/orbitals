@@ -43,7 +43,7 @@ class LwpService : WallpaperService() {
                 }
             }
 
-        private val renderEngine = OrbitalsRenderEngine<Canvas>(
+        private val renderEngine = OrbitalsRenderEngine(
             renderers = getRenderers(options.visualOptions, AndroidCanvasDelegate),
             options = options,
             onOptionsChange = {
@@ -91,7 +91,6 @@ class LwpService : WallpaperService() {
         }
 
         private fun draw() {
-
             val now = System.currentTimeMillis()
             val timeDelta = now - lastFrameMillis
             lastFrameMillis = now
@@ -99,7 +98,7 @@ class LwpService : WallpaperService() {
             var canvas: Canvas? = null
             try {
                 canvas = surfaceHolder.lockCanvas()
-                canvas.drawColor((options.visualOptions.colorOptions.background) or 0xff000000.toInt())
+                canvas.drawColor((options.visualOptions.colorOptions.background.toRgbInt()) or 0x000000)
                 renderEngine.update(canvas, timeDelta.milliseconds)
             } catch (e: Exception) {
                 warn(e)

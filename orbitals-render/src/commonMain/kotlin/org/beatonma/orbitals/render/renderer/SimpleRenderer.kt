@@ -1,10 +1,12 @@
 package org.beatonma.orbitals.render.renderer
 
 import org.beatonma.orbitals.core.physics.Body
+import org.beatonma.orbitals.core.physics.Distance
 import org.beatonma.orbitals.core.physics.GreatAttractor
 import org.beatonma.orbitals.core.physics.metres
 import org.beatonma.orbitals.render.CanvasDelegate
 import org.beatonma.orbitals.render.OrbitalsRenderer
+import org.beatonma.orbitals.render.color.Color
 import org.beatonma.orbitals.render.options.DrawStyle
 import org.beatonma.orbitals.render.options.VisualOptions
 import kotlin.math.pow
@@ -23,24 +25,15 @@ class SimpleRenderer<Canvas> internal constructor(
             return
         }
 
-        val ageMillis = body.age.inWholeMilliseconds
-
-        val radiusMultiplier = options.bodyScale * easeRadius(
-            if (ageMillis > EnterAnimationMillis) 1f
-            else {
-                ageMillis.toFloat() / EnterAnimationMillis.toFloat()
-            }
-        )
-        if (radiusMultiplier == 0f) return
+        val renderRadius = getRenderRadius(body) ?: return
 
         delegate.drawCircle(
             canvas,
             body.position,
-            body.radius * radiusMultiplier,
+            renderRadius,
             props.color,
             strokeWidth = options.strokeWidth,
             style = options.drawStyle,
-            alpha = options.colorOptions.foregroundAlpha,
         )
     }
 
@@ -49,10 +42,23 @@ class SimpleRenderer<Canvas> internal constructor(
             canvas,
             body.position,
             maxOf(body.radius, 1.metres),
-            0xffffff,
+            Color(0xffffffff),
             strokeWidth = 8f,
             style = DrawStyle.Wireframe
         )
+    }
+
+    private fun getRenderRadius(body: Body): Distance? {
+        val ageMillis = body.age.inWholeMilliseconds
+
+        val radiusMultiplier = options.bodyScale * easeRadius(
+            if (ageMillis > EnterAnimationMillis) 1f
+            else {
+                ageMillis.toFloat() / EnterAnimationMillis.toFloat()
+            }
+        )
+        if (radiusMultiplier == 0f) return null
+        return body.radius * radiusMultiplier
     }
 
     private fun easeRadius(value: Float): Float {

@@ -13,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import org.beatonma.orbitals.render.color.Color
 import org.beatonma.orbitals.render.compose.toComposeColor
 import org.beatonma.orbitals.render.options.ColorOptions
 import org.beatonma.orbitalslivewallpaper.Settings
@@ -62,18 +63,18 @@ private fun lightColors(
     primaryColors: Array<Int>,
     secondaryColors: Array<Int>,
 ) = androidx.compose.material.lightColors(
-    primary = primaryColors[primaryColors.size / 2].toComposeColor(),
-    primaryVariant = primaryColors[primaryColors.size / 4].toComposeColor(),
-    secondary = secondaryColors[secondaryColors.size / 2].toComposeColor(),
-    secondaryVariant = secondaryColors[secondaryColors.size / 4].toComposeColor(),
+    primary = Color(primaryColors[primaryColors.size / 2]).toComposeColor(),
+    primaryVariant = Color(primaryColors[primaryColors.size / 4]).toComposeColor(),
+    secondary = Color(secondaryColors[secondaryColors.size / 2]).toComposeColor(),
+    secondaryVariant = Color(secondaryColors[secondaryColors.size / 4]).toComposeColor(),
 )
 
 private fun darkColors(
     primaryColors: Array<Int>,
     secondaryColors: Array<Int>,
 ) = androidx.compose.material.darkColors(
-    primary = primaryColors[primaryColors.size / 2].toComposeColor(),
-    primaryVariant = primaryColors[primaryColors.size / 4].toComposeColor(),
-    secondary = secondaryColors[secondaryColors.size / 2].toComposeColor(),
-    secondaryVariant = secondaryColors[secondaryColors.size / 4].toComposeColor(),
+    primary = Color(primaryColors[primaryColors.size / 2]).toComposeColor(),
+    primaryVariant = Color(primaryColors[primaryColors.size / 4]).toComposeColor(),
+    secondary = Color(secondaryColors[secondaryColors.size / 2]).toComposeColor(),
+    secondaryVariant = Color(secondaryColors[secondaryColors.size / 4]).toComposeColor(),
 )

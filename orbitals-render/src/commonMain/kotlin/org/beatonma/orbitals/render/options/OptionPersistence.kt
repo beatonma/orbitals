@@ -3,6 +3,7 @@ package org.beatonma.orbitals.render.options
 import org.beatonma.orbitals.core.engine.SystemGenerator
 import org.beatonma.orbitals.core.options.CollisionStyle
 import org.beatonma.orbitals.core.options.PhysicsOptions
+import org.beatonma.orbitals.render.color.Color
 import kotlin.time.Duration.Companion.seconds
 
 interface OptionPersistence {
@@ -38,7 +39,7 @@ interface OptionsStore {
 
     fun loadColors(): ColorOptions {
         return ColorOptions(
-            background = this[ColorKey.BackgroundColor] ?: 0xff000000.toInt(),
+            background = Color(this[ColorKey.BackgroundColor]?.toLong() ?: 0xff000000),
             foregroundAlpha = this[ColorKey.BodyAlpha] ?: 1f,
             bodies = this[ColorKey.Colors]?.map(ObjectColors::valueOf)?.toSet() ?: setOf(
                 ObjectColors.Greyscale,

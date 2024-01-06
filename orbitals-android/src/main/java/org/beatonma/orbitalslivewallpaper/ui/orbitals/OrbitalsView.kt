@@ -58,7 +58,7 @@ class OrbitalsView @JvmOverloads constructor(
         lastFrameMillis = now
 
         if (canvas != null) {
-            canvas.drawColor((options.visualOptions.colorOptions.background) or 0xff000000.toInt())
+            canvas.drawColor((options.visualOptions.colorOptions.background.toRgbInt()) or 0x000000)
             renderEngine.update(canvas, timeDelta.milliseconds)
         }
         postInvalidateOnAnimation()

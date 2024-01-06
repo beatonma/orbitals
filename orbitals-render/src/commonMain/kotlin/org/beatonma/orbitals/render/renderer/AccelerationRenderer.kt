@@ -17,7 +17,7 @@ class AccelerationRenderer<Canvas> internal constructor(
     override fun drawBody(canvas: Canvas, body: Body, props: BodyProperties) {
         delegate.drawLine(
             canvas,
-            color = props.color,
+            color = props.color.withOpacity(.5f),
             start = body.position,
             end = Position(
                 body.acceleration.x.value * scale,

@@ -159,7 +159,7 @@ private fun ColorSettingsUI(
         ColorSetting(
             name = "Background color",
             key = ColorKey.BackgroundColor,
-            value = colorOptions.background,
+            value = colorOptions.background.toRgbInt(),
             onValueChange = persistence::updateOption,
         )
 

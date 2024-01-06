@@ -1,5 +1,6 @@
 package org.beatonma.orbitals.render.options
 
+import org.beatonma.orbitals.render.color.Color
 import org.beatonma.orbitals.render.color.MaterialBlue
 import org.beatonma.orbitals.render.color.MaterialColors
 import org.beatonma.orbitals.render.color.MaterialGreen
@@ -11,13 +12,13 @@ import org.beatonma.orbitals.render.color.MaterialRed
 import org.beatonma.orbitals.render.color.MaterialYellow
 
 data class ColorOptions(
-    val background: Int = 0x000000,
+    val background: Color = Color(0xff000000),
     val bodies: Set<ObjectColors> = setOf(
         ObjectColors.Greyscale,
     ),
     val foregroundAlpha: Float = 1f,
 ) {
-    val colorForBody: Int get() = bodies.random().colors().random()
+    val colorForBody: Color get() = Color(bodies.random().colors().random())
 }
 
 enum class ObjectColors {
