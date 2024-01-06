@@ -6,7 +6,7 @@ import kotlin.time.DurationUnit
 
 /** ms^-2 */
 @JvmInline
-value class AccelerationScalar internal constructor(override val value: Float) : Scalar {
+value class AccelerationScalar(override val value: Float) : Scalar {
     operator fun plus(other: AccelerationScalar): AccelerationScalar =
         AccelerationScalar(value + other.value)
 
@@ -22,7 +22,7 @@ value class AccelerationScalar internal constructor(override val value: Float) :
     }
 }
 
-internal fun Acceleration(acceleration: AccelerationScalar, theta: Angle) = Acceleration(
+fun Acceleration(acceleration: AccelerationScalar, theta: Angle) = Acceleration(
     x = acceleration * cos(theta),
     y = acceleration * sin(theta),
 )
