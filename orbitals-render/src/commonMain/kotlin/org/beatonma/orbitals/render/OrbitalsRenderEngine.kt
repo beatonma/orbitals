@@ -26,6 +26,12 @@ class OrbitalsRenderEngine<T>(
     private val bodyProps = mutableMapOf<UniqueID, BodyProperties>()
     private val engine: OrbitalsEngine = object : OrbitalsEngine {
         override var space: Universe = Universe(1, 1)
+            set(value) {
+                field = value
+                if (bodies.isEmpty() && value.isValid) {
+                    addBodies(space.visibleSpace)
+                }
+            }
         override var physics: PhysicsOptions = options.physics
         override var bodies: List<Body> = listOf()
 

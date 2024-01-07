@@ -37,7 +37,7 @@ interface OrbitalsEngine {
     fun onBodiesCreated(newBodies: List<Body>) {}
     fun onBodyDestroyed(body: Body) {}
 
-    fun addBodies(space: Space = this.space.visibleSpace) {
+    fun addBodies(space: Space = this.space) {
         val newBodies = generateBodies(space)
         setBodies(bodies + newBodies)
         onBodiesCreated(newBodies)
@@ -101,9 +101,7 @@ interface OrbitalsEngine {
         }
     }
 
-    fun generateBodies(
-        space: Space = this.space,
-    ): List<Body> =
+    fun generateBodies(space: Space = this.space): List<Body> =
         physics.systemGenerators
             .random()
             .generate(space, bodies, physics)
