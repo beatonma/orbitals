@@ -1,5 +1,6 @@
 package org.beatonma.orbitals.core.engine
 
+import org.beatonma.orbitals.core.BuildConfig
 import org.beatonma.orbitals.core.chance
 import org.beatonma.orbitals.core.options.PhysicsOptions
 import org.beatonma.orbitals.core.percent
@@ -9,12 +10,12 @@ import org.beatonma.orbitals.core.physics.GreatAttractor
 import org.beatonma.orbitals.core.physics.Inertial
 import org.beatonma.orbitals.core.physics.InertialBody
 import org.beatonma.orbitals.core.physics.UniqueID
-import org.beatonma.orbitals.core.physics.ZeroAcceleration
 import org.beatonma.orbitals.core.physics.contains
 import org.beatonma.orbitals.core.physics.inContactWith
 import org.beatonma.orbitals.core.physics.kg
 import org.beatonma.orbitals.core.physics.toInertialBody
 import org.beatonma.orbitals.core.util.timeIt
+import org.beatonma.orbitals.core.util.warn
 import kotlin.time.Duration
 
 private val BodySortBy = Body::mass
@@ -54,9 +55,8 @@ interface OrbitalsEngine {
     private fun removeBody(body: Body) = removeBody(body.id)
 
     fun tick(timeDelta: Duration) {
-        val duration = timeIt(enabled = true) {
+        val duration = timeIt(enabled = BuildConfig.DEBUG) {
             bodies.forEach {
-                it.motion.acceleration = ZeroAcceleration
                 it.tick(timeDelta)
             }
 
@@ -91,12 +91,14 @@ interface OrbitalsEngine {
 
             addedBodies.clear()
             removedBodies.clear()
-        }
 
-        if (duration < 15) {
+            prune()
             autoAddBodies()
         }
-        prune()
+
+        if (BuildConfig.DEBUG && duration > 15) {
+            warn("Frame took ${duration}ms ($bodyCount objects)")
+        }
     }
 
     fun generateBodies(
@@ -106,8 +108,8 @@ interface OrbitalsEngine {
             .random()
             .generate(space, bodies, physics)
 
-    private fun setBodies(_bodies: List<Body>) {
-        bodies = _bodies.sortedByDescending(BodySortBy)
+    private fun setBodies(bodies: List<Body>) {
+        this.bodies = bodies.sortedByDescending(BodySortBy)
     }
 
     private fun onCollision(body: Body, other: Body): CollisionResults? =
@@ -159,9 +161,11 @@ internal fun pruneBodies(
             is FixedBody -> {
                 it.age < ageLimit || keepAgedRandomizer()
             }
+
             is InertialBody -> {
                 space.contains(it.position)
             }
+
             is GreatAttractor -> {
                 it.age < ageLimit || keepAgedRandomizer()
             }
@@ -172,6 +176,7 @@ internal fun pruneBodies(
         it is FixedBody
     }
 
+    @Suppress("UNCHECKED_CAST")
     return Pair(
         keep + (toBeConverted as List<FixedBody>).map(FixedBody::toInertialBody),
         toDestroy

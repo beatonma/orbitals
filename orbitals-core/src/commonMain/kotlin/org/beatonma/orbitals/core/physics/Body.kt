@@ -61,6 +61,7 @@ sealed interface Body: Collider {
     fun distanceTo(other: Body): Distance = position.distanceTo(other.position)
 
     fun tick(duration: Duration) {
+        acceleration = ZeroAcceleration
         applyInertia(duration)
         age += duration
     }
