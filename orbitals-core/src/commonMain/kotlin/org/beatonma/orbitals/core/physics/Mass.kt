@@ -1,5 +1,6 @@
 package org.beatonma.orbitals.core.physics
 
+import org.beatonma.orbitals.core.format
 import kotlin.jvm.JvmInline
 
 val Float.kg: Mass get() = Mass(this)
@@ -9,10 +10,12 @@ val Number.kg: Mass get() = this.toFloat().kg
  * Kilograms
  */
 @JvmInline
-value class Mass internal constructor(override val value: Float): Scalar {
+value class Mass internal constructor(override val value: Float) : Scalar {
     init {
         check(value > 0f) { "Mass initiated with invalid value: $value" }
     }
+
+    override fun toString() = "${value.format()}kg"
 
     operator fun plus(other: Mass) = Mass(value + other.value)
     operator fun minus(other: Mass) = Mass(value - other.value)

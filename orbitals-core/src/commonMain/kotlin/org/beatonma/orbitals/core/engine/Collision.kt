@@ -39,8 +39,7 @@ internal fun applyCollision(
     val now = currentTimeMillis()
     if (!a.canCollide(now) || !b.canCollide(now)) {
         return null
-    }
-    else {
+    } else {
         a.lastCollision = now
         b.lastCollision = now
     }
@@ -59,7 +58,7 @@ internal fun applyCollision(
         }
         return f.invoke(larger, smaller)
     } catch (e: IllegalStateException) {
-        warn("Error applying collision $collisionStyle: $e")
+        warn("Error applying collision $collisionStyle (${larger.toSimpleString()} vs ${smaller.toSimpleString()}): $e")
         null
     }
 }
@@ -112,7 +111,7 @@ private fun applySimpleCollision(
  */
 private fun applyBreakCollision(larger: Body, smaller: Body): CollisionResults? {
     if (smaller.mass < 5.kg) {
-        return CollisionResults.removed(smaller)
+        return CollisionResults.remove(smaller)
     }
 
     val distance = larger.distanceTo(smaller)
@@ -123,7 +122,6 @@ private fun applyBreakCollision(larger: Body, smaller: Body): CollisionResults? 
     val angle = larger.position.angleTo(smaller.position)
     val collisionPoint = larger.position + (angle * (distance - smaller.radius))
 
-//    val directionSimilarity = dot(larger.velocity.direction, smaller.velocity.direction)
     val massRatio = smaller.mass / totalMass
     val ejectaMass = totalMass * overlapAmount
     val massFromSmaller = massRatio * ejectaMass
@@ -132,7 +130,7 @@ private fun applyBreakCollision(larger: Body, smaller: Body): CollisionResults? 
     larger.updateMassAndSize(larger.mass - massFromLarger)
     smaller.updateMassAndSize(smaller.mass - massFromSmaller)
 
-    return CollisionResults.added(
+    return CollisionResults.add(
         createEjecta(massFromSmaller) {
             Motion(
                 position = collisionPoint,
@@ -167,12 +165,19 @@ private fun applyMergeCollision(larger: Body, smaller: Body): CollisionResults? 
     val totalMass = larger.mass + smaller.mass
 
     val transferredMomentum = smaller.momentum * overlapAmount
-    val transferredMass = transferredMomentum / smaller.velocity
+    val transferredMass = when (smaller.velocity.isZero()) {
+        true -> {
+            // Velocity is zero, momentum is zero -> arbitrary mass transfer
+            (larger.mass - smaller.mass) * .05f
+        }
+
+        false -> transferredMomentum / smaller.velocity
+    }
     val remainingMass = smaller.mass - transferredMass
 
     return if (remainingMass <= 1.kg) {
         // If remaining mass is very small, destroy the object.
-        CollisionResults.removed(smaller)
+        CollisionResults.remove(smaller)
     } else {
         val largeMomentum = larger.momentum + transferredMomentum
 
@@ -198,19 +203,19 @@ internal object CollisionResults {
     operator fun component1() = added
     operator fun component2() = removed
 
-    fun added(body: Body) = apply {
+    fun add(body: Body) = apply {
         added.add(body)
     }
 
-    fun removed(body: Body) = apply {
+    fun remove(body: Body) = apply {
         removed.add(body)
     }
 
-    fun added(bodies: List<Body>) = apply {
+    fun add(bodies: List<Body>) = apply {
         added.addAll(bodies)
     }
 
-    fun removed(bodies: List<Body>) = apply {
+    fun remove(bodies: List<Body>) = apply {
         removed.addAll(bodies)
     }
 

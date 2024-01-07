@@ -1,5 +1,6 @@
 package org.beatonma.orbitals.core.physics
 
+import org.beatonma.orbitals.core.format
 import kotlin.jvm.JvmInline
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
@@ -35,7 +36,7 @@ value class Distance internal constructor(
 
     operator fun unaryMinus(): Distance = Distance(-value)
 
-    override fun toString(): String = "${value}m"
+    override fun toString(): String = "${value.format()}m"
 }
 
 val Distance.squared: Float get() = squareOf(this.value)

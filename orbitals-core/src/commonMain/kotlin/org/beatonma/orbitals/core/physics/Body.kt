@@ -23,7 +23,7 @@ interface Collider {
     fun canCollide(now: Long = currentTimeMillis()): Boolean
 }
 
-sealed interface Body: Collider {
+sealed interface Body : Collider {
     val id: UniqueID
     var mass: Mass
     var radius: Distance
@@ -65,6 +65,9 @@ sealed interface Body: Collider {
         applyInertia(duration)
         age += duration
     }
+
+    fun toSimpleString(): String =
+        "${this::class.simpleName} $mass $radius ${velocity.magnitude}"
 }
 
 

@@ -40,3 +40,12 @@ inline fun <T> List<T>.fastForEach(action: (T) -> Unit) {
         action(item)
     }
 }
+
+internal fun Float.format(decimalPlaces: Int = 2): String = this.toString().run {
+    indexOf('.').let { index ->
+        when (index) {
+            -1 -> this
+            else -> take(index + decimalPlaces)
+        }
+    }
+}
