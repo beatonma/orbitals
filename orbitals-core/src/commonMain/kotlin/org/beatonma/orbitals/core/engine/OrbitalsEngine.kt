@@ -2,6 +2,7 @@ package org.beatonma.orbitals.core.engine
 
 import org.beatonma.orbitals.core.BuildConfig
 import org.beatonma.orbitals.core.chance
+import org.beatonma.orbitals.core.engine.collision.CollisionResults
 import org.beatonma.orbitals.core.options.PhysicsOptions
 import org.beatonma.orbitals.core.percent
 import org.beatonma.orbitals.core.physics.Body
@@ -26,6 +27,10 @@ private val BodyMassLimit = 1500.kg
 interface OrbitalsEngine {
     var space: Universe
     var physics: PhysicsOptions
+
+    /**
+     * Ordered list of objects in the simulation, sorted by descending mass.
+     */
     var bodies: List<Body>
     val bodyCount: Int get() = bodies.size
     var pruneCounter: Int
@@ -107,6 +112,7 @@ interface OrbitalsEngine {
             .generate(space, bodies, physics)
 
     private fun setBodies(bodies: List<Body>) {
+        // Bodies are stored in order of mass to avoid needing to sort them in collision functions.
         this.bodies = bodies.sortedByDescending(BodySortBy)
     }
 
