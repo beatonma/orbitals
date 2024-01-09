@@ -22,8 +22,7 @@ class Motion(
      * Warning: With large [timeDelta], position will move in long straight lines
      */
     fun applyInertia(timeDelta: Duration) {
-        position.x += velocity.x * timeDelta
-        position.y += velocity.y * timeDelta
+        position += velocity * timeDelta
     }
 
     override fun hashCode(): Int {

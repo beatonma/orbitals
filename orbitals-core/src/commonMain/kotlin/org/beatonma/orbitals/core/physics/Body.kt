@@ -8,12 +8,12 @@ import kotlin.time.Duration.Companion.seconds
 private val CollisionMinimumAge = 1.seconds
 
 val DefaultDensity = 0.5
-val ZeroMass get() = 0.0.kg
-val ZeroDistance get() = 0.0.metres
-val ZeroPosition get() = Position(ZeroDistance, ZeroDistance)
-val ZeroVelocity get() = Velocity(0.0.metres.perSecond, 0.0.metres.perSecond)
+val ZeroMass = 0.0.kg
+val ZeroDistance = 0f.metres
+val ZeroAcceleration = Acceleration(AccelerationScalar(0f), AccelerationScalar(0f))
+val ZeroPosition = Position(ZeroDistance, ZeroDistance)
+val ZeroVelocity = Velocity(0f.metres.perSecond, 0f.metres.perSecond)
 val ZeroMotion get() = Motion(ZeroPosition, ZeroVelocity)
-val ZeroAcceleration get() = Acceleration(AccelerationScalar(0f), AccelerationScalar(0f))
 
 
 interface Fixed
@@ -34,8 +34,7 @@ sealed interface Body : Collider {
     var position: Position
         get() = motion.position
         set(value) {
-            motion.position.x = value.x
-            motion.position.y = value.y
+            motion.position = value
         }
     var velocity: Velocity
         get() = motion.velocity

@@ -12,7 +12,7 @@ val Number.kg: Mass get() = this.toFloat().kg
 @JvmInline
 value class Mass internal constructor(override val value: Float) : Scalar {
     init {
-        check(value > 0f) { "Mass initiated with invalid value: $value" }
+        check(value >= 0f) { "Mass initiated with invalid value: $value" }
     }
 
     override fun toString() = "${value.format()}kg"

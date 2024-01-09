@@ -1,6 +1,7 @@
 package org.beatonma.orbitals.core.physics
 
 import org.beatonma.orbitals.core.format
+import kotlin.jvm.JvmInline
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
@@ -10,8 +11,8 @@ val Distance.perSecond: Speed
     get() = this / 1.seconds
 
 data class Velocity internal constructor(
-    override var x: Speed = Speed(0f),
-    override var y: Speed = Speed(0f),
+    override val x: Speed = Speed(0f),
+    override val y: Speed = Speed(0f),
 ) : Vector2D<Speed> {
     constructor(x: Number, y: Number) : this(Speed(x), Speed(y))
 
@@ -29,24 +30,19 @@ data class Velocity internal constructor(
             y = this.y - other.y
         )
 
-    operator fun minusAssign(other: Velocity) {
-        this.x -= other.x
-        this.y -= other.y
-    }
-
     operator fun times(multiplier: Float): Velocity = Velocity(x * multiplier, y * multiplier)
     operator fun times(mass: Mass) = Momentum(x * mass, y * mass)
+    operator fun times(timeDelta: Duration) = Position(x * timeDelta, y * timeDelta)
 
     override fun toString(): String = "Velocity($x, $y | $angle)"
-
-    fun isZero(): Boolean = x.value == 0f && y.value == 0f
 }
 
 
 /**
  * Metres per second
  */
-data class Speed internal constructor(override val value: Float) : Scalar {
+@JvmInline
+value class Speed internal constructor(override val value: Float) : Scalar {
     constructor(speed: Number) : this(speed.toFloat())
 
     operator fun times(time: Duration): Distance =

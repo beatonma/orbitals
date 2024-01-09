@@ -7,8 +7,8 @@ import kotlin.math.roundToInt
 fun Position(x: Number, y: Number) = Position(x.metres, y.metres)
 
 data class Position(
-    override var x: Distance,
-    override var y: Distance,
+    override val x: Distance,
+    override val y: Distance,
 ) : Vector2D<Distance> {
     operator fun plus(other: Position) = Position(x + other.x, y + other.y)
     override val magnitude: Distance get() = Distance(magnitude(x, y))

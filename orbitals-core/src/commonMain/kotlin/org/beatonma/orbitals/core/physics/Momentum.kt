@@ -1,12 +1,18 @@
 package org.beatonma.orbitals.core.physics
 
-data class MomentumScalar(override val value: Float) : Scalar {
+import org.beatonma.orbitals.core.format
+import kotlin.jvm.JvmInline
+
+@JvmInline
+value class MomentumScalar(override val value: Float) : Scalar {
     constructor(value: Number) : this(value.toFloat())
 
     operator fun plus(other: MomentumScalar) = MomentumScalar(value + other.value)
     operator fun times(factor: Float) = MomentumScalar(value * factor)
     operator fun div(mass: Mass): Speed = Speed(value / mass.value)
     operator fun div(speed: Speed): Mass = Mass(value / speed.value)
+
+    override fun toString(): String = "${value.format()}kgm/s"
 }
 
 data class Momentum internal constructor(
@@ -31,9 +37,7 @@ data class Momentum internal constructor(
         return Mass(magnitude.value / velMagnitude)
     }
 
-    override fun toString(): String {
-        return "Momentum(x=${x.value}, y=${y.value})"
-    }
+    override fun toString(): String = "Momentum(x=${x}, y=${y})"
 }
 
 operator fun Float.times(momentumScalar: MomentumScalar) = momentumScalar * this

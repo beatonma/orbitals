@@ -4,7 +4,7 @@ import kotlin.jvm.JvmInline
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 
-/** ms^-2 */
+/** m/s² */
 @JvmInline
 value class AccelerationScalar(override val value: Float) : Scalar {
     operator fun plus(other: AccelerationScalar): AccelerationScalar =
@@ -18,7 +18,7 @@ value class AccelerationScalar(override val value: Float) : Scalar {
     }
 
     override fun toString(): String {
-        return "$value"
+        return "${value}m/s²"
     }
 }
 
