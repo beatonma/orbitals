@@ -155,7 +155,7 @@ internal class OrbitalsGestureDetector(
             if (id == null) {
                 val body = createTouchAttractor(coords.toPosition())
                 bodies[pointerId] = body.id
-                orbitals.addBody(body)
+                orbitals.add(body)
             } else {
                 val body =
                     orbitals.bodies.find { it.id == id } ?: throw Exception("Cannot find body: $id")
@@ -171,7 +171,7 @@ internal class OrbitalsGestureDetector(
 
             bodies.remove(removedPointerId)
             if (bodyId != null) {
-                orbitals.removeBody(bodyId)
+                orbitals.remove(bodyId)
             }
         }
 
@@ -190,6 +190,7 @@ internal class OrbitalsGestureDetector(
                 GestureMessage.Tap -> {
                     mightBeSingleTap = false
                 }
+
                 GestureMessage.LongPress -> {
 
                 }

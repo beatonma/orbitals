@@ -140,7 +140,7 @@ private fun HTMLCanvasElement.setupTouchInteractions(orbitals: OrbitalsRenderEng
         val touch = activeTouches.remove(pointer.id)
         clearTouchBodies(orbitals, pointerBodies)
 
-        if (activeTouches.isEmpty() && eventDuration > 0 && touch !=null) {
+        if (activeTouches.isEmpty() && eventDuration > 0 && touch != null) {
             if (eventDuration < tapMaxDuration) {
                 onTap(touch)
             }
@@ -156,7 +156,7 @@ private fun HTMLCanvasElement.setupTouchInteractions(orbitals: OrbitalsRenderEng
         if (id == null) {
             val body = createTouchAttractor(touch.toPosition())
             pointerBodies[touch.id] = body.id
-            orbitals.addBody(body)
+            orbitals.add(body)
         } else {
             val body = orbitals.bodies.find { it.id == id } ?: return
             body.position = touch.toPosition()
@@ -168,7 +168,10 @@ private fun HTMLCanvasElement.setupTouchInteractions(orbitals: OrbitalsRenderEng
             // This is the first active event
             eventStart = currentTimeMillis()
 
-            timeoutId = window.setTimeout({ activeTouches[touch.id]?.let(::ongoingTouch) }, tapMaxDuration)
+            timeoutId = window.setTimeout(
+                { activeTouches[touch.id]?.let(::ongoingTouch) },
+                tapMaxDuration
+            )
         }
         activeTouches[touch.id] = touch
     }

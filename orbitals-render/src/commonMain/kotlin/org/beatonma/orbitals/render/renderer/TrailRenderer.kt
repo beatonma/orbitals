@@ -37,9 +37,9 @@ class TrailRenderer<Canvas> internal constructor(
         bodyPaths[body.id] = mutableListOf()
     }
 
-    override fun onBodyDestroyed(body: Body) {
-        super.onBodyDestroyed(body)
-        bodyPaths.remove(body.id)
+    override fun onBodyDestroyed(id: UniqueID) {
+        super.onBodyDestroyed(id)
+        bodyPaths.remove(id)
     }
 
     override fun drawBackground(canvas: Canvas, bodies: List<Body>, bodyProps: BodyPropertyMap) {
@@ -80,11 +80,12 @@ class TrailRenderer<Canvas> internal constructor(
                     strokeWidth = traceThickness,
                     style = DrawStyle.Solid
                 )
+
                 else -> {
                     delegate.drawLine(
                         canvas,
                         color = props.color.withOpacity((index.toFloat() / size.toFloat()) * maxAlpha),
-                        start = points[index -1],
+                        start = points[index - 1],
                         end = points[index],
                         strokeWidth = maxOf(1f, traceThickness, body.radius.value / 10f),
                         cap = CapStyle.Round,

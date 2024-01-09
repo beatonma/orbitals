@@ -1,8 +1,10 @@
 package org.beatonma.orbitals.core.engine
 
-import org.beatonma.orbitals.core.BuildConfig
+import org.beatonma.orbitals.core.OrbitalsBuildConfig
 import org.beatonma.orbitals.core.chance
 import org.beatonma.orbitals.core.engine.collision.CollisionResults
+import org.beatonma.orbitals.core.fastForEach
+import org.beatonma.orbitals.core.fastForEachIndexed
 import org.beatonma.orbitals.core.options.PhysicsOptions
 import org.beatonma.orbitals.core.percent
 import org.beatonma.orbitals.core.physics.Body
@@ -23,97 +25,143 @@ private val BodySortBy = Body::mass
 
 private val BodyMassLimit = 1500.kg
 
-
 interface OrbitalsEngine {
-    var space: Universe
-    var physics: PhysicsOptions
+    val space: Universe
+    val physics: PhysicsOptions
+    val bodies: List<Body>
+    val bodyCount: Int get() = bodies.size
 
     /**
-     * Ordered list of objects in the simulation, sorted by descending mass.
+     * Apply physics for the given time step.
      */
-    var bodies: List<Body>
-    val bodyCount: Int get() = bodies.size
-    var pruneCounter: Int
-    val pruneFrequency: Int
+    fun tick(timeDelta: Duration)
 
-    val addedBodies: MutableList<Body>
-    val removedBodies: MutableList<Body>
+    fun onBodyCreated(body: Body) {}
+    fun onBodyDestroyed(id: UniqueID) {}
 
-    fun onBodiesCreated(newBodies: List<Body>) {}
-    fun onBodyDestroyed(body: Body) {}
+
+    fun clear() {
+        remove(bodies.map { it.id })
+    }
 
     fun addBodies(space: Space = this.space) {
-        val newBodies = generateBodies(space)
-        setBodies(bodies + newBodies)
-        onBodiesCreated(newBodies)
+        add(generateBodies(space))
     }
 
-    fun addBody(body: Body) {
-        setBodies(bodies + body)
-        onBodiesCreated(listOf(body))
+    fun add(body: Body) {
+        onBodyCreated(body)
     }
 
-    fun removeBody(id: UniqueID) {
-        setBodies(bodies.filter { it.id != id })
+    fun add(bodies: List<Body>) {
+        bodies.fastForEach(::onBodyCreated)
     }
 
-    private fun removeBody(body: Body) = removeBody(body.id)
+    fun remove(body: Body) {
+        onBodyDestroyed(body.id)
+    }
 
-    fun tick(timeDelta: Duration) {
-        val duration = timeIt(enabled = BuildConfig.DEBUG) {
-            bodies.forEach {
-                it.tick(timeDelta)
-            }
+    fun remove(id: UniqueID) {
+        onBodyDestroyed(id)
+    }
 
-            if (bodyCount > 1) {
-                bodies.forEachIndexed { index, body ->
-                    for (i in (index + 1) until bodyCount) {
-                        val other = bodies[i]
-                        body.applyGravity(other, timeDelta, G = physics.G)
-                        other.applyGravity(body, timeDelta, G = physics.G)
-
-                        if (body.inContactWith(other)) {
-                            val result = onCollision(body, other)
-
-                            if (result != null) {
-                                val (added, removed) = result
-                                addedBodies += added
-                                removedBodies += removed
-                            }
-                        }
-                    }
-
-                    if (body is Inertial && body.mass > BodyMassLimit) {
-                        val (added, removed) = body.explode()
-                        addedBodies += added
-                        removedBodies += removed
-                    }
-                }
-            }
-
-            addedBodies.forEach(::addBody)
-            removedBodies.forEach(::removeBody)
-
-            addedBodies.clear()
-            removedBodies.clear()
-
-            prune()
-            autoAddBodies()
-        }
-
-        if (BuildConfig.DEBUG && duration > 15) {
-            warn("Frame took ${duration}ms ($bodyCount objects)")
-        }
+    fun remove(ids: List<UniqueID>) {
+        ids.fastForEach(::onBodyDestroyed)
     }
 
     fun generateBodies(space: Space = this.space): List<Body> =
         physics.systemGenerators
             .random()
             .generate(space, bodies, physics)
+}
 
-    private fun setBodies(bodies: List<Body>) {
-        // Bodies are stored in order of mass to avoid needing to sort them in collision functions.
-        this.bodies = bodies.sortedByDescending(BodySortBy)
+
+open class DefaultOrbitalsEngine(override var physics: PhysicsOptions) : OrbitalsEngine {
+    override var space: Universe = Universe(1, 1)
+
+    /**
+     * Ordered list of objects in the simulation, sorted by descending mass.
+     */
+    final override var bodies: List<Body> = listOf()
+        private set(value) {
+            field = value.sortedByDescending(BodySortBy)
+        }
+    private var pruneCounter: Int = 0
+    private val pruneFrequency: Int = 60
+
+    private val addedBodies: MutableList<Body> = mutableListOf()
+    private val removedBodyIds: MutableList<UniqueID> = mutableListOf()
+
+    final override fun add(body: Body) {
+        this.bodies += body
+        super.add(body)
+    }
+
+    final override fun add(bodies: List<Body>) {
+        if (bodies.isNotEmpty()) {
+            this.bodies += bodies
+            super.add(bodies)
+        }
+    }
+
+    final override fun remove(body: Body) {
+        this.bodies -= body
+        super.remove(body)
+    }
+
+    final override fun remove(id: UniqueID) {
+        this.bodies = this.bodies.filterNot { it.id == id }
+        super.remove(id)
+    }
+
+    final override fun remove(ids: List<UniqueID>) {
+        if (ids.isNotEmpty()) {
+            this.bodies = this.bodies.filterNot { ids.contains(it.id) }
+            super.remove(ids)
+        }
+    }
+
+    override fun tick(timeDelta: Duration) {
+        val duration = timeIt(enabled = OrbitalsBuildConfig.DEBUG) {
+            bodies.fastForEach {
+                it.tick(timeDelta)
+            }
+
+            if (bodyCount > 1) {
+                bodies.fastForEachIndexed { index, body ->
+                    for (i in (index + 1) until bodyCount) {
+                        val other = bodies[i]
+                        body.applyGravity(other, timeDelta, G = physics.G)
+                        other.applyGravity(body, timeDelta, G = physics.G)
+
+                        if (body.inContactWith(other)) {
+                            onCollision(body, other)?.let { (added, removed) ->
+                                addedBodies += added
+                                removedBodyIds += removed
+                            }
+                        }
+                    }
+
+                    if (body is Inertial && body.mass > BodyMassLimit) {
+                        val added = body.explode()
+                        addedBodies += added
+                        removedBodyIds += body.id
+                    }
+                }
+            }
+
+            add(addedBodies)
+            addedBodies.clear()
+
+            remove(removedBodyIds)
+            removedBodyIds.clear()
+
+            prune()
+            autoAddBodies()
+        }
+
+        if (OrbitalsBuildConfig.DEBUG && duration > 15) {
+            warn("Frame took ${duration}ms ($bodyCount objects)")
+        }
     }
 
     private fun onCollision(body: Body, other: Body): CollisionResults? =
@@ -143,14 +191,8 @@ interface OrbitalsEngine {
      */
     private fun pruneBodies(space: Universe = this.space) {
         val (keep, destroy) = pruneBodies(bodies, space, physics.maxFixedBodyAge)
-        destroy.forEach(::onBodyDestroyed)
-        setBodies(keep)
-    }
-
-    fun clear() {
-        val purge = bodies.toList()
-        purge.forEach(this::onBodyDestroyed)
-        bodies = listOf()
+        destroy.fastForEach { onBodyDestroyed(it.id) }
+        bodies = keep
     }
 }
 

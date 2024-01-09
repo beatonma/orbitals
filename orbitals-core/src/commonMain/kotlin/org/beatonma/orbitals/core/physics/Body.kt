@@ -94,6 +94,15 @@ data class FixedBody(
         super.tick(duration)
         age += duration
     }
+
+    override fun equals(other: Any?): Boolean = when (other) {
+        is Body -> this.id == other.id
+        else -> false
+    }
+
+    override fun hashCode(): Int {
+        return id.hashCode()
+    }
 }
 
 fun FixedBody.toInertialBody() = InertialBody(
@@ -142,6 +151,14 @@ data class InertialBody(
     internal fun calculateAcceleration(force: Force, angle: Angle): Acceleration =
         Acceleration(force / mass, angle)
 
+    override fun equals(other: Any?): Boolean = when (other) {
+        is Body -> this.id == other.id
+        else -> false
+    }
+
+    override fun hashCode(): Int {
+        return id.hashCode()
+    }
 }
 
 
@@ -165,6 +182,15 @@ data class GreatAttractor(
     override fun tick(duration: Duration) {
         super.tick(duration)
         age += duration
+    }
+
+    override fun equals(other: Any?): Boolean = when (other) {
+        is Body -> this.id == other.id
+        else -> false
+    }
+
+    override fun hashCode(): Int {
+        return id.hashCode()
     }
 }
 

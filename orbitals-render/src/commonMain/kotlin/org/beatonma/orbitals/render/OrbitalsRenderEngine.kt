@@ -1,5 +1,6 @@
 package org.beatonma.orbitals.render
 
+import org.beatonma.orbitals.core.engine.DefaultOrbitalsEngine
 import org.beatonma.orbitals.core.engine.OrbitalsEngine
 import org.beatonma.orbitals.core.engine.Space
 import org.beatonma.orbitals.core.engine.Universe
@@ -24,7 +25,7 @@ class OrbitalsRenderEngine<T>(
         }
 
     private val bodyProps = mutableMapOf<UniqueID, BodyProperties>()
-    private val engine: OrbitalsEngine = object : OrbitalsEngine {
+    private val engine = object : DefaultOrbitalsEngine(options.physics) {
         override var space: Universe = Universe(1, 1)
             set(value) {
                 field = value
@@ -33,23 +34,15 @@ class OrbitalsRenderEngine<T>(
                 }
             }
         override var physics: PhysicsOptions = options.physics
-        override var bodies: List<Body> = listOf()
 
-        override var pruneCounter = 0
-        override val pruneFrequency = 60
-        override val addedBodies: MutableList<Body> = mutableListOf()
-        override val removedBodies: MutableList<Body> = mutableListOf()
-
-        override fun onBodiesCreated(newBodies: List<Body>) {
-            newBodies.forEach { body ->
-                renderers.forEach { it.onBodyCreated(body) }
-                bodyProps[body.id] = BodyProperties(options.visualOptions.colorOptions.colorForBody)
-            }
+        override fun onBodyCreated(body: Body) {
+            renderers.forEach { it.onBodyCreated(body) }
+            bodyProps[body.id] = BodyProperties(options.visualOptions.colorOptions.colorForBody)
         }
 
-        override fun onBodyDestroyed(body: Body) {
-            renderers.forEach { it.onBodyDestroyed(body) }
-            bodyProps.remove(body.id)
+        override fun onBodyDestroyed(id: UniqueID) {
+            renderers.forEach { it.onBodyDestroyed(id) }
+            bodyProps.remove(id)
         }
     }
 
@@ -78,12 +71,20 @@ class OrbitalsRenderEngine<T>(
         engine.addBodies(space)
     }
 
-    fun addBody(body: Body) {
-        engine.addBody(body)
+    fun add(body: Body) {
+        engine.add(body)
     }
 
-    fun removeBody(id: UniqueID) {
-        engine.removeBody(id)
+    fun add(bodies: List<Body>) {
+        engine.add(bodies)
+    }
+
+    fun remove(id: UniqueID) {
+        engine.remove(id)
+    }
+
+    fun remove(ids: List<UniqueID>) {
+        engine.remove(ids)
     }
 
     fun clear() {

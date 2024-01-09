@@ -41,6 +41,13 @@ inline fun <T> List<T>.fastForEach(action: (T) -> Unit) {
     }
 }
 
+inline fun <T> List<T>.fastForEachIndexed(action: (Int, T) -> Unit) {
+    for (index in indices) {
+        val item = get(index)
+        action(index, item)
+    }
+}
+
 internal fun Float.format(decimalPlaces: Int = 2): String = this.toString().run {
     indexOf('.').let { index ->
         when (index) {

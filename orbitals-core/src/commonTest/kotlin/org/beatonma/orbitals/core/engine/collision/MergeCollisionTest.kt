@@ -1,5 +1,6 @@
-package org.beatonma.orbitals.core.engine
+package org.beatonma.orbitals.core.engine.collision
 
+import org.beatonma.orbitals.core.engine.applyCollision
 import org.beatonma.orbitals.core.options.CollisionStyle
 import org.beatonma.orbitals.core.physics.Body
 import org.beatonma.orbitals.core.physics.InertialBody
@@ -12,7 +13,7 @@ import org.beatonma.orbitals.core.physics.metres
 import org.beatonma.orbitals.test.shouldbe
 import kotlin.test.Test
 
-class CollisionTest {
+class MergeCollisionTest {
 
     @Test
     fun testMergeCollision() {

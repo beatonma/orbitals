@@ -22,9 +22,7 @@ interface OrbitalsRenderer<Canvas> {
     }
 
     fun onBodyCreated(body: Body) {}
-    fun onBodyDestroyed(body: UniqueID) {}
+    fun onBodyDestroyed(id: UniqueID) {}
     fun onSizeChanged(space: Space) {}
     fun recycle() {}
-
-    fun onBodyDestroyed(body: Body) = onBodyDestroyed(body.id)
 }

@@ -34,5 +34,5 @@ fun <Key, Canvas> clearTouchBodies(
 ) {
     val bodies = bodyMap.values.toList()
     bodyMap.clear()
-    bodies.forEach { orbitals.removeBody(it) }
+    orbitals.remove(bodies)
 }

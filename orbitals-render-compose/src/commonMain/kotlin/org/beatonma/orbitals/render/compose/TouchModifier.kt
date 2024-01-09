@@ -54,7 +54,7 @@ fun Modifier.orbitalsPointerInput(
                     if (id == null) {
                         val body = createTouchAttractor(change.position.toPosition())
                         pointerBodies[change.id] = body.id
-                        orbitals.addBody(body)
+                        orbitals.add(body)
                     } else {
                         val body =
                             orbitals.bodies.find { it.id == id } ?: return@detectDragMultitouch

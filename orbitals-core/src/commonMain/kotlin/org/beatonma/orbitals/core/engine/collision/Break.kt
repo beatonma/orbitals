@@ -17,7 +17,7 @@ import kotlin.random.Random
  */
 internal val BreakCollision = Collision { larger, smaller, changes ->
     if (smaller.mass < 5.kg) {
-        return@Collision changes.remove(smaller)
+        return@Collision changes.remove(smaller.id)
     }
 
     val distance = larger.distanceTo(smaller)
