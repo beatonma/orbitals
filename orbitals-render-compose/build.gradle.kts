@@ -34,7 +34,11 @@ kotlin {
                 implementation(project(":${Module.Core}"))
                 implementation(project(":${Module.Render}"))
                 implementation(compose.ui)
-                implementation(compose.foundation)
+            }
+        }
+        val commonTest by getting {
+            dependencies {
+                implementation(Dependencies.KotlinTest)
             }
         }
         val jsMain by getting {}

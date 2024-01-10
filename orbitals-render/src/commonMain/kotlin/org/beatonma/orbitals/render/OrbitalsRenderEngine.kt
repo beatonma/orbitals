@@ -37,7 +37,9 @@ class OrbitalsRenderEngine<T>(
 
         override fun onBodyCreated(body: Body) {
             renderers.forEach { it.onBodyCreated(body) }
-            bodyProps[body.id] = BodyProperties(options.visualOptions.colorOptions.colorForBody)
+            bodyProps[body.id] = BodyProperties(
+                this@OrbitalsRenderEngine.options.visualOptions.colorOptions.colorFor(body)
+            )
         }
 
         override fun onBodyDestroyed(id: UniqueID) {

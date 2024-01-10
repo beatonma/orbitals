@@ -42,16 +42,17 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-//                implementation(Dependencies.KotlinReflect)
                 implementation(project(":${Module.Core}"))
             }
         }
-        val androidMain by getting {}
-        val jvmMain by getting {
+        val commonTest by getting {
             dependencies {
-//                implementation(Dependencies.KotlinReflect)
+                implementation(Dependencies.KotlinTest)
+                implementation(project(":${Module.Test}"))
             }
         }
+        val androidMain by getting {}
+        val jvmMain by getting {}
         val jsMain by getting {}
     }
 }

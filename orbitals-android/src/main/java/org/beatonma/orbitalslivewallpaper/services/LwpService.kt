@@ -98,7 +98,7 @@ class LwpService : WallpaperService() {
             var canvas: Canvas? = null
             try {
                 canvas = surfaceHolder.lockCanvas()
-                canvas.drawColor((options.visualOptions.colorOptions.background.toRgbInt()) or 0x000000)
+                canvas.drawColor(options.visualOptions.colorOptions.background.toRgbInt())
                 renderEngine.update(canvas, timeDelta.milliseconds)
             } catch (e: Exception) {
                 warn(e)

@@ -39,7 +39,7 @@ interface OptionsStore {
 
     fun loadColors(): ColorOptions {
         return ColorOptions(
-            background = Color(this[ColorKey.BackgroundColor]?.toLong() ?: 0xff000000),
+            background = Color(this[ColorKey.BackgroundColor] ?: 0x000000),
             foregroundAlpha = this[ColorKey.BodyAlpha] ?: 1f,
             bodies = this[ColorKey.Colors]?.map(ObjectColors::valueOf)?.toSet() ?: setOf(
                 ObjectColors.Greyscale,

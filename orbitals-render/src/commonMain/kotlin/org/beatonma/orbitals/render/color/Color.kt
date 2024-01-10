@@ -3,20 +3,20 @@ package org.beatonma.orbitals.render.color
 import kotlin.jvm.JvmInline
 
 @JvmInline
-value class Color(val value: Long) {
-    val alpha: Long get() = (value shr 24) and 0xff
-    val red: Long get() = (value shr 16) and 0xff
-    val green: Long get() = (value shr 8) and 0xff
-    val blue: Long get() = value and 0xff
-
-    val alphaInt: Int get() = (value shr 24).toInt() and 0xff
-    val redInt: Int get() = (value shr 16).toInt() and 0xff
-    val greenInt: Int get() = (value shr 8).toInt() and 0xff
-    val blueInt: Int get() = value.toInt() and 0xff
+value class Color(val value: ULong) {
+    val alpha: Int get() = (value shr 24).toInt() and 0xff
+    val red: Int get() = (value shr 16).toInt() and 0xff
+    val green: Int get() = (value shr 8).toInt() and 0xff
+    val blue: Int get() = value.toInt() and 0xff
 
     fun withOpacity(opacity: Float): Color {
         val (_, r, g, b) = argb()
-        return fromArgb((opacity * 0xff.toFloat()).toLong(), r, g, b)
+        return fromArgb(
+            (opacity * 0xff.toFloat()).toInt().toUByte(),
+            r.toUByte(),
+            g.toUByte(),
+            b.toUByte()
+        )
     }
 
     fun rgb() = arrayOf(red, green, blue)
@@ -25,22 +25,27 @@ value class Color(val value: Long) {
 
     fun rgba() = arrayOf(red, green, blue, alpha)
 
-    fun toRgbInt(): Int {
-        return (redInt shl 16) or
-                (greenInt shl 8) or
-                blueInt
-    }
+    fun toRgbInt(): Int = (red shl 16) or (green shl 8) or blue
+
+    override fun toString(): String =
+        "Color(${argb().joinToString("") { it.toString(16).padStart(2, '0') }} [$value])"
 
     companion object {
-        private fun fromArgb(alpha: Long, red: Long, green: Long, blue: Long): Color {
+        internal fun fromArgb(alpha: UByte, red: UByte, green: UByte, blue: UByte): Color {
             return Color(
-                (alpha shl 24) or
-                (red shl 16) or
-                (green shl 8) or
-                blue
+                ((alpha.toLong() shl 24) or
+                        (red.toLong() shl 16) or
+                        (green.toLong() shl 8) or
+                        (blue.toLong())).toULong()
             )
         }
     }
 }
 
-fun Color(value: Int): Color = Color(0xff000000 or value.toLong())
+/**
+ * Create an opaque Color instance from the given encoded integer.
+ *
+ * Any alpha component will be ignored - use Color(Long) instead.
+ */
+fun Color(value: Int): Color = Color(value.toULong() or 0xff000000UL)
+fun Color(value: Long): Color = Color(value.toULong())

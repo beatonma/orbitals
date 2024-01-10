@@ -63,8 +63,8 @@ fun Position.toOffset() = Offset(x.value, y.value)
 
 fun Color.toComposeColor(): ComposeColor =
     ComposeColor(
-        red = redInt,
-        green = greenInt,
-        blue = blueInt,
-        alpha = alphaInt
+        red = red,
+        green = green,
+        blue = blue,
+        alpha = alpha
     )
