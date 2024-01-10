@@ -14,6 +14,7 @@ interface CanvasDelegate<T> {
         color: Color,
         strokeWidth: Float,
         style: DrawStyle,
+        alpha: Float = 1f,
     )
 
     fun drawLine(
@@ -23,5 +24,6 @@ interface CanvasDelegate<T> {
         end: Position,
         strokeWidth: Float,
         cap: CapStyle = CapStyle.Round,
+        alpha: Float = 1f,
     )
 }

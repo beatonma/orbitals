@@ -19,6 +19,7 @@ object AndroidCanvasDelegate : CanvasDelegate<Canvas> {
         color: Color,
         strokeWidth: Float,
         style: DrawStyle,
+        alpha: Float,
     ) {
         canvas.drawCircle(
             position.x.value,
@@ -26,18 +27,19 @@ object AndroidCanvasDelegate : CanvasDelegate<Canvas> {
             radius.value,
             paint.apply {
                 paint.color = color.toRgbInt()
-                paint.alpha = color.alphaInt
+                paint.alpha = (color.alpha.toFloat() * alpha).toInt()
 
                 when (style) {
                     DrawStyle.Solid -> {
                         paint.style = Paint.Style.FILL
                     }
+
                     DrawStyle.Wireframe -> {
                         paint.style = Paint.Style.STROKE
                         paint.strokeWidth = strokeWidth
                     }
                 }
-            }
+            },
         )
     }
 
@@ -48,13 +50,14 @@ object AndroidCanvasDelegate : CanvasDelegate<Canvas> {
         end: Position,
         strokeWidth: Float,
         cap: CapStyle,
+        alpha: Float,
     ) {
         canvas.drawLine(
             start.x.value, start.y.value,
             end.x.value, end.y.value,
             paint.apply {
                 this.color = color.toRgbInt()
-                this.alpha = color.alphaInt
+                paint.alpha = (color.alpha.toFloat() * alpha).toInt()
                 this.strokeWidth = strokeWidth
                 this.strokeCap = when (cap) {
                     CapStyle.Round -> Paint.Cap.ROUND

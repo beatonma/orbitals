@@ -13,16 +13,19 @@ import org.w3c.dom.SQUARE
 object JsCanvasDelegate : CanvasDelegate<CanvasRenderingContext2D> {
     private fun setStyle(
         canvas: CanvasRenderingContext2D,
-        color: String,
+        color: Color,
+        alpha: Float,
         strokeWidth: Float,
-        cap: CapStyle? = null
+        cap: CapStyle? = null,
     ) {
+        val colorHex = color.toHexString()
         canvas.run {
-            fillStyle = color
-            strokeStyle = color
+            fillStyle = colorHex
+            strokeStyle = colorHex
             lineWidth = strokeWidth.toDouble()
+            globalAlpha = alpha.toDouble()
             cap?.let {
-                lineCap = when(cap) {
+                lineCap = when (cap) {
                     CapStyle.Round -> CanvasLineCap.ROUND
                     CapStyle.Butt -> CanvasLineCap.BUTT
                     CapStyle.Square -> CanvasLineCap.SQUARE
@@ -38,8 +41,9 @@ object JsCanvasDelegate : CanvasDelegate<CanvasRenderingContext2D> {
         color: Color,
         strokeWidth: Float,
         style: DrawStyle,
+        alpha: Float,
     ) {
-        setStyle(canvas, color.toHexString(), strokeWidth)
+        setStyle(canvas, color, alpha, strokeWidth)
 
         canvas.run {
             beginPath()
@@ -66,8 +70,9 @@ object JsCanvasDelegate : CanvasDelegate<CanvasRenderingContext2D> {
         end: Position,
         strokeWidth: Float,
         cap: CapStyle,
+        alpha: Float,
     ) {
-        setStyle(canvas, color.toHexString(), strokeWidth, cap)
+        setStyle(canvas, color, strokeWidth, alpha, cap)
         canvas.run {
             beginPath()
             moveTo(start.x.value.toDouble(), start.y.value.toDouble())

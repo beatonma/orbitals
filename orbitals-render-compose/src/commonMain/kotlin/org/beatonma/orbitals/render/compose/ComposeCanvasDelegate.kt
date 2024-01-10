@@ -22,6 +22,7 @@ object ComposeDelegate : CanvasDelegate<DrawScope> {
         color: Color,
         strokeWidth: Float,
         style: DrawStyle,
+        alpha: Float,
     ) {
         canvas.drawCircle(
             center = position.toOffset(),
@@ -34,6 +35,7 @@ object ComposeDelegate : CanvasDelegate<DrawScope> {
 
                 DrawStyle.Solid -> Fill
             },
+            alpha = alpha,
         )
     }
 
@@ -44,6 +46,7 @@ object ComposeDelegate : CanvasDelegate<DrawScope> {
         end: Position,
         strokeWidth: Float,
         cap: CapStyle,
+        alpha: Float,
     ) {
         canvas.drawLine(
             color = color.toComposeColor(),
@@ -55,6 +58,7 @@ object ComposeDelegate : CanvasDelegate<DrawScope> {
                 CapStyle.Square -> StrokeCap.Square
                 CapStyle.Butt -> StrokeCap.Butt
             },
+            alpha = alpha,
         )
     }
 }

@@ -34,6 +34,7 @@ class SimpleRenderer<Canvas> internal constructor(
             props.color,
             strokeWidth = options.strokeWidth,
             style = options.drawStyle,
+            alpha = options.colorOptions.foregroundAlpha,
         )
     }
 
@@ -44,7 +45,8 @@ class SimpleRenderer<Canvas> internal constructor(
             maxOf(body.radius, 1.metres),
             Color(0xffffffff),
             strokeWidth = 8f,
-            style = DrawStyle.Wireframe
+            style = DrawStyle.Wireframe,
+            alpha = options.colorOptions.foregroundAlpha,
         )
     }
 
