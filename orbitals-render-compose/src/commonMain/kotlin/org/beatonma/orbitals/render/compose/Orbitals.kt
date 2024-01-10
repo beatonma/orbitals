@@ -11,11 +11,10 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameMillis
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import org.beatonma.orbitals.render.options.Options
 import org.beatonma.orbitals.render.OrbitalsRenderEngine
-import org.beatonma.orbitals.render.diffRenderers
-import org.beatonma.orbitals.render.getRenderers
 import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -24,9 +23,9 @@ import kotlin.time.Duration.Companion.milliseconds
 fun Orbitals(
     options: Options,
     modifier: Modifier = Modifier,
+    orbitals: OrbitalsRenderEngine<DrawScope> = rememberOrbitalsRenderEngine(options)
 ) {
     var size by remember { mutableStateOf(Size(1f, 1f)) }
-    val orbitals = rememberRenderEngine(options)
 
     LaunchedEffect(size) {
         orbitals.onSizeChanged(
@@ -45,6 +44,7 @@ fun Orbitals(
         modifier = modifier
             .background(options.visualOptions.colorOptions.background.toComposeColor())
             .orbitalsPointerInput(orbitals)
+            .clipToBounds()
     ) {
         size = this.size
 
@@ -53,18 +53,21 @@ fun Orbitals(
 }
 
 @Composable
-private fun rememberRenderEngine(
+fun rememberOrbitalsRenderEngine(
     options: Options,
 ): OrbitalsRenderEngine<DrawScope> {
-    return remember {
+    val engine = remember {
         OrbitalsRenderEngine(
-            renderers = getRenderers(options.visualOptions, ComposeDelegate),
+            ComposeDelegate,
             options = options,
-            onOptionsChange = {
-                renderers = diffRenderers(this, ComposeDelegate)
-            }
         )
     }
+
+    LaunchedEffect(options) {
+        engine.options = options
+    }
+
+    return engine
 }
 
 

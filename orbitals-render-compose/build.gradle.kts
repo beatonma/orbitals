@@ -33,6 +33,8 @@ kotlin {
             dependencies {
                 implementation(project(":${Module.Core}"))
                 implementation(project(":${Module.Render}"))
+                implementation(compose.foundation)
+                implementation(compose.material)
                 implementation(compose.ui)
             }
         }

@@ -8,8 +8,6 @@ import android.view.SurfaceHolder
 import org.beatonma.orbitals.core.util.warn
 import org.beatonma.orbitals.render.android.AndroidCanvasDelegate
 import org.beatonma.orbitals.render.OrbitalsRenderEngine
-import org.beatonma.orbitals.render.diffRenderers
-import org.beatonma.orbitals.render.getRenderers
 import org.beatonma.orbitals.render.options.Options
 import org.beatonma.orbitalslivewallpaper.Settings
 import org.beatonma.orbitalslivewallpaper.dataStore
@@ -44,11 +42,8 @@ class LwpService : WallpaperService() {
             }
 
         private val renderEngine = OrbitalsRenderEngine(
-            renderers = getRenderers(options.visualOptions, AndroidCanvasDelegate),
+            AndroidCanvasDelegate,
             options = options,
-            onOptionsChange = {
-                renderers = diffRenderers(this, AndroidCanvasDelegate)
-            }
         )
 
         private val touchHandler = OrbitalsGestureDetector(this@LwpService, renderEngine)

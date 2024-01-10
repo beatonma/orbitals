@@ -23,11 +23,8 @@ class OrbitalsView @JvmOverloads constructor(
 
     private val options = getSavedOptionsSync(context.dataStore(Settings.Wallpaper))
     private val renderEngine = OrbitalsRenderEngine(
-        renderers = getRenderers(options.visualOptions, AndroidCanvasDelegate),
+        AndroidCanvasDelegate,
         options = options,
-        onOptionsChange = {
-            renderers = diffRenderers(this, AndroidCanvasDelegate)
-        }
     )
     private val touchHandler = OrbitalsGestureDetector(context, renderEngine)
     private var lastFrameMillis = System.currentTimeMillis()

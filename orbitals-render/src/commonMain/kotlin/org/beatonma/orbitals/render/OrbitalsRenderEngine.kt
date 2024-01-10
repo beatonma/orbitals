@@ -1,28 +1,26 @@
 package org.beatonma.orbitals.render
 
 import org.beatonma.orbitals.core.engine.DefaultOrbitalsEngine
-import org.beatonma.orbitals.core.engine.OrbitalsEngine
 import org.beatonma.orbitals.core.engine.Space
 import org.beatonma.orbitals.core.engine.Universe
 import org.beatonma.orbitals.render.options.Options
-import org.beatonma.orbitals.core.options.PhysicsOptions
 import org.beatonma.orbitals.core.physics.Body
 import org.beatonma.orbitals.core.physics.UniqueID
 import org.beatonma.orbitals.render.renderer.BodyProperties
 import kotlin.time.Duration
 
 class OrbitalsRenderEngine<T>(
-    var renderers: Set<OrbitalsRenderer<T>>,
+    private val canvasDelegate: CanvasDelegate<T>,
     options: Options,
-    private val onOptionsChange: OrbitalsRenderEngine<T>.(Options) -> Unit
 ) {
     var options: Options = options
         set(value) {
             field = value
-            onOptionsChange(value)
             engine.physics = value.physics
+            renderers = diffRenderers(value)
             renderers.forEach { it.options = value.visualOptions }
         }
+    var renderers: Set<OrbitalsRenderer<T>> = getRenderers(options.visualOptions, canvasDelegate)
 
     private val bodyProps = mutableMapOf<UniqueID, BodyProperties>()
     private val engine = object : DefaultOrbitalsEngine(options.physics) {
@@ -33,7 +31,6 @@ class OrbitalsRenderEngine<T>(
                     addBodies(space.visibleSpace)
                 }
             }
-        override var physics: PhysicsOptions = options.physics
 
         override fun onBodyCreated(body: Body) {
             renderers.forEach { it.onBodyCreated(body) }
@@ -96,15 +93,12 @@ class OrbitalsRenderEngine<T>(
     fun recycle() {
         renderers.forEach(OrbitalsRenderer<T>::recycle)
     }
-}
 
-inline fun <reified Canvas> diffRenderers(
-    engine: OrbitalsRenderEngine<Canvas>,
-    delegate: CanvasDelegate<Canvas>
-) = diffRenderers(
-    engine.renderers,
-    engine.options.visualOptions.renderLayers,
-    engine.options.visualOptions,
-    engine.bodies,
-    delegate,
-)
+    private fun diffRenderers(options: Options) = diffRenderers(
+        renderers,
+        options.visualOptions.renderLayers,
+        options.visualOptions,
+        bodies,
+        canvasDelegate,
+    )
+}

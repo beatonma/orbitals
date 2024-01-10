@@ -40,12 +40,8 @@ fun main() {
     canvas.style.backgroundColor = options.visualOptions.colorOptions.background.toHexString()
 
     val orbitals = OrbitalsRenderEngine(
-        renderers = getRenderers(
-            options.visualOptions,
-            JsCanvasDelegate
-        ),
-        options = options,
-        onOptionsChange = {}
+        JsCanvasDelegate,
+        options,
     )
     canvas.setupSize(canvas.dataset["fullscreen"]?.lowercase() == "true")
     canvas.setupTouchInteractions(orbitals)

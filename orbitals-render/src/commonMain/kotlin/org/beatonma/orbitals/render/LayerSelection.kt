@@ -20,7 +20,10 @@ private class LayerRegistry<Canvas> {
     private val registry: Map<RenderLayer, LayerRenderer<Canvas>> = mapOf(
         RenderLayer.Default to LayerRenderer(SimpleRenderer::class, ::SimpleRenderer),
         RenderLayer.Trails to LayerRenderer(TrailRenderer::class, ::TrailRenderer),
-        RenderLayer.Acceleration to LayerRenderer(AccelerationRenderer::class, ::AccelerationRenderer),
+        RenderLayer.Acceleration to LayerRenderer(
+            AccelerationRenderer::class,
+            ::AccelerationRenderer
+        ),
         RenderLayer.Drip to LayerRenderer(DripRenderer::class, ::DripRenderer),
     )
 
@@ -47,7 +50,7 @@ private data class LayerRenderer<Canvas>(
  * Return a set of required renderers, keeping pre-existing renderers where possible and creating
  * new renderers when necessary,
  */
-inline fun <reified Canvas> diffRenderers(
+fun <Canvas> diffRenderers(
     existing: RenderSet<Canvas>,
     required: LayerSet,
     options: VisualOptions,
@@ -65,6 +68,8 @@ inline fun <reified Canvas> diffRenderers(
     val newLayers = required.filter { it !in existingLayers }.toSet()
 
     val newRenderers = getRenderers(newLayers, options, delegate)
+
+    // Register existing bodies with new render layers
     newRenderers.forEach { r -> bodies.forEach { b -> r.onBodyCreated(b) } }
 
     return (
