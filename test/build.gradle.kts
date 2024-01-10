@@ -20,7 +20,7 @@ android {
         sourceCompatibility = Versions.Java
         targetCompatibility = Versions.Java
     }
-    namespace = "org.beatonma.orbitals.core"
+    namespace = "org.beatonma.orbitals.test"
 }
 
 kotlin {
@@ -40,15 +40,14 @@ kotlin {
     }
 
     sourceSets {
-        val commonMain by getting {}
-        val androidMain by getting {}
-        val jsMain by getting {}
-        val commonTest by getting {
+        val commonMain by getting {
             dependencies {
                 implementation(Dependencies.KotlinTest)
-                implementation(project(":${Module.Test}"))
             }
         }
+        val androidMain by getting {}
+        val jsMain by getting {}
+        val commonTest by getting {}
     }
 }
 

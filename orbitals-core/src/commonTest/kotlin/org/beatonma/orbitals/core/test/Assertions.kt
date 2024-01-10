@@ -1,19 +1,9 @@
-package org.beatonma.orbitals.test
+package org.beatonma.orbitals.core.test
 
 import org.beatonma.orbitals.core.physics.Scalar
 import org.beatonma.orbitals.core.physics.Vector2D
-import kotlin.test.assertContentEquals
-import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-
-infix fun <T> T?.shouldbe(expected: T?) {
-    assertEquals(expected, this)
-}
-
-infix fun <T, L: List<T>> L.shouldbe(expected: L) {
-    assertContentEquals(expected, this)
-}
 
 fun Float.shouldbe(expected: Float, delta: Float) {
     val difference = differenceWith(expected)

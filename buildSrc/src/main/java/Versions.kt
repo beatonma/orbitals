@@ -17,6 +17,6 @@ object Versions {
         const val DataStore = "1.0.0"
         const val Material3 = "1.2.0-beta01"
         const val NavigationCompose = "2.7.6"
-        const val ViewModelCompose= "2.6.2"
+        const val ViewModelCompose = "2.6.2"
     }
 }

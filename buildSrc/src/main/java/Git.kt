@@ -29,7 +29,7 @@ object Git {
 }
 
 private fun String?.letIfEmpty(fallback: String): String {
-    return if (this == null || isEmpty()) {
+    return if (isNullOrEmpty()) {
         fallback
     } else {
         this

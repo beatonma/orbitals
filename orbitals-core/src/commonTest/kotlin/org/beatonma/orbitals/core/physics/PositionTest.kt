@@ -1,6 +1,6 @@
 package org.beatonma.orbitals.core.physics
 
-import org.beatonma.orbitals.test.shouldbe
+import org.beatonma.orbitals.core.test.shouldbe
 import kotlin.test.Test
 
 

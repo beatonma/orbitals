@@ -10,7 +10,7 @@ import org.beatonma.orbitals.core.physics.Position
 import org.beatonma.orbitals.core.physics.Velocity
 import org.beatonma.orbitals.core.physics.kg
 import org.beatonma.orbitals.core.physics.metres
-import org.beatonma.orbitals.test.shouldbe
+import org.beatonma.orbitals.core.test.shouldbe
 import kotlin.test.Test
 
 class MergeCollisionTest {

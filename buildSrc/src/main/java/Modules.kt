@@ -13,6 +13,8 @@ enum class Module(private val moduleName: String) {
     ComposeRender("orbitals-render-compose"),
 
     Core("orbitals-core"),
+
+    Test("test"),
     ;
 
     override fun toString(): String = moduleName

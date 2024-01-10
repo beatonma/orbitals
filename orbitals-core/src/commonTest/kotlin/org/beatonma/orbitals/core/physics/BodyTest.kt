@@ -1,7 +1,7 @@
 package org.beatonma.orbitals.core.physics
 
-import org.beatonma.orbitals.test.differenceWith
-import org.beatonma.orbitals.test.shouldbe
+import org.beatonma.orbitals.core.test.differenceWith
+import org.beatonma.orbitals.core.test.shouldbe
 import kotlin.test.Test
 import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.milliseconds
@@ -112,6 +112,7 @@ class BodyTest {
                         distanceAfter.value
                     )
                 })"
+
                 else -> "" // No error
             }
 
@@ -147,32 +148,32 @@ class BodyTest {
         centerOfMass(
             InertialBody(mass, position = Position(-10, 0)),
             InertialBody(mass, position = Position(10, 0))
-        ) shouldbe Position(0,  0)
+        ) shouldbe Position(0, 0)
 
         centerOfMass(
             InertialBody(mass, position = Position(-20, 0)),
             InertialBody(mass, position = Position(10, 0))
-        ) shouldbe Position(-5,  0)
+        ) shouldbe Position(-5, 0)
 
         centerOfMass(
             InertialBody(mass, position = Position(-10, 0)),
             InertialBody(mass, position = Position(20, 0))
-        ) shouldbe Position(5,  0)
+        ) shouldbe Position(5, 0)
 
         centerOfMass(
             InertialBody(mass, position = Position(5, 10)),
             InertialBody(mass, position = Position(15, 20))
-        ) shouldbe Position(10,  15)
+        ) shouldbe Position(10, 15)
 
         centerOfMass(
             InertialBody(mass, position = Position(-5, 10)),
             InertialBody(mass, position = Position(15, -20))
-        ) shouldbe Position(5,  -5)
+        ) shouldbe Position(5, -5)
 
         centerOfMass(
             InertialBody(mass, position = Position(15, -20)),
             InertialBody(mass, position = Position(-5, 10))
-        ) shouldbe Position(5,  -5)
+        ) shouldbe Position(5, -5)
     }
 
     @Test

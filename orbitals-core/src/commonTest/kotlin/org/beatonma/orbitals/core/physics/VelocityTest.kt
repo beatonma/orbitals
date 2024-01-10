@@ -1,7 +1,7 @@
 package org.beatonma.orbitals.core.physics
 
 import kotlin.test.Test
-import org.beatonma.orbitals.test.shouldbe
+import org.beatonma.orbitals.core.test.shouldbe
 
 class VelocityTest {
     private infix fun Float.shouldbe(expected: Float) =

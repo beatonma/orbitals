@@ -1,8 +1,9 @@
 package org.beatonma.orbitals.core.physics
 
 import org.beatonma.orbitals.core.mapTo
+import org.beatonma.orbitals.core.test.shouldbe
+import org.beatonma.orbitals.core.test.shouldbePositive
 import org.beatonma.orbitals.test.shouldbe
-import org.beatonma.orbitals.test.shouldbePositive
 import kotlin.random.Random
 import kotlin.test.Test
 
@@ -26,7 +27,8 @@ class MathTest {
     @Test
     fun testDivUneven() {
         fun assertResults(total: Float, chunks: Int) {
-            val divided = total.divideUnevenly(chunks, variance = Random.nextFloat().mapTo(.1f, .9f))
+            val divided =
+                total.divideUnevenly(chunks, variance = Random.nextFloat().mapTo(.1f, .9f))
             println(divided)
 
             divided.size shouldbe chunks
