@@ -19,6 +19,7 @@ import org.beatonma.orbitals.core.physics.getOrbitalMotion
 import org.beatonma.orbitals.core.physics.kg
 import org.beatonma.orbitals.core.physics.metres
 import org.beatonma.orbitals.core.physics.uniqueID
+import org.beatonma.orbitals.core.util.debug
 import kotlin.math.max
 import kotlin.random.Random
 
@@ -62,7 +63,7 @@ enum class SystemGenerator {
 
     fun generate(space: Space, bodies: List<Body>, physics: PhysicsOptions): List<Body> {
         if (!space.isValid) {
-            println("Invalid space $space")
+            debug("Invalid space $space")
             return listOf()
         }
 
