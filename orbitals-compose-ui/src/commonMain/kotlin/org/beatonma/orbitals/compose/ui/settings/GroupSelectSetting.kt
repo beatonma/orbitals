@@ -1,7 +1,6 @@
 package org.beatonma.orbitals.compose.ui.settings
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -50,10 +49,9 @@ fun <E : Enum<E>> SingleSelectSetting(
     CollapsibleGroup(name, modifier) {
         for (v in values) {
             val onClick = { onValueChange(key, v) }
-            CheckableLayout(
+            CheckableSettingLayout(
                 v.name,
-                SettingModifier,
-                onClick,
+                onClick = onClick,
             ) {
                 RadioButton(
                     selected = value == v,
@@ -90,10 +88,9 @@ fun <E : Enum<E>> MultiSelectSetting(
                 }
             }
 
-            CheckableLayout(
+            CheckableSettingLayout(
                 v.name,
-                SettingModifier,
-                onClick,
+                onClick = onClick,
             ) {
                 Checkbox(
                     checked = v in value,
@@ -104,7 +101,6 @@ fun <E : Enum<E>> MultiSelectSetting(
     }
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 private fun CollapsibleGroup(
     name: String,
@@ -116,12 +112,12 @@ private fun CollapsibleGroup(
     val onClick = { expanded = !expanded }
 
     SettingLayout(
-        Modifier
+        modifier
             .border(2.dp, colors.onBackground.copy(alpha = .2f), shapes.medium)
             .clip(shapes.medium)
             .padding(8.dp)
     ) {
-        Column(modifier) {
+        Column {
             Row(
                 modifier = Modifier
                     .clickable(onClick = onClick)

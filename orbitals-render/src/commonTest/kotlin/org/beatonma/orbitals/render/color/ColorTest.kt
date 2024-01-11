@@ -47,10 +47,10 @@ class ColorTest {
     }
 
     @Test
-    fun testFromArgb() {
+    fun testArgbConstructor() {
         assertEquals(
             Color(0x11223344L),
-            Color.fromArgb(0x11U, 0x22U, 0x33U, 0x44U)
+            Color.argb(0x11U, 0x22U, 0x33U, 0x44U)
         )
     }
 
@@ -76,14 +76,14 @@ class ColorTest {
 
     @Test
     fun testLosslessConversion() {
-        Color.fromArgb(0x11U, 0x22U, 0x33U, 0x44U).argb() shouldbe arrayOf(0x11, 0x22, 0x33, 0x44)
-        Color.fromArgb(0x11U, 0x22U, 0x33U, 0x44U).value.let(::Color).argb() shouldbe arrayOf(
+        Color.argb(0x11U, 0x22U, 0x33U, 0x44U).argb() shouldbe arrayOf(0x11, 0x22, 0x33, 0x44)
+        Color.argb(0x11U, 0x22U, 0x33U, 0x44U).value.let(::Color).argb() shouldbe arrayOf(
             0x11,
             0x22,
             0x33,
             0x44
         )
-        Color.fromArgb(0xffU, 0x22U, 0x33U, 0x44U).toRgbInt().let(::Color).rgb() shouldbe arrayOf(
+        Color.argb(0xffU, 0x22U, 0x33U, 0x44U).toRgbInt().let(::Color).rgb() shouldbe arrayOf(
             0x22,
             0x33,
             0x44
@@ -93,5 +93,25 @@ class ColorTest {
             val n = Random.nextInt(0, 0xffffff)
             Color(n).toRgbInt() shouldbe n
         }
+    }
+
+    @Test
+    fun testHslConstructor() {
+        Color.hsla(0f, 0f, 0f) shouldbe Color.Black
+        Color.hsla(0f, 0f, 1f) shouldbe Color.White
+        Color.hsla(0f, 1f, .5f) shouldbe Color.Red
+        Color.hsla(120f, 1f, .5f) shouldbe Color.Green
+        Color.hsla(240f, 1f, .5f) shouldbe Color.Blue
+
+        Color.hsla(0f, 1f, .5f, alpha = .5f) shouldbe Color(0x7fff0000UL)
+    }
+
+    @Test
+    fun testHsl() {
+        Color.Black.hsl() shouldbe floatArrayOf(0f, 0f, 0f)
+        Color.White.hsl() shouldbe floatArrayOf(0f, 0f, 1f)
+        Color.Red.hsl() shouldbe floatArrayOf(0f, 1f, .5f)
+        Color.Green.hsl() shouldbe floatArrayOf(120f, 1f, .5f)
+        Color.Blue.hsl() shouldbe floatArrayOf(240f, 1f, .5f)
     }
 }

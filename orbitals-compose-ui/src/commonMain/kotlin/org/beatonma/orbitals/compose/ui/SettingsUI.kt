@@ -2,30 +2,33 @@ package org.beatonma.orbitals.compose.ui
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.MaterialTheme.typography
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import org.beatonma.orbitals.compose.ui.components.DraggableColumn
 import org.beatonma.orbitals.compose.ui.settings.ColorSetting
 import org.beatonma.orbitals.compose.ui.settings.FloatSetting
 import org.beatonma.orbitals.compose.ui.settings.IntegerSetting
@@ -35,237 +38,430 @@ import org.beatonma.orbitals.compose.ui.settings.SwitchSetting
 import org.beatonma.orbitals.core.engine.SystemGenerator
 import org.beatonma.orbitals.core.options.CollisionStyle
 import org.beatonma.orbitals.core.options.PhysicsOptions
+import org.beatonma.orbitals.render.options.BooleanKey
 import org.beatonma.orbitals.render.options.ColorKey
 import org.beatonma.orbitals.render.options.ColorOptions
 import org.beatonma.orbitals.render.options.DrawStyle
-import org.beatonma.orbitals.render.options.Key
+import org.beatonma.orbitals.render.options.FloatKey
+import org.beatonma.orbitals.render.options.IntKey
 import org.beatonma.orbitals.render.options.ObjectColors
+import org.beatonma.orbitals.render.options.OptionPersistence
 import org.beatonma.orbitals.render.options.Options
 import org.beatonma.orbitals.render.options.PhysicsKey
 import org.beatonma.orbitals.render.options.RenderLayer
+import org.beatonma.orbitals.render.options.StringKey
+import org.beatonma.orbitals.render.options.StringSetKey
 import org.beatonma.orbitals.render.options.VisualKey
 import org.beatonma.orbitals.render.options.VisualOptions
-import org.beatonma.orbitals.render.compose.Orbitals
-import org.beatonma.orbitals.render.options.OptionPersistence
+
+
+private val MaxColumnWidth = 450.dp
+private val ColumnSpacing = 16.dp
+private val ColumnModifier = Modifier.widthIn(max = MaxColumnWidth)
+
+private val SettingModifier: Modifier
+    @Composable get() = Modifier
+        .background(colors.surface.copy(alpha = .7f))
+        .padding(16.dp)
+        .fillMaxWidth()
 
 
 @Composable
-fun SettingsUi(
+internal fun SettingsUI(
+    availableWidth: Dp,
     options: Options,
     persistence: OptionPersistence,
+    modifier: Modifier = Modifier,
+    onClose: () -> Unit,
 ) {
-    BoxWithConstraints(Modifier.fillMaxSize()) {
-        LazyColumn(
-            Modifier.background(
-                brush = Brush.verticalGradient(
-                    listOf(
-                        Color.Transparent,
-                        colors.surface,
-                    ),
-                    startY = 0f,
-                    endY = constraints.maxWidth / 16f * 9f,
-                )
+    when {
+        availableWidth < (MaxColumnWidth + ColumnSpacing) * 2 ->
+            SettingsSingleColumn(
+                options,
+                persistence,
+                modifier,
+                PaddingValues(top = 320.dp, bottom = 160.dp, start = 16.dp, end = 16.dp),
+                onClose
             )
+
+
+        availableWidth < (MaxColumnWidth + ColumnSpacing) * 3 ->
+            SettingsTwoColumns(
+                options,
+                persistence,
+                modifier,
+                PaddingValues(vertical = 32.dp),
+                onClose
+            )
+
+
+        else ->
+            SettingsThreeColumns(
+                options,
+                persistence,
+                modifier,
+                PaddingValues(vertical = 32.dp),
+                onClose
+            )
+    }
+}
+
+
+@Composable
+private fun SettingsSingleColumn(
+    options: Options,
+    persistence: OptionPersistence,
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(),
+    onClose: () -> Unit,
+) {
+    DraggableColumn(
+        modifier.then(ColumnModifier),
+        contentPadding = contentPadding,
+    ) {
+        item {
+            Box(Modifier.fillMaxWidth()) {
+                CloseSettings(onClose, Modifier.align(Alignment.BottomEnd))
+            }
+        }
+
+        visualSettings(options.visualOptions, persistence)
+        colorSettings(options.visualOptions.colorOptions, persistence)
+        physicsSettings(options.physics, persistence)
+    }
+}
+
+@Composable
+private fun CloseSettings(onClick: () -> Unit, modifier: Modifier = Modifier) {
+    IconButton(onClick, modifier) {
+        Icon(Icons.Default.Close, "Close settings")
+    }
+}
+
+@Composable
+private fun MultiColumn(
+    modifier: Modifier = Modifier,
+    onClose: () -> Unit,
+    content: @Composable () -> Unit,
+) {
+    Column(modifier.padding(horizontal = 24.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        CloseSettings(onClose, Modifier.align(Alignment.End))
+
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalAlignment = Alignment.Bottom
         ) {
-            item {
-                Orbitals(
-                    options,
-                    Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(16f / 9f)
-                )
-            }
-
-            item {
-                VisualSettingsUI(options.visualOptions, persistence)
-            }
-
-            item {
-                PhysicsSettingsUI(options.physics, persistence)
-            }
-
-            item {
-                Spacer(
-                    Modifier.height(160.dp)
-                )
-            }
+            content()
         }
     }
 }
 
 @Composable
-private fun VisualSettingsUI(
+private fun SettingsTwoColumns(
+    options: Options,
+    persistence: OptionPersistence,
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues,
+    onClose: () -> Unit,
+) {
+    MultiColumn(modifier, onClose) {
+        DraggableColumn(ColumnModifier, contentPadding = contentPadding) {
+            visualSettings(options.visualOptions, persistence)
+            colorSettings(options.visualOptions.colorOptions, persistence)
+        }
+
+        DraggableColumn(ColumnModifier, contentPadding = contentPadding) {
+            physicsSettings(options.physics, persistence)
+        }
+    }
+}
+
+@Composable
+private fun SettingsThreeColumns(
+    options: Options,
+    persistence: OptionPersistence,
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues,
+    onClose: () -> Unit,
+) {
+    MultiColumn(modifier, onClose) {
+        DraggableColumn(ColumnModifier, contentPadding = contentPadding) {
+            visualSettings(options.visualOptions, persistence)
+        }
+
+        DraggableColumn(ColumnModifier, contentPadding = contentPadding) {
+            colorSettings(options.visualOptions.colorOptions, persistence)
+        }
+
+        DraggableColumn(ColumnModifier, contentPadding = contentPadding) {
+            physicsSettings(options.physics, persistence)
+        }
+    }
+}
+
+private fun LazyListScope.visualSettings(
     visualOptions: VisualOptions,
     persistence: OptionPersistence,
 ) {
-    SettingsGroup("Visual") {
-        MultiSelectSetting(
-            name = "Layers",
-            key = VisualKey.RenderLayers,
-            value = visualOptions.renderLayers,
-            values = RenderLayer.values(),
-            onValueChange = persistence::updateOption,
-        )
+    settingsGroup("Visual")
+    multiSelectSetting(
+        name = "Layers",
+        key = VisualKey.RenderLayers,
+        value = visualOptions.renderLayers,
+        values = RenderLayer.values(),
+        onValueChange = persistence::updateOption,
+    )
 
-        SingleSelectSetting(
-            name = "Style",
-            key = VisualKey.DrawStyle,
-            value = visualOptions.drawStyle,
-            values = DrawStyle.values(),
-            onValueChange = persistence::updateOption,
-        )
+    singleSelectSetting(
+        name = "Style",
+        key = VisualKey.DrawStyle,
+        value = visualOptions.drawStyle,
+        values = DrawStyle.values(),
+        onValueChange = persistence::updateOption,
+    )
 
-        Conditional(visualOptions.drawStyle == DrawStyle.Wireframe) {
-            FloatSetting(
-                name = "Stroke width",
-                key = VisualKey.StrokeWidth,
-                value = visualOptions.strokeWidth,
-                onValueChange = persistence::updateOption,
-                min = 1f,
-                max = 24f,
-            )
-        }
-
-        Conditional(RenderLayer.Trails in visualOptions.renderLayers) {
-            IntegerSetting(
-                name = "History length",
-                key = VisualKey.TraceLength,
-                value = visualOptions.traceLineLength,
-                onValueChange = persistence::updateOption,
-                min = 1,
-                max = 120,
-            )
-        }
-
+    conditional(visualOptions.drawStyle == DrawStyle.Wireframe) {
         FloatSetting(
-            name = "Body scale",
-            key = VisualKey.BodyScale,
-            value = visualOptions.bodyScale,
+            name = "Stroke width",
+            key = VisualKey.StrokeWidth,
+            value = visualOptions.strokeWidth,
             onValueChange = persistence::updateOption,
-            min = .25f,
-            max = 5f,
+            min = 1f,
+            max = 24f,
         )
     }
 
-    ColorSettingsUI(visualOptions.colorOptions, persistence)
-}
-
-@Composable
-private fun ColorSettingsUI(
-    colorOptions: ColorOptions,
-    persistence: OptionPersistence,
-) {
-    SettingsGroup(title = "Colors") {
-        ColorSetting(
-            name = "Background color",
-            key = ColorKey.BackgroundColor,
-            value = colorOptions.background.toRgbInt(),
-            onValueChange = persistence::updateOption,
-        )
-
-        MultiSelectSetting(
-            name = "Object colors",
-            key = ColorKey.Colors,
-            value = colorOptions.bodies,
-            values = ObjectColors.values(),
-            onValueChange = persistence::updateOption,
-        )
-
-        FloatSetting(
-            name = "Opacity",
-            key = ColorKey.BodyAlpha,
-            value = colorOptions.foregroundAlpha,
-            onValueChange = persistence::updateOption,
-            min = 0f,
-            max = 1f,
-        )
-    }
-}
-
-@Composable
-private fun PhysicsSettingsUI(
-    physics: PhysicsOptions,
-    persistence: OptionPersistence,
-) {
-    SettingsGroup("Physics") {
-        SwitchSetting(
-            "Auto-add bodies",
-            key = PhysicsKey.AutoAddBodies,
-            value = physics.autoAddBodies,
-            onValueChange = persistence::updateOption,
-        )
-
+    conditional(RenderLayer.Trails in visualOptions.renderLayers) {
         IntegerSetting(
-            name = "Maximum population",
-            key = PhysicsKey.MaxEntities,
-            value = physics.maxEntities,
+            name = "History length",
+            key = VisualKey.TraceLength,
+            value = visualOptions.traceLineLength,
             onValueChange = persistence::updateOption,
             min = 1,
-            max = 200,
-        )
-
-        IntegerSetting(
-            name = "Maximum age of fixed bodies (seconds)",
-            key = PhysicsKey.MaxFixedBodyAgeSeconds,
-            value = physics.maxFixedBodyAge.inWholeSeconds.toInt(),
-            onValueChange = persistence::updateOption,
-            min = 30,
-            max = 300,
-        )
-
-        FloatSetting(
-            name = "Gravity multiplier",
-            key = PhysicsKey.GravityMultiplier,
-            value = physics.gravityMultiplier,
-            onValueChange = persistence::updateOption,
-            min = .1f,
-            max = 10f,
-        )
-
-        MultiSelectSetting(
-            name = "System generators",
-            key = PhysicsKey.Generators,
-            value = physics.systemGenerators,
-            values = SystemGenerator.values(),
-            onValueChange = persistence::updateOption,
-        )
-
-        SingleSelectSetting(
-            name = "Collision style",
-            key = PhysicsKey.CollisionStyle,
-            value = physics.collisionStyle,
-            values = CollisionStyle.values(),
-            onValueChange = persistence::updateOption,
+            max = 120,
         )
     }
-}
 
-@OptIn(ExperimentalAnimationApi::class)
-@Composable
-private fun Conditional(
-    condition: Boolean,
-    content: @Composable AnimatedVisibilityScope.() -> Unit,
-) {
-    AnimatedVisibility(
-        visible = condition,
-        enter = fadeIn() + expandVertically(),
-        exit = fadeOut() + shrinkVertically(),
-        content = content,
+    floatSetting(
+        name = "Body scale",
+        key = VisualKey.BodyScale,
+        value = visualOptions.bodyScale,
+        onValueChange = persistence::updateOption,
+        min = .25f,
+        max = 5f,
     )
 }
 
-@Composable
-private fun SettingsGroup(
-    title: String,
-    content: @Composable ColumnScope.() -> Unit
-) {
-    Column(
-        Modifier
-            .fillMaxWidth()
-            .padding(vertical = 16.dp, horizontal = 8.dp)
-    ) {
-        Text(title, style = typography.h4)
+private fun LazyListScope.colorSettings(options: ColorOptions, persistence: OptionPersistence) {
+    settingsGroup("Colors")
 
-        content()
+    colorSetting(
+        name = "Background color",
+        key = ColorKey.BackgroundColor,
+        value = options.background.toRgbInt(),
+        onValueChange = persistence::updateOption,
+    )
+    multiSelectSetting(
+        name = "Object colors",
+        key = ColorKey.Colors,
+        value = options.bodies,
+        values = ObjectColors.values(),
+        onValueChange = persistence::updateOption,
+    )
+    floatSetting(
+        name = "Opacity",
+        key = ColorKey.BodyAlpha,
+        value = options.foregroundAlpha,
+        onValueChange = persistence::updateOption,
+        min = 0f,
+        max = 1f,
+    )
+}
+
+private fun LazyListScope.physicsSettings(physics: PhysicsOptions, persistence: OptionPersistence) {
+    settingsGroup("Physics")
+
+    switchSetting(
+        "Auto-add bodies",
+        key = PhysicsKey.AutoAddBodies,
+        value = physics.autoAddBodies,
+        onValueChange = persistence::updateOption,
+    )
+    integerSetting(
+        name = "Maximum population",
+        key = PhysicsKey.MaxEntities,
+        value = physics.maxEntities,
+        onValueChange = persistence::updateOption,
+        min = 1,
+        max = 200,
+    )
+    integerSetting(
+        name = "Maximum age of fixed bodies (seconds)",
+        key = PhysicsKey.MaxFixedBodyAgeSeconds,
+        value = physics.maxFixedBodyAge.inWholeSeconds.toInt(),
+        onValueChange = persistence::updateOption,
+        min = 10,
+        max = 300,
+    )
+    floatSetting(
+        name = "Gravity multiplier",
+        key = PhysicsKey.GravityMultiplier,
+        value = physics.gravityMultiplier,
+        onValueChange = persistence::updateOption,
+        min = .1f,
+        max = 10f,
+    )
+    multiSelectSetting(
+        name = "System generators",
+        key = PhysicsKey.Generators,
+        value = physics.systemGenerators,
+        values = SystemGenerator.values(),
+        onValueChange = persistence::updateOption,
+    )
+    singleSelectSetting(
+        name = "Collision style",
+        key = PhysicsKey.CollisionStyle,
+        value = physics.collisionStyle,
+        values = CollisionStyle.values(),
+        onValueChange = persistence::updateOption,
+    )
+}
+
+private fun LazyListScope.conditional(
+    condition: Boolean,
+    content: @Composable AnimatedVisibilityScope.() -> Unit
+) {
+    item {
+        AnimatedVisibility(
+            visible = condition,
+            enter = fadeIn() + expandVertically(),
+            exit = fadeOut() + shrinkVertically(),
+            content = content,
+            modifier = SettingModifier
+        )
+    }
+}
+
+private fun LazyListScope.colorSetting(
+    name: String,
+    key: IntKey,
+    value: Int,
+    onValueChange: (key: IntKey, newValue: Int) -> Unit,
+) {
+    item {
+        ColorSetting(
+            name = name,
+            key = key,
+            value = value,
+            onValueChange = onValueChange,
+            modifier = SettingModifier
+        )
+    }
+}
+
+private fun LazyListScope.integerSetting(
+    name: String,
+    key: IntKey,
+    value: Int,
+    onValueChange: (key: IntKey, newValue: Int) -> Unit,
+    min: Int,
+    max: Int,
+) {
+    item {
+        IntegerSetting(
+            name = name,
+            key = key,
+            value = value,
+            onValueChange = onValueChange,
+            min = min,
+            max = max,
+            modifier = SettingModifier,
+        )
+    }
+}
+
+private fun LazyListScope.floatSetting(
+    name: String,
+    key: FloatKey,
+    value: Float,
+    onValueChange: (key: FloatKey, newValue: Float) -> Unit,
+    min: Float,
+    max: Float,
+) {
+    item {
+        FloatSetting(
+            name = name,
+            key = key,
+            value = value,
+            onValueChange = onValueChange,
+            min = min,
+            max = max,
+            modifier = SettingModifier,
+        )
+    }
+}
+
+private fun <E : Enum<E>> LazyListScope.singleSelectSetting(
+    name: String,
+    key: StringKey<E>,
+    value: E,
+    values: Array<out E>,
+    onValueChange: (key: StringKey<E>, newValue: E) -> Unit,
+) {
+    item {
+        SingleSelectSetting(
+            name = name,
+            key = key,
+            value = value,
+            values = values,
+            onValueChange = onValueChange,
+            modifier = SettingModifier
+        )
+    }
+}
+
+private fun <E : Enum<E>> LazyListScope.multiSelectSetting(
+    name: String,
+    key: StringSetKey<E>,
+    value: Set<E>,
+    values: Array<out E>,
+    onValueChange: (key: StringSetKey<E>, newValue: Set<E>) -> Unit,
+) {
+    item {
+        MultiSelectSetting(
+            name = name,
+            key = key,
+            value = value,
+            values = values,
+            onValueChange = onValueChange,
+            modifier = SettingModifier
+        )
+    }
+}
+
+private fun LazyListScope.switchSetting(
+    name: String,
+    key: BooleanKey,
+    value: Boolean,
+    onValueChange: (key: BooleanKey, value: Boolean) -> Unit,
+) {
+    item {
+        SwitchSetting(
+            name = name,
+            key = key,
+            value = value,
+            onValueChange = onValueChange,
+            modifier = SettingModifier
+        )
+    }
+}
+
+private fun LazyListScope.settingsGroup(title: String) {
+    item {
+        Text(
+            title,
+            style = typography.h4,
+            modifier = Modifier.padding(top = 16.dp).then(SettingModifier)
+        )
     }
 }

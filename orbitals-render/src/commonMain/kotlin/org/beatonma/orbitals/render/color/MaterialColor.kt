@@ -1,7 +1,5 @@
 package org.beatonma.orbitals.render.color
 
-import kotlin.random.Random
-
 const val MaterialRed50 = 0xFFEBEE
 const val MaterialRed100 = 0xFFCDD2
 const val MaterialRed200 = 0xEF9A9A
@@ -287,10 +285,6 @@ val MaterialRed
         MaterialRed700,
         MaterialRed800,
         MaterialRed900,
-        MaterialRedA100,
-        MaterialRedA200,
-        MaterialRedA400,
-        MaterialRedA700,
     )
 
 val MaterialPink
@@ -305,10 +299,6 @@ val MaterialPink
         MaterialPink700,
         MaterialPink800,
         MaterialPink900,
-        MaterialPinkA100,
-        MaterialPinkA200,
-        MaterialPinkA400,
-        MaterialPinkA700,
     )
 
 val MaterialPurple
@@ -323,10 +313,6 @@ val MaterialPurple
         MaterialPurple700,
         MaterialPurple800,
         MaterialPurple900,
-        MaterialPurpleA100,
-        MaterialPurpleA200,
-        MaterialPurpleA400,
-        MaterialPurpleA700,
     )
 
 val MaterialDeepPurple
@@ -341,10 +327,6 @@ val MaterialDeepPurple
         MaterialDeepPurple700,
         MaterialDeepPurple800,
         MaterialDeepPurple900,
-        MaterialDeepPurpleA100,
-        MaterialDeepPurpleA200,
-        MaterialDeepPurpleA400,
-        MaterialDeepPurpleA700,
     )
 
 val MaterialIndigo
@@ -359,10 +341,6 @@ val MaterialIndigo
         MaterialIndigo700,
         MaterialIndigo800,
         MaterialIndigo900,
-        MaterialIndigoA100,
-        MaterialIndigoA200,
-        MaterialIndigoA400,
-        MaterialIndigoA700,
     )
 
 val MaterialBlue
@@ -377,10 +355,6 @@ val MaterialBlue
         MaterialBlue700,
         MaterialBlue800,
         MaterialBlue900,
-        MaterialBlueA100,
-        MaterialBlueA200,
-        MaterialBlueA400,
-        MaterialBlueA700,
     )
 
 val MaterialLightBlue
@@ -395,10 +369,6 @@ val MaterialLightBlue
         MaterialLightBlue700,
         MaterialLightBlue800,
         MaterialLightBlue900,
-        MaterialLightBlueA100,
-        MaterialLightBlueA200,
-        MaterialLightBlueA400,
-        MaterialLightBlueA700,
     )
 
 val MaterialCyan
@@ -413,10 +383,6 @@ val MaterialCyan
         MaterialCyan700,
         MaterialCyan800,
         MaterialCyan900,
-        MaterialCyanA100,
-        MaterialCyanA200,
-        MaterialCyanA400,
-        MaterialCyanA700,
     )
 
 val MaterialTeal
@@ -431,10 +397,6 @@ val MaterialTeal
         MaterialTeal700,
         MaterialTeal800,
         MaterialTeal900,
-        MaterialTealA100,
-        MaterialTealA200,
-        MaterialTealA400,
-        MaterialTealA700,
     )
 
 val MaterialGreen
@@ -449,10 +411,6 @@ val MaterialGreen
         MaterialGreen700,
         MaterialGreen800,
         MaterialGreen900,
-        MaterialGreenA100,
-        MaterialGreenA200,
-        MaterialGreenA400,
-        MaterialGreenA700,
     )
 
 val MaterialLightGreen
@@ -467,10 +425,6 @@ val MaterialLightGreen
         MaterialLightGreen700,
         MaterialLightGreen800,
         MaterialLightGreen900,
-        MaterialLightGreenA100,
-        MaterialLightGreenA200,
-        MaterialLightGreenA400,
-        MaterialLightGreenA700,
     )
 
 val MaterialLime
@@ -485,10 +439,6 @@ val MaterialLime
         MaterialLime700,
         MaterialLime800,
         MaterialLime900,
-        MaterialLimeA100,
-        MaterialLimeA200,
-        MaterialLimeA400,
-        MaterialLimeA700,
     )
 
 val MaterialYellow
@@ -503,10 +453,6 @@ val MaterialYellow
         MaterialYellow700,
         MaterialYellow800,
         MaterialYellow900,
-        MaterialYellowA100,
-        MaterialYellowA200,
-        MaterialYellowA400,
-        MaterialYellowA700,
     )
 val MaterialAmber
     get() = arrayOf(
@@ -520,10 +466,6 @@ val MaterialAmber
         MaterialAmber700,
         MaterialAmber800,
         MaterialAmber900,
-        MaterialAmberA100,
-        MaterialAmberA200,
-        MaterialAmberA400,
-        MaterialAmberA700,
     )
 
 val MaterialOrange
@@ -538,10 +480,6 @@ val MaterialOrange
         MaterialOrange700,
         MaterialOrange800,
         MaterialOrange900,
-        MaterialOrangeA100,
-        MaterialOrangeA200,
-        MaterialOrangeA400,
-        MaterialOrangeA700,
     )
 
 val MaterialDeepOrange
@@ -556,10 +494,6 @@ val MaterialDeepOrange
         MaterialDeepOrange700,
         MaterialDeepOrange800,
         MaterialDeepOrange900,
-        MaterialDeepOrangeA100,
-        MaterialDeepOrangeA200,
-        MaterialDeepOrangeA400,
-        MaterialDeepOrangeA700,
     )
 
 val MaterialBrown
@@ -604,8 +538,6 @@ val MaterialBlueGrey
         MaterialBlueGrey900,
     )
 
-fun getAnyMaterialColor(): Int = MaterialColors[Random.nextInt(MaterialColors.size)]
-
 val MaterialColors
     get() = arrayOf(
         0x000000,
@@ -629,4 +561,29 @@ val MaterialColors
         *MaterialBrown,
         *MaterialGrey,
         *MaterialBlueGrey,
+    )
+
+val MaterialColorSwatch
+    get() = arrayOf(
+        0x000000,
+        0xffffff,
+        MaterialRed500,
+        MaterialPink500,
+        MaterialPurple500,
+        MaterialDeepPurple500,
+        MaterialIndigo500,
+        MaterialBlue500,
+        MaterialLightBlue500,
+        MaterialCyan500,
+        MaterialTeal500,
+        MaterialGreen500,
+        MaterialLightGreen500,
+        MaterialLime500,
+        MaterialYellow500,
+        MaterialAmber500,
+        MaterialOrange500,
+        MaterialDeepOrange500,
+        MaterialBrown500,
+        MaterialGrey500,
+        MaterialBlueGrey500,
     )

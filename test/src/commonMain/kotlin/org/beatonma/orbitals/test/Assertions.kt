@@ -15,6 +15,10 @@ infix fun <T> Array<T>.shouldbe(expected: Array<T>) {
     assertContentEquals(expected, this)
 }
 
+infix fun FloatArray.shouldbe(expected: FloatArray) {
+    assertContentEquals(expected, this)
+}
+
 inline fun <reified E : Exception> assertThrows(message: String? = null, block: () -> Unit) {
     var raised = false
     try {

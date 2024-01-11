@@ -22,7 +22,6 @@ dependencies {
     implementation(compose.runtime)
 
     implementation(Dependencies.Android.ActivityCompose)
-    implementation(Dependencies.Android.Material3)
     implementation(Dependencies.Android.ViewModelCompose)
     implementation(Dependencies.Android.NavigationCompose)
 
@@ -52,7 +51,7 @@ android {
 
     compileOptions {
         sourceCompatibility = Versions.Java
-        targetCompatibility =  Versions.Java
+        targetCompatibility = Versions.Java
     }
 
     kotlinOptions {

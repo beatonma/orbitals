@@ -15,7 +15,7 @@ fun SwitchSetting(
     modifier: Modifier = Modifier,
 ) {
     SettingLayout {
-        CheckableLayout(
+        CheckableSettingLayout(
             name,
             modifier.fillMaxWidth(),
             onClick = { onValueChange(key, !value) }

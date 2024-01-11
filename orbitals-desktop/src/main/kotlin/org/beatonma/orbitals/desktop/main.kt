@@ -1,24 +1,16 @@
 package org.beatonma.orbitals.desktop
 
-import androidx.compose.animation.Crossfade
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Icon
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import org.beatonma.orbitals.compose.ui.SettingsUi
-import org.beatonma.orbitals.render.compose.Orbitals
-import org.beatonma.orbitals.render.compose.toComposeColor
+import androidx.compose.ui.window.rememberWindowState
+import org.beatonma.orbitals.compose.ui.EditableOrbitals
+import org.beatonma.orbitals.compose.ui.OrbitalsTheme
+import org.beatonma.orbitals.render.compose.rememberOrbitalsRenderEngine
 import org.beatonma.orbitals.render.options.BooleanKey
 import org.beatonma.orbitals.render.options.FloatKey
 import org.beatonma.orbitals.render.options.IntKey
@@ -30,37 +22,24 @@ import org.beatonma.orbitals.render.options.StringKey
 import org.beatonma.orbitals.render.options.StringSetKey
 
 fun main() = application {
-    val persistence = remember { PersistentOptions }
+    val persistence = PersistentOptions
+    val engine = rememberOrbitalsRenderEngine(persistence.options)
 
     Window(
         onCloseRequest = ::exitApplication,
+        state = rememberWindowState(
+            size = DpSize(1600.dp, 1200.dp),
+        ),
         title = "Orbitals"
     ) {
-        var optionsVisible by remember { mutableStateOf(false) }
-
-        Box {
-            Crossfade(optionsVisible) { inMenu ->
-                when {
-                    inMenu -> {
-                        SettingsUi(persistence.options, persistence)
-                    }
-                    else -> {
-                        Orbitals(
-                            persistence.options,
-                            Modifier
-                                .background(Color.DarkGray)
-                                .fillMaxSize(),
-                        )
-                    }
-                }
-            }
-
-            Icon(
-                Icons.Default.Menu,
-                contentDescription = "",
-                modifier = Modifier
-                    .clickable { optionsVisible = !optionsVisible },
-                tint = remember { persistence.options.visualOptions.colorOptions.colorForBody.toComposeColor() },
+        OrbitalsTheme(
+            persistence.options.visualOptions.colorOptions,
+            isDark = true,
+        ) {
+            EditableOrbitals(
+                persistence.options,
+                persistence,
+                engine = engine,
             )
         }
     }
