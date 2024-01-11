@@ -36,7 +36,7 @@ kotlin {
                 implementation(project(":${Module.ComposeRender}"))
                 implementation(compose.ui)
                 implementation(compose.foundation)
-                implementation(compose.material)
+                implementation(compose.material3)
             }
         }
     }

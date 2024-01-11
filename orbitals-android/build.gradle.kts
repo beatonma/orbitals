@@ -16,7 +16,7 @@ dependencies {
     implementation(Dependencies.Android.CoroutinesAndroid)
 
     // Compose
-    implementation(compose.material)
+    implementation(compose.material3)
     implementation(compose.ui)
     implementation(compose.foundation)
     implementation(compose.runtime)

@@ -14,16 +14,16 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Checkbox
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.MaterialTheme.colors
-import androidx.compose.material.MaterialTheme.shapes
-import androidx.compose.material.RadioButton
-import androidx.compose.material.Text
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.shapes
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -111,40 +111,34 @@ private fun CollapsibleGroup(
     val iconRotation by animateFloatAsState(targetValue = if (expanded) 180f else 0f)
     val onClick = { expanded = !expanded }
 
-    SettingLayout(
-        modifier
-            .border(2.dp, colors.onBackground.copy(alpha = .2f), shapes.medium)
-            .clip(shapes.medium)
-            .padding(8.dp)
-    ) {
-        Column {
-            Row(
-                modifier = Modifier
-                    .clickable(onClick = onClick)
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                Text(name, style = MaterialTheme.typography.h5)
+    OutlinedSettingLayout(modifier) {
+        Row(
+            modifier = Modifier
+                .clickable(onClick = onClick)
+                .fillMaxWidth()
+                .padding(start = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Text(name, style = typography.headlineSmall)
 
-                IconButton(
-                    onClick = onClick,
-                ) {
-                    Icon(
-                        Icons.Default.ArrowDropDown,
-                        "Show ${if (expanded) "more" else "less"}",
-                        modifier = Modifier.rotate(iconRotation)
-                    )
-                }
-            }
-
-            AnimatedVisibility(
-                visible = expanded,
-                enter = fadeIn() + expandVertically(),
-                exit = fadeOut() + shrinkVertically(),
+            IconButton(
+                onClick = onClick,
             ) {
-                Column(content = content)
+                Icon(
+                    Icons.Default.ArrowDropDown,
+                    "Show ${if (expanded) "more" else "less"}",
+                    modifier = Modifier.rotate(iconRotation)
+                )
             }
+        }
+
+        AnimatedVisibility(
+            visible = expanded,
+            enter = fadeIn() + expandVertically(),
+            exit = fadeOut() + shrinkVertically(),
+        ) {
+            Column(content = content)
         }
     }
 }

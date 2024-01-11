@@ -9,14 +9,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme.colors
-import androidx.compose.material.MaterialTheme.shapes
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.shapes
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -33,6 +32,7 @@ import org.beatonma.orbitals.render.color.Color
 import org.beatonma.orbitals.render.color.MaterialColorSwatch
 import org.beatonma.orbitals.render.compose.toComposeColor
 import org.beatonma.orbitals.render.options.IntKey
+import kotlin.math.max
 import androidx.compose.ui.graphics.Color as ComposeColor
 
 
@@ -55,10 +55,10 @@ fun ColorSetting(
 
     val swatchIndex = colors.indexOf(value)
     if (swatchIndex >= 0) {
-        scope.launch { swatchState.animateScrollToItem(swatchIndex) }
+        scope.launch { swatchState.animateScrollToItem(max(0, swatchIndex - 1)) }
     }
 
-    SettingLayout(modifier.heightIn(max = 450.dp)) {
+    OutlinedSettingLayout(modifier.heightIn(max = 450.dp)) {
         Text(name)
 
         DraggableRow(state = swatchState) {
@@ -82,7 +82,10 @@ fun ColorSetting(
             }
         }
 
-        Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        Column(
+            Modifier.padding(horizontal = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
             HslComponent(
                 hsl.hue,
                 { hsl.hue = it },
@@ -141,7 +144,6 @@ private fun HslComponent(
 private val PatchSize = 48.dp
 private val PatchSpacing = 8.dp
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun Patch(
     color: ComposeColor,
@@ -157,7 +159,7 @@ private fun Patch(
         color = color,
         contentColor = contentColor,
         shape = shapes.small,
-        border = BorderStroke(1.dp, colors.onBackground.copy(alpha = .4f))
+        border = BorderStroke(1.dp, colorScheme.onBackground.copy(alpha = .4f))
     ) {
         if (isSelected) {
             Icon(

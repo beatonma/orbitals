@@ -16,13 +16,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme.colors
-import androidx.compose.material.MaterialTheme.typography
-import androidx.compose.material.Text
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.typography
+import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.MaterialTheme.shapes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -61,7 +62,7 @@ private val ColumnModifier = Modifier.widthIn(max = MaxColumnWidth)
 
 private val SettingModifier: Modifier
     @Composable get() = Modifier
-        .background(colors.surface.copy(alpha = .7f))
+        .background(colorScheme.settingsScrim)
         .padding(16.dp)
         .fillMaxWidth()
 
@@ -133,7 +134,7 @@ private fun SettingsSingleColumn(
 
 @Composable
 private fun CloseSettings(onClick: () -> Unit, modifier: Modifier = Modifier) {
-    IconButton(onClick, modifier) {
+    IconButton(onClick, modifier.background(colorScheme.settingsScrim, shapes.medium)) {
         Icon(Icons.Default.Close, "Close settings")
     }
 }
@@ -460,7 +461,7 @@ private fun LazyListScope.settingsGroup(title: String) {
     item {
         Text(
             title,
-            style = typography.h4,
+            style = typography.headlineMedium,
             modifier = Modifier.padding(top = 16.dp).then(SettingModifier)
         )
     }

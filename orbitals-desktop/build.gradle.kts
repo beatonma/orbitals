@@ -13,7 +13,7 @@ dependencies {
     implementation(compose.desktop.currentOs)
     implementation(compose.ui)
     implementation(compose.foundation)
-    implementation(compose.material)
+    implementation(compose.material3)
 
     implementation(project(":${Module.Core}"))
     implementation(project(":${Module.Render}"))

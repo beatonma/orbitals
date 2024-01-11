@@ -22,7 +22,6 @@ object Dependencies {
         val DataStore =
             dependency("androidx.datastore:datastore-preferences", Versions.Android.DataStore)
 
-        //        val Material3 = dependency("androidx.compose.material3:material3", Versions.Android.Material3)
         val NavigationCompose =
             dependency("androidx.navigation:navigation-compose", Versions.Android.NavigationCompose)
         val ViewModelCompose = dependency(

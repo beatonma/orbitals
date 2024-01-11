@@ -54,8 +54,6 @@ value class Color(val value: ULong) {
             else -> (rgbMax - lightness) / minOf(lightness, 1f - lightness)
         }
 
-        info("$red, $green, $blue ($r, $g, $b) -> hsl($hue, $saturation, $lightness)")
-
         return floatArrayOf(hue, saturation, lightness)
     }
 

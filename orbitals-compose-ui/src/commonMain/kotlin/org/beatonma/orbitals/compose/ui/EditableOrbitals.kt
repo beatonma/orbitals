@@ -9,24 +9,26 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import org.beatonma.orbitals.render.OrbitalsRenderEngine
 import org.beatonma.orbitals.render.compose.Orbitals
+import org.beatonma.orbitals.render.compose.toComposeColor
 import org.beatonma.orbitals.render.options.OptionPersistence
 import org.beatonma.orbitals.render.options.Options
 
@@ -66,17 +68,21 @@ fun EditableOrbitals(
             Modifier
                 .padding(contentPadding)
                 .padding(ContentPadding)
-                .align(Alignment.TopEnd),
-            enter = slideInVertically() + fadeIn(),
-            exit = slideOutVertically() + fadeOut()
+                .align(Alignment.BottomEnd),
+            enter = fadeIn(),
+            exit = fadeOut()
         ) {
-            CompositionLocalProvider(LocalContentAlpha provides .4f) {
-                IconButton({ settingsVisible = true }) {
-                    Icon(
-                        Icons.Default.Menu,
-                        "Show settings",
-                    )
-                }
+            IconButton({ settingsVisible = true }) {
+                Icon(
+                    Icons.Default.Menu,
+                    "Show settings",
+                    Modifier.alpha(.4f),
+                    tint = if (options.visualOptions
+                            .colorOptions.background
+                            .toComposeColor()
+                            .luminance() > .5f
+                    ) Color.Black else Color.White
+                )
             }
         }
     }
