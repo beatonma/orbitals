@@ -1,6 +1,7 @@
 package org.beatonma.orbitalslivewallpaper.services
 
 import android.graphics.Canvas
+import android.graphics.Color
 import android.os.Handler
 import android.service.wallpaper.WallpaperService
 import android.view.MotionEvent
@@ -13,6 +14,7 @@ import org.beatonma.orbitalslivewallpaper.Settings
 import org.beatonma.orbitalslivewallpaper.dataStore
 import org.beatonma.orbitalslivewallpaper.getSavedOptionsSync
 import org.beatonma.orbitalslivewallpaper.ui.orbitals.OrbitalsGestureDetector
+import org.beatonma.orbitalslivewallpaper.ui.orbitals.toAndroidColor
 import kotlin.time.Duration.Companion.milliseconds
 
 private const val FPS = 60
@@ -93,7 +95,7 @@ class LwpService : WallpaperService() {
             var canvas: Canvas? = null
             try {
                 canvas = surfaceHolder.lockCanvas()
-                canvas.drawColor(options.visualOptions.colorOptions.background.toRgbInt())
+                canvas.drawColor(options.visualOptions.colorOptions.background.toAndroidColor())
                 renderEngine.update(canvas, timeDelta.milliseconds)
             } catch (e: Exception) {
                 warn(e)
