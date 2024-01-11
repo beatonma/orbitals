@@ -28,7 +28,6 @@ object VisualKey {
     val TraceLength = IntKey("trace_length")
     val StrokeWidth = FloatKey("stroke_width")
     val RenderLayers = StringSetKey<RenderLayer>("layers")
-    val BodyScale = FloatKey("scale")
 }
 
 object ColorKey {
@@ -44,4 +43,5 @@ object PhysicsKey {
     val GravityMultiplier = FloatKey("gravity")
     val MaxEntities = IntKey("max")
     val CollisionStyle = StringKey<CollisionStyle>("collision")
+    val Density = FloatKey("density")
 }

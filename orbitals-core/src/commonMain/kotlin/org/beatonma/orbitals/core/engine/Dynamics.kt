@@ -95,6 +95,7 @@ fun Body.explode(ejectaCount: Int = Random.nextInt(5, 20)): List<Body> {
 
         InertialBody(
             mass = mass,
+            density = density,
             motion = Motion(
                 position,
                 velocity,

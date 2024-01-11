@@ -7,7 +7,6 @@ import kotlin.time.Duration.Companion.seconds
 
 private val CollisionMinimumAge = 1.seconds
 
-val DefaultDensity = 0.5
 val ZeroMass = 0.0.kg
 val ZeroDistance = 0f.metres
 val ZeroAcceleration = Acceleration(AccelerationScalar(0f), AccelerationScalar(0f))
@@ -25,6 +24,7 @@ interface Collider {
 
 sealed interface Body : Collider {
     val id: UniqueID
+    val density: Density
     var mass: Mass
     var radius: Distance
     val motion: Motion
@@ -74,9 +74,10 @@ sealed interface Body : Collider {
  * A body that stays in a fixed position.
  */
 data class FixedBody(
+    override var density: Density,
     override var mass: Mass,
     override val id: UniqueID = uniqueID("FixedBody"),
-    override var radius: Distance = sizeOf(mass),
+    override var radius: Distance = sizeOf(mass, density),
     override val motion: Motion = ZeroMotion,
     override var age: Duration = 0.seconds
 ) : Body, Fixed {
@@ -107,6 +108,7 @@ data class FixedBody(
 
 fun FixedBody.toInertialBody() = InertialBody(
     id = id,
+    density = density,
     mass = mass,
     radius = radius,
     motion = motion,
@@ -115,7 +117,8 @@ fun FixedBody.toInertialBody() = InertialBody(
 data class InertialBody(
     override val id: UniqueID = uniqueID("InertialBody"),
     override var mass: Mass,
-    override var radius: Distance = sizeOf(mass),
+    override val density: Density,
+    override var radius: Distance = sizeOf(mass, density),
     override val motion: Motion = ZeroMotion,
     override var age: Duration = 0.seconds
 ) : Body, Inertial {
@@ -123,11 +126,12 @@ data class InertialBody(
 
     constructor(
         mass: Mass,
+        density: Density,
         id: UniqueID = uniqueID("InertialBody"),
-        radius: Distance = sizeOf(mass),
+        radius: Distance = sizeOf(mass, density),
         position: Position = ZeroPosition,
         velocity: Velocity = ZeroVelocity,
-    ) : this(id, mass, radius, Motion(position, velocity))
+    ) : this(id, mass, density, radius, Motion(position, velocity))
 
     override fun applyInertia(timeDelta: Duration) {
         motion.applyInertia(timeDelta)
@@ -164,8 +168,9 @@ data class InertialBody(
 
 data class GreatAttractor(
     override var mass: Mass,
+    override val density: Density,
     override val id: UniqueID = uniqueID("GreatAttractor"),
-    override var radius: Distance = sizeOf(mass),
+    override var radius: Distance = sizeOf(mass, density),
     override val motion: Motion = ZeroMotion,
     override var age: Duration = 0.seconds
 ) : Body, Fixed {
@@ -195,9 +200,9 @@ data class GreatAttractor(
 }
 
 
-fun sizeOf(mass: Mass, density: Double = DefaultDensity): Distance {
-    val volume = mass.value / density
-    val radius = ((3.0 * volume) / 4.0 * kotlin.math.PI).pow(1.0 / 3.0)
+fun sizeOf(mass: Mass, density: Density): Distance {
+    val volume = mass / density
+    val radius = ((volume * 3f / 4f).value.toDouble() * kotlin.math.PI).pow(1.0 / 3.0)
     return radius.metres
 }
 

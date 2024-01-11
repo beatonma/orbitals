@@ -3,6 +3,7 @@ package org.beatonma.orbitals.core.engine.collision
 import org.beatonma.orbitals.core.engine.collision.Collision.Companion.updateMassAndSize
 import org.beatonma.orbitals.core.options.CollisionStyle
 import org.beatonma.orbitals.core.physics.Body
+import org.beatonma.orbitals.core.physics.Density
 import org.beatonma.orbitals.core.physics.InertialBody
 import org.beatonma.orbitals.core.physics.Mass
 import org.beatonma.orbitals.core.physics.Motion
@@ -37,12 +38,12 @@ internal val BreakCollision = Collision { larger, smaller, changes ->
     smaller.updateMassAndSize(smaller.mass - massFromSmaller)
 
     changes.add(
-        createEjecta(massFromSmaller) {
+        createEjecta(massFromSmaller, smaller.density) {
             Motion(
                 position = collisionPoint,
                 velocity = smaller.velocity
             )
-        } + createEjecta(massFromLarger) {
+        } + createEjecta(massFromLarger, larger.density) {
             Motion(
                 position = collisionPoint,
                 velocity = larger.velocity
@@ -51,12 +52,13 @@ internal val BreakCollision = Collision { larger, smaller, changes ->
     )
 }
 
-private fun createEjecta(totalMass: Mass, motion: () -> Motion): List<Body> {
+private fun createEjecta(totalMass: Mass, density: Density, motion: () -> Motion): List<Body> {
     return totalMass.value.divideUnevenly(Random.nextInt(1, 5))
         .map(::Mass)
         .map { mass ->
             InertialBody(
                 mass = mass,
+                density = density,
                 motion = motion(),
             )
         }

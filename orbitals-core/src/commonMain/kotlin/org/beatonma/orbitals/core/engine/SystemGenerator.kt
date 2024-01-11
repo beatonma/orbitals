@@ -5,6 +5,7 @@ import org.beatonma.orbitals.core.mapTo
 import org.beatonma.orbitals.core.options.PhysicsOptions
 import org.beatonma.orbitals.core.percent
 import org.beatonma.orbitals.core.physics.Body
+import org.beatonma.orbitals.core.physics.Density
 import org.beatonma.orbitals.core.physics.Distance
 import org.beatonma.orbitals.core.physics.FixedBody
 import org.beatonma.orbitals.core.physics.GreatAttractor
@@ -88,6 +89,7 @@ enum class SystemGenerator {
     ): List<Body> = listOf(
         InertialBody(
             mass = 100.kg,
+            density = physics.bodyDensity,
             motion = Motion(
                 space.relativePosition(.4f, .5f),
                 Velocity(1f, 0f)
@@ -95,6 +97,7 @@ enum class SystemGenerator {
         ),
         InertialBody(
             mass = 100.kg,
+            density = physics.bodyDensity,
             motion = Motion(
                 space.relativePosition(.6f, .5f),
                 Velocity(-1f, 0f)
@@ -111,6 +114,7 @@ enum class SystemGenerator {
         return listOf(
             GreatAttractor(
                 mass = attractorMass(),
+                density = physics.bodyDensity,
                 motion = Motion(
                     space.relativePosition(direction() * 2f, direction() * 2f)
                 )
@@ -134,6 +138,7 @@ enum class SystemGenerator {
                         index * (1f / n),
                         Random.nextFloat()
                     ),
+                    physics.bodyDensity,
                     asFixedBody = true,
                 )
             }
@@ -153,7 +158,7 @@ enum class SystemGenerator {
         val sun = if (useExistingStar) {
             fixedBodies.first()
         } else {
-            createStar("center", space.center)
+            createStar("center", space.center, physics.bodyDensity)
         }
 
         val satellites = listOf<Body>(
@@ -161,12 +166,14 @@ enum class SystemGenerator {
                 sun,
                 space.radius.metres * .5f,
                 1.kg,
+                physics.bodyDensity,
                 G = physics.G,
             ),
             satelliteOf(
                 sun,
                 space.radius.metres * .3f,
                 20.kg,
+                physics.bodyDensity,
                 G = physics.G,
             )
         )
@@ -221,7 +228,7 @@ enum class SystemGenerator {
             fixedBodies.random()
         } else {
             val position = generateStarPosition(space, bodies) ?: return listOf()
-            createStar("center", position)
+            createStar("center", position, physics.bodyDensity)
         }
 
         val minDistance = (space.radius * .1f).metres
@@ -231,6 +238,7 @@ enum class SystemGenerator {
             satelliteOf(
                 sun,
                 distance = anyDistance(minDistance, maxDistance),
+                density = physics.bodyDensity,
                 G = physics.G,
             )
         }
@@ -253,6 +261,7 @@ enum class SystemGenerator {
             InertialBody(
                 id = uniqueID("random[$index]"),
                 mass = mass,
+                density = physics.bodyDensity,
                 motion = Motion(
                     space.relativePosition(Random.nextFloat(), Random.nextFloat()),
                     Velocity(Random.nextInt(-5, 5), Random.nextInt(-5, 5))
@@ -276,6 +285,7 @@ enum class SystemGenerator {
                 parent = sun,
                 distance = anyDistance(distance.metres, (distance + 5).metres),
                 mass = asteroidMass(),
+                density = physics.bodyDensity,
                 G = physics.G,
             )
         }
@@ -290,6 +300,7 @@ private fun createBodies(range: Int = 10, transform: (index: Int, n: Int) -> Bod
 private fun createStar(
     name: String,
     position: Position,
+    density: Density,
     mass: Mass = starMass(),
     velocity: Velocity = ZeroVelocity,
     asFixedBody: Boolean = chance(10.percent),
@@ -298,12 +309,14 @@ private fun createStar(
         FixedBody(
             id = uniqueID(name),
             mass = mass,
+            density = density,
             motion = Motion(position, velocity),
         )
     } else {
         InertialBody(
             id = uniqueID(name),
             mass = mass,
+            density = density,
             motion = Motion(position, velocity),
         )
     }
@@ -313,11 +326,13 @@ private fun satelliteOf(
     parent: Body,
     distance: Distance,
     mass: Mass = planetMass(),
+    density: Density,
     G: Float,
 ): InertialBody =
     InertialBody(
         id = uniqueID("satelliteOf(${parent.id})"),
         mass = mass,
+        density = density,
         motion = getOrbitalMotion(mass, distance, parent, G = G),
     )
 

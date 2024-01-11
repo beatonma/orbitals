@@ -11,7 +11,7 @@ internal fun interface Collision {
     companion object {
         fun Body.updateMassAndSize(mass: Mass) {
             this.mass = mass
-            this.radius = sizeOf(mass)
+            this.radius = sizeOf(mass, density)
         }
     }
 }

@@ -1,6 +1,7 @@
 package org.beatonma.orbitals.render.touch
 
 import org.beatonma.orbitals.core.engine.Region
+import org.beatonma.orbitals.core.physics.Density
 import org.beatonma.orbitals.core.physics.GreatAttractor
 import org.beatonma.orbitals.core.physics.Motion
 import org.beatonma.orbitals.core.physics.Position
@@ -13,6 +14,7 @@ fun createTouchAttractor(position: Position) =
     GreatAttractor(
         id = uniqueID("touch"),
         mass = 5_000.kg,
+        density = Density(1f),
         motion = Motion(position),
     )
 

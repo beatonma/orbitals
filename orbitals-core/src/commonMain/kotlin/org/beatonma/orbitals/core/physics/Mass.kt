@@ -1,5 +1,6 @@
 package org.beatonma.orbitals.core.physics
 
+import Volume
 import org.beatonma.orbitals.core.format
 import kotlin.jvm.JvmInline
 
@@ -27,6 +28,7 @@ value class Mass internal constructor(override val value: Float) : Scalar {
     operator fun div(distance: Distance): Float = value / distance.value
     operator fun div(factor: Float): Mass = (value / factor).kg
     operator fun div(other: Mass): Float = value / other.value
+    operator fun div(density: Density): Volume = Volume(value / density.value)
 }
 
 operator fun Float.times(mass: Mass) = mass * this

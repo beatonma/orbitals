@@ -242,15 +242,6 @@ private fun LazyListScope.visualSettings(
             max = 120,
         )
     }
-
-    floatSetting(
-        name = "Body scale",
-        key = VisualKey.BodyScale,
-        value = visualOptions.bodyScale,
-        onValueChange = persistence::updateOption,
-        min = .25f,
-        max = 5f,
-    )
 }
 
 private fun LazyListScope.colorSettings(options: ColorOptions, persistence: OptionPersistence) {
@@ -325,6 +316,14 @@ private fun LazyListScope.physicsSettings(physics: PhysicsOptions, persistence: 
         value = physics.collisionStyle,
         values = CollisionStyle.values(),
         onValueChange = persistence::updateOption,
+    )
+    floatSetting(
+        name = "Body density",
+        key = PhysicsKey.Density,
+        value = physics.bodyDensity.value,
+        onValueChange = persistence::updateOption,
+        min = .1f,
+        max = 1f,
     )
 }
 
