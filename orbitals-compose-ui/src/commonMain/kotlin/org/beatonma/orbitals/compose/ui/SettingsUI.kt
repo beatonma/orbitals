@@ -29,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.min
 import org.beatonma.orbitals.compose.ui.components.DraggableColumn
 import org.beatonma.orbitals.compose.ui.settings.ColorSetting
 import org.beatonma.orbitals.compose.ui.settings.FloatSetting
@@ -70,6 +71,7 @@ private val SettingModifier: Modifier
 @Composable
 internal fun SettingsUI(
     availableWidth: Dp,
+    availableHeight: Dp,
     options: Options,
     persistence: OptionPersistence,
     modifier: Modifier = Modifier,
@@ -81,7 +83,12 @@ internal fun SettingsUI(
                 options,
                 persistence,
                 modifier,
-                PaddingValues(top = 320.dp, bottom = 160.dp, start = 16.dp, end = 16.dp),
+                PaddingValues(
+                    top = min(availableHeight / 2, 320.dp),
+                    bottom = 160.dp,
+                    start = 16.dp,
+                    end = 16.dp
+                ),
                 onClose
             )
 
@@ -322,7 +329,7 @@ private fun LazyListScope.physicsSettings(physics: PhysicsOptions, persistence: 
         key = PhysicsKey.Density,
         value = physics.bodyDensity.value,
         onValueChange = persistence::updateOption,
-        min = .1f,
+        min = .05f,
         max = 1f,
     )
 }

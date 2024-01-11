@@ -3,6 +3,8 @@ package org.beatonma.orbitalslivewallpaper.ui
 import android.app.Application
 import android.view.KeyEvent
 import android.view.View
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -50,7 +52,7 @@ fun SettingsUI(
         }
     }
 
-    Scaffold { insets ->
+    Scaffold(contentWindowInsets = WindowInsets.safeDrawing) { insets ->
         EditableOrbitals(
             options,
             persistence = viewmodel,

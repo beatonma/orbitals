@@ -69,7 +69,7 @@ private fun <N : Number> NumberSettingLayout(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text("$name: $value", Modifier.align(Alignment.CenterHorizontally))
+            Text("$name: ${value.format()}", Modifier.align(Alignment.CenterHorizontally))
 
             LabelledSlider(
                 value = value.toFloat(),
@@ -77,6 +77,16 @@ private fun <N : Number> NumberSettingLayout(
                 min = min.toFloat(),
                 max = max.toFloat(),
             )
+        }
+    }
+}
+
+
+fun Number.format(decimalPlaces: Int = 2) = this.toString().run {
+    indexOf('.').let { index ->
+        when (index) {
+            -1 -> this
+            else -> take(index + decimalPlaces + 1)
         }
     }
 }

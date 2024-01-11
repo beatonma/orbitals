@@ -50,13 +50,16 @@ fun EditableOrbitals(
 
         AnimatedVisibility(
             settingsVisible,
-            Modifier.align(Alignment.BottomEnd),
+            Modifier
+                .align(Alignment.BottomEnd)
+                .padding(contentPadding),
             enter = slideInVertically { it },
             exit = slideOutVertically { it },
         ) {
             with(LocalDensity.current) {
                 SettingsUI(
                     constraints.maxWidth.toDp(),
+                    constraints.maxHeight.toDp(),
                     options,
                     persistence,
                 ) { settingsVisible = false }
