@@ -1,21 +1,21 @@
-import org.beatonma.orbitals.render.options.Options
-import org.beatonma.orbitals.render.options.ObjectColors
-import org.beatonma.orbitals.render.options.RenderLayer
-import org.beatonma.orbitals.render.options.Key
-import org.beatonma.orbitals.render.options.StringKey
-import org.beatonma.orbitals.render.options.StringSetKey
-import org.beatonma.orbitals.render.options.IntKey
-import org.beatonma.orbitals.render.options.FloatKey
-import org.beatonma.orbitals.render.options.BooleanKey
-import org.beatonma.orbitals.render.options.DrawStyle
-import org.beatonma.orbitals.render.options.VisualKey
-import org.beatonma.orbitals.render.options.PhysicsKey
-import org.beatonma.orbitals.render.options.ColorKey
-import org.beatonma.orbitals.render.options.OptionsStore
-import org.beatonma.orbitals.core.options.CollisionStyle
 import org.beatonma.orbitals.core.engine.SystemGenerator
+import org.beatonma.orbitals.core.options.CollisionStyle
 import org.beatonma.orbitals.core.util.info
 import org.beatonma.orbitals.core.util.warn
+import org.beatonma.orbitals.render.options.BooleanKey
+import org.beatonma.orbitals.render.options.ColorKey
+import org.beatonma.orbitals.render.options.DrawStyle
+import org.beatonma.orbitals.render.options.FloatKey
+import org.beatonma.orbitals.render.options.IntKey
+import org.beatonma.orbitals.render.options.Key
+import org.beatonma.orbitals.render.options.ObjectColors
+import org.beatonma.orbitals.render.options.Options
+import org.beatonma.orbitals.render.options.OptionsStore
+import org.beatonma.orbitals.render.options.PhysicsKey
+import org.beatonma.orbitals.render.options.RenderLayer
+import org.beatonma.orbitals.render.options.StringKey
+import org.beatonma.orbitals.render.options.StringSetKey
+import org.beatonma.orbitals.render.options.VisualKey
 import org.w3c.dom.url.URLSearchParams
 
 
@@ -81,27 +81,27 @@ private fun <T> Array<T>.chooseMultiple() = joinToString(",") + " (choose many)"
 private fun Map<Key<*>, Any>.join(title: String) =
     "$title:\n " + this.map { (key, value) -> "${key.key}=${value}" }.joinToString("\n ")
 
-private fun int(value: Any) = "$value (integer)"
-private fun float(value: Any) = "$value (float)"
-private fun bool(value: Any) = "$value (true|false)"
+private fun int(value: Int) = "$value (integer)"
+private fun float(value: Float) = "$value (float)"
+private fun bool(value: Boolean) = "$value (true|false)"
 
 private fun aboutPhysicsOptions(): String {
-    return mapOf<Key<*>, Any>(
+    return mapOf<Key<*>, String>(
         PhysicsKey.MaxFixedBodyAgeSeconds to int(45),
         PhysicsKey.Generators to SystemGenerator.values().chooseMultiple(),
         PhysicsKey.AutoAddBodies to bool(true),
         PhysicsKey.GravityMultiplier to float(.5f),
         PhysicsKey.MaxEntities to int(90),
         PhysicsKey.CollisionStyle to CollisionStyle.values().chooseOne(),
+        PhysicsKey.Density to float(.5f),
     ).join("Physics options")
 }
 
 private fun aboutVisualOptions(): String {
-    return mapOf<Key<*>, Any>(
+    return mapOf<Key<*>, String>(
         VisualKey.DrawStyle to DrawStyle.values().chooseOne(),
         VisualKey.TraceLength to int(50),
         VisualKey.StrokeWidth to float(4f),
-        VisualKey.BodyScale to float(1.2f),
         VisualKey.RenderLayers to RenderLayer.values().filterNot {
             // Alpha compositing issues in the browser make this kind of ugly
             it == RenderLayer.Drip
@@ -110,7 +110,7 @@ private fun aboutVisualOptions(): String {
 }
 
 private fun aboutColorOptions(): String {
-    return mapOf<Key<*>, Any>(
+    return mapOf<Key<*>, String>(
         ColorKey.BackgroundColor to "220033 (hex color code)",
         ColorKey.Colors to ObjectColors.values().chooseMultiple(),
         ColorKey.BodyAlpha to float(.8f),
