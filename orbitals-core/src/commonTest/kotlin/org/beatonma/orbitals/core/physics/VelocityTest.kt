@@ -1,5 +1,6 @@
 package org.beatonma.orbitals.core.physics
 
+import org.beatonma.orbitals.core.test.DefaultTestDensity
 import kotlin.test.Test
 import org.beatonma.orbitals.core.test.shouldbe
 
@@ -61,7 +62,12 @@ class VelocityTest {
         v += Velocity(7, 11)
         v.shouldbe(Velocity(8, 13))
 
-        val body = InertialBody(UniqueID(""), mass = 500.kg, motion = ZeroMotion)
+        val body = InertialBody(
+            UniqueID(""),
+            mass = 500.kg,
+            density = DefaultTestDensity,
+            motion = ZeroMotion
+        )
         body.velocity += Velocity(7, 11)
         body.velocity shouldbe Velocity(7, 11)
         body.velocity += Velocity(5, 13)

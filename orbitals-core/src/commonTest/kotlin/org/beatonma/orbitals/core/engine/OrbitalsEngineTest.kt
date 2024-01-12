@@ -6,7 +6,8 @@ import org.beatonma.orbitals.core.physics.InertialBody
 import org.beatonma.orbitals.core.physics.Motion
 import org.beatonma.orbitals.core.physics.Position
 import org.beatonma.orbitals.core.physics.UniqueID
-import org.beatonma.orbitals.core.physics.kg
+import org.beatonma.orbitals.core.test.DefaultTestDensity
+import org.beatonma.orbitals.core.test.DefaultTestMass
 import org.beatonma.orbitals.test.shouldbe
 import kotlin.test.Test
 import kotlin.time.Duration
@@ -54,7 +55,8 @@ private fun inertialBody(
     y: Number,
 ) = InertialBody(
     id = UniqueID("FixedID"),
-    mass = 100.kg,
+    mass = DefaultTestMass,
+    density = DefaultTestDensity,
     motion = Motion(Position(x, y)),
 )
 
@@ -65,7 +67,8 @@ private fun fixedBody(
     age: Duration = 0.seconds,
 ) = FixedBody(
     id = UniqueID("FixedID"),
-    mass = 100.kg,
+    mass = DefaultTestMass,
+    density = DefaultTestDensity,
     motion = Motion(Position(x, y)),
     age = age,
 )
@@ -76,7 +79,8 @@ private fun greatAttractor(
     age: Duration = 0.seconds,
 ) = GreatAttractor(
     id = UniqueID("FixedID"),
-    mass = 100.kg,
+    mass = DefaultTestMass,
+    density = DefaultTestDensity,
     motion = Motion(Position(x, y)),
     age = age,
 )
