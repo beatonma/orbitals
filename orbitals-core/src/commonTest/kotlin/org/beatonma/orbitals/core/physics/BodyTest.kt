@@ -3,6 +3,7 @@ package org.beatonma.orbitals.core.physics
 import org.beatonma.orbitals.core.test.DefaultTestDensity
 import org.beatonma.orbitals.core.test.DefaultTestG
 import org.beatonma.orbitals.core.test.differenceWith
+import org.beatonma.orbitals.core.test.inertialBody
 import org.beatonma.orbitals.core.test.shouldbe
 import kotlin.test.Test
 import kotlin.test.assertTrue
@@ -12,14 +13,14 @@ private const val TestG = DefaultTestG
 
 class BodyTest {
     private val body
-        get() = InertialBody(
+        get() = inertialBody(
             mass = 7000.kg,
             density = DefaultTestDensity,
             motion = ZeroMotion,
         )
 
     private val other
-        get() = InertialBody(
+        get() = inertialBody(
             mass = 3000.kg,
             density = DefaultTestDensity,
             motion = Motion(
@@ -150,51 +151,51 @@ class BodyTest {
     fun testCenterOfMass_withEqualMass() {
         val mass = 10.kg
         centerOfMass(
-            InertialBody(mass, DefaultTestDensity, position = Position(-10, 0)),
-            InertialBody(mass, DefaultTestDensity, position = Position(10, 0))
+            inertialBody(mass, position = Position(-10, 0)),
+            inertialBody(mass, position = Position(10, 0))
         ) shouldbe Position(0, 0)
 
         centerOfMass(
-            InertialBody(mass, DefaultTestDensity, position = Position(-20, 0)),
-            InertialBody(mass, DefaultTestDensity, position = Position(10, 0))
+            inertialBody(mass, position = Position(-20, 0)),
+            inertialBody(mass, position = Position(10, 0))
         ) shouldbe Position(-5, 0)
 
         centerOfMass(
-            InertialBody(mass, DefaultTestDensity, position = Position(-10, 0)),
-            InertialBody(mass, DefaultTestDensity, position = Position(20, 0))
+            inertialBody(mass, position = Position(-10, 0)),
+            inertialBody(mass, position = Position(20, 0))
         ) shouldbe Position(5, 0)
 
         centerOfMass(
-            InertialBody(mass, DefaultTestDensity, position = Position(5, 10)),
-            InertialBody(mass, DefaultTestDensity, position = Position(15, 20))
+            inertialBody(mass, position = Position(5, 10)),
+            inertialBody(mass, position = Position(15, 20))
         ) shouldbe Position(10, 15)
 
         centerOfMass(
-            InertialBody(mass, DefaultTestDensity, position = Position(-5, 10)),
-            InertialBody(mass, DefaultTestDensity, position = Position(15, -20))
+            inertialBody(mass, position = Position(-5, 10)),
+            inertialBody(mass, position = Position(15, -20))
         ) shouldbe Position(5, -5)
 
         centerOfMass(
-            InertialBody(mass, DefaultTestDensity, position = Position(15, -20)),
-            InertialBody(mass, DefaultTestDensity, position = Position(-5, 10))
+            inertialBody(mass, position = Position(15, -20)),
+            inertialBody(mass, position = Position(-5, 10))
         ) shouldbe Position(5, -5)
     }
 
     @Test
     fun testCenterOfMass_withDifferentMass() {
         centerOfMass(
-            InertialBody(10.kg, DefaultTestDensity, position = Position(-10, 0)),
-            InertialBody(20.kg, DefaultTestDensity, position = Position(10, 0))
+            inertialBody(10.kg, position = Position(-10, 0)),
+            inertialBody(20.kg, position = Position(10, 0))
         ) shouldbe Position(3.33, 0)
 
         centerOfMass(
-            InertialBody(20.kg, DefaultTestDensity, position = Position(-10, 0)),
-            InertialBody(10.kg, DefaultTestDensity, position = Position(10, 0))
+            inertialBody(20.kg, position = Position(-10, 0)),
+            inertialBody(10.kg, position = Position(10, 0))
         ) shouldbe Position(-3.33, 0)
 
         centerOfMass(
-            InertialBody(5.kg, DefaultTestDensity, position = Position(-10, 35)),
-            InertialBody(15.kg, DefaultTestDensity, position = Position(10, -5))
+            inertialBody(5.kg, position = Position(-10, 35)),
+            inertialBody(15.kg, position = Position(10, -5))
         ) shouldbe Position(5, 5)
     }
 }

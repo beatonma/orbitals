@@ -2,6 +2,7 @@ package org.beatonma.orbitals.test
 
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 infix fun <T> T?.shouldbe(expected: T?) {
     assertEquals(expected, this)
@@ -9,6 +10,26 @@ infix fun <T> T?.shouldbe(expected: T?) {
 
 infix fun <T> List<T>.shouldbe(expected: List<T>) {
     assertContentEquals(expected, this)
+}
+
+/**
+ * Compare each item by [transform].
+ */
+fun <T> List<T>.shouldbe(expected: List<T>, transform: (actual: T, expected: T) -> Boolean) {
+    assertEquals(
+        this.size,
+        expected.size,
+        message = "Lists have different sizes: ${this.size} vs ${expected.size}"
+    )
+
+    for (i in indices) {
+        val actualValue = this[i]
+        val expectedValue = expected[i]
+        assertTrue(
+            transform(expectedValue, actualValue),
+            message = "Items at #$i differ: Expected ${expectedValue}; got $actualValue"
+        )
+    }
 }
 
 infix fun <T> Array<T>.shouldbe(expected: Array<T>) {

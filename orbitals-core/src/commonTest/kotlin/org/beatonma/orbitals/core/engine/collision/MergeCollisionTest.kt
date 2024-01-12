@@ -11,6 +11,7 @@ import org.beatonma.orbitals.core.physics.Velocity
 import org.beatonma.orbitals.core.physics.kg
 import org.beatonma.orbitals.core.physics.metres
 import org.beatonma.orbitals.core.test.DefaultTestDensity
+import org.beatonma.orbitals.core.test.inertialBody
 import org.beatonma.orbitals.core.test.shouldbe
 import kotlin.test.Test
 
@@ -18,14 +19,14 @@ class MergeCollisionTest {
 
     @Test
     fun testMergeCollision() {
-        val larger = InertialBody(
+        val larger = inertialBody(
             mass = 60.kg,
             density = DefaultTestDensity,
             radius = 1.metres,
             position = Position(0, 0),
             velocity = Velocity(1, 0)
         )
-        val smaller = InertialBody(
+        val smaller = inertialBody(
             mass = 50.kg,
             density = DefaultTestDensity,
             radius = 1.metres,

@@ -67,6 +67,16 @@ sealed interface Body : Collider {
 
     fun toSimpleString(): String =
         "${this::class.simpleName} $mass $radius ${velocity.magnitude}"
+
+    /**
+     * .equals, but ignore `id` field.
+     */
+    fun physicsEquals(other: Body): Boolean =
+        density == other.density
+                && mass == other.mass
+                && radius == other.radius
+                && motion == other.motion
+                && age == other.age
 }
 
 
@@ -74,11 +84,11 @@ sealed interface Body : Collider {
  * A body that stays in a fixed position.
  */
 data class FixedBody(
-    override var density: Density,
     override var mass: Mass,
-    override val id: UniqueID = uniqueID("FixedBody"),
-    override var radius: Distance = sizeOf(mass, density),
+    override var density: Density,
     override val motion: Motion = ZeroMotion,
+    override var radius: Distance = sizeOf(mass, density),
+    override val id: UniqueID = uniqueID("FixedBody"),
     override var age: Duration = 0.seconds
 ) : Body, Fixed {
     override var lastCollision: Long = currentTimeMillis()
@@ -95,15 +105,6 @@ data class FixedBody(
         super.tick(duration)
         age += duration
     }
-
-    override fun equals(other: Any?): Boolean = when (other) {
-        is Body -> this.id == other.id
-        else -> false
-    }
-
-    override fun hashCode(): Int {
-        return id.hashCode()
-    }
 }
 
 fun FixedBody.toInertialBody() = InertialBody(
@@ -115,23 +116,14 @@ fun FixedBody.toInertialBody() = InertialBody(
 )
 
 data class InertialBody(
-    override val id: UniqueID = uniqueID("InertialBody"),
     override var mass: Mass,
     override val density: Density,
-    override var radius: Distance = sizeOf(mass, density),
     override val motion: Motion = ZeroMotion,
-    override var age: Duration = 0.seconds
+    override var radius: Distance = sizeOf(mass, density),
+    override var age: Duration = 0.seconds,
+    override val id: UniqueID = uniqueID("InertialBody"),
 ) : Body, Inertial {
     override var lastCollision: Long = currentTimeMillis()
-
-    constructor(
-        mass: Mass,
-        density: Density,
-        id: UniqueID = uniqueID("InertialBody"),
-        radius: Distance = sizeOf(mass, density),
-        position: Position = ZeroPosition,
-        velocity: Velocity = ZeroVelocity,
-    ) : this(id, mass, density, radius, Motion(position, velocity))
 
     override fun applyInertia(timeDelta: Duration) {
         motion.applyInertia(timeDelta)
@@ -154,24 +146,15 @@ data class InertialBody(
      */
     internal fun calculateAcceleration(force: Force, angle: Angle): Acceleration =
         Acceleration(force / mass, angle)
-
-    override fun equals(other: Any?): Boolean = when (other) {
-        is Body -> this.id == other.id
-        else -> false
-    }
-
-    override fun hashCode(): Int {
-        return id.hashCode()
-    }
 }
 
 
 data class GreatAttractor(
     override var mass: Mass,
     override val density: Density,
-    override val id: UniqueID = uniqueID("GreatAttractor"),
-    override var radius: Distance = sizeOf(mass, density),
     override val motion: Motion = ZeroMotion,
+    override var radius: Distance = sizeOf(mass, density),
+    override val id: UniqueID = uniqueID("GreatAttractor"),
     override var age: Duration = 0.seconds
 ) : Body, Fixed {
     override var lastCollision: Long = currentTimeMillis()
@@ -187,15 +170,6 @@ data class GreatAttractor(
     override fun tick(duration: Duration) {
         super.tick(duration)
         age += duration
-    }
-
-    override fun equals(other: Any?): Boolean = when (other) {
-        is Body -> this.id == other.id
-        else -> false
-    }
-
-    override fun hashCode(): Int {
-        return id.hashCode()
     }
 }
 

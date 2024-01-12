@@ -1,13 +1,11 @@
 package org.beatonma.orbitals.core.engine
 
-import org.beatonma.orbitals.core.physics.FixedBody
-import org.beatonma.orbitals.core.physics.GreatAttractor
-import org.beatonma.orbitals.core.physics.InertialBody
+import org.beatonma.orbitals.core.physics.Body
 import org.beatonma.orbitals.core.physics.Motion
 import org.beatonma.orbitals.core.physics.Position
-import org.beatonma.orbitals.core.physics.UniqueID
-import org.beatonma.orbitals.core.test.DefaultTestDensity
-import org.beatonma.orbitals.core.test.DefaultTestMass
+import org.beatonma.orbitals.core.test.fixedBody
+import org.beatonma.orbitals.core.test.greatAttractor
+import org.beatonma.orbitals.core.test.inertialBody
 import org.beatonma.orbitals.test.shouldbe
 import kotlin.test.Test
 import kotlin.time.Duration
@@ -33,54 +31,53 @@ class OrbitalsEngineTest {
         val (keep, destroy) =
             pruneBodies(bodies, space, 60.seconds, keepAgedRandomizer = { false })
 
-        keep.sortedBy { it.position } shouldbe listOf(
-            inertialBody(-99, 10),
-            fixedBody(-15, -15),
-            inertialBody(10, -99),
-            inertialBody(15, 15),
-            greatAttractor(300, 0),
-        ).sortedBy { it.position }
+        keep.sortedBy(Body::position).shouldbe(
+            listOf(
+                inertialBody(-99, 10),
+                fixedBody(-15, -15),
+                inertialBody(10, -99),
+                inertialBody(15, 15),
+                greatAttractor(300, 0),
+            )
+        ) { actual, expected ->
+            actual.physicsEquals(expected)
+        }
 
-        destroy.sortedBy { it.position } shouldbe listOf(
-            inertialBody(-101, 10),
-            greatAttractor(0, -300, 100.seconds),
-            inertialBody(10, -101),
-        )
+        destroy.sortedBy(Body::position).shouldbe(
+            listOf(
+                inertialBody(-101, 10),
+                greatAttractor(0, -300, 100.seconds),
+                inertialBody(10, -101),
+            )
+        ) { actual, expected ->
+            actual.physicsEquals(expected)
+        }
     }
 }
 
 
 private fun inertialBody(
-    x: Number,
-    y: Number,
-) = InertialBody(
-    id = UniqueID("FixedID"),
-    mass = DefaultTestMass,
-    density = DefaultTestDensity,
+    x: Int,
+    y: Int,
+) = inertialBody(
     motion = Motion(Position(x, y)),
 )
 
 
 private fun fixedBody(
-    x: Number,
-    y: Number,
+    x: Int,
+    y: Int,
     age: Duration = 0.seconds,
-) = FixedBody(
-    id = UniqueID("FixedID"),
-    mass = DefaultTestMass,
-    density = DefaultTestDensity,
+) = fixedBody(
     motion = Motion(Position(x, y)),
     age = age,
 )
 
 private fun greatAttractor(
-    x: Number,
-    y: Number,
+    x: Int,
+    y: Int,
     age: Duration = 0.seconds,
-) = GreatAttractor(
-    id = UniqueID("FixedID"),
-    mass = DefaultTestMass,
-    density = DefaultTestDensity,
+) = greatAttractor(
     motion = Motion(Position(x, y)),
     age = age,
 )

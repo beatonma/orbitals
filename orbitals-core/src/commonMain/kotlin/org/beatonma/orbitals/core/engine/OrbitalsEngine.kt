@@ -104,7 +104,7 @@ open class DefaultOrbitalsEngine(override var physics: PhysicsOptions) : Orbital
     }
 
     final override fun remove(body: Body) {
-        this.bodies -= body
+        this.bodies = this.bodies.filterNot { it.id == body.id }
         super.remove(body)
     }
 
@@ -133,11 +133,13 @@ open class DefaultOrbitalsEngine(override var physics: PhysicsOptions) : Orbital
                         body.applyGravity(other, timeDelta, G = physics.G)
                         other.applyGravity(body, timeDelta, G = physics.G)
 
-                        if (body.inContactWith(other)) {
-                            onCollision(body, other)?.let { (added, removed) ->
-                                addedBodies += added
-                                removedBodyIds += removed
-                            }
+                        applyCollision(
+                            body,
+                            other,
+                            physics.collisionStyle
+                        )?.let { (added, removed) ->
+                            addedBodies += added
+                            removedBodyIds += removed
                         }
                     }
 
@@ -163,9 +165,6 @@ open class DefaultOrbitalsEngine(override var physics: PhysicsOptions) : Orbital
             warn("Frame took ${duration}ms ($bodyCount objects)")
         }
     }
-
-    private fun onCollision(body: Body, other: Body): CollisionResults? =
-        applyCollision(body, other, physics.collisionStyle)
 
     private fun autoAddBodies() {
         if (bodyCount == 0
