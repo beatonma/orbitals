@@ -53,12 +53,11 @@ class SimpleRenderer<Canvas> internal constructor(
     private fun getRenderRadius(body: Body): Distance? {
         val ageMillis = body.age.inWholeMilliseconds
 
-        val radiusMultiplier = easeRadius(
+        val radiusMultiplier =
             if (ageMillis > EnterAnimationMillis) 1f
             else {
-                ageMillis.toFloat() / EnterAnimationMillis.toFloat()
+                easeRadius(ageMillis.toFloat() / EnterAnimationMillis.toFloat())
             }
-        )
         if (radiusMultiplier == 0f) return null
         return body.radius * radiusMultiplier
     }

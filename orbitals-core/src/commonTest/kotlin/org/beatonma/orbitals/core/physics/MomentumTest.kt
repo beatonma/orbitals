@@ -2,10 +2,11 @@ package org.beatonma.orbitals.core.physics
 
 import org.beatonma.orbitals.core.test.shouldbe
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class MomentumTest {
     @Test
-    fun testMomentumMath() {
+    fun testMomentumConversions() {
         val v = Velocity(1, 7)
         val mass = 15.kg
 
@@ -16,5 +17,13 @@ class MomentumTest {
 
         momentum / v shouldbe mass
         momentum / mass shouldbe v
+    }
+
+    @Test
+    fun testMomentumMultiply() {
+        val momentum: Momentum = Velocity(1, 0) * 2.kg
+
+        assertEquals(momentum.magnitude * 2f, (momentum * 2f).magnitude)
+        assertEquals(momentum.magnitude * .4f, (momentum * .4f).magnitude)
     }
 }

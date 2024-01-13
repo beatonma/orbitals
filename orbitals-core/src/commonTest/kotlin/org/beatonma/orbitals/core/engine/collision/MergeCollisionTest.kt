@@ -10,39 +10,45 @@ import org.beatonma.orbitals.core.physics.Position
 import org.beatonma.orbitals.core.physics.Velocity
 import org.beatonma.orbitals.core.physics.kg
 import org.beatonma.orbitals.core.physics.metres
-import org.beatonma.orbitals.core.test.DefaultTestDensity
 import org.beatonma.orbitals.core.test.inertialBody
-import org.beatonma.orbitals.core.test.shouldbe
 import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+
+private fun assertConservationOfMomentum(larger: InertialBody, smaller: InertialBody) {
+    val originalMass = larger.mass + smaller.mass
+    val originalMomentum = larger.momentum + smaller.momentum
+
+    val originalLarger = larger.copy()
+    val originalSmaller = smaller.copy()
+
+    applyCollision(larger, smaller, CollisionStyle.Merge)
+
+    assertEquals(originalMass, larger.mass + smaller.mass)
+    assertEquals(originalMomentum, larger.momentum + smaller.momentum)
+
+    // ...make sure that something actually happened
+    assertFalse(originalLarger.physicsEquals(larger), message = "No change after collision.")
+    assertFalse(originalSmaller.physicsEquals(smaller), message = "No change after collision.")
+}
 
 class MergeCollisionTest {
-
     @Test
-    fun testMergeCollision() {
+    fun testSimpleCollision() {
         val larger = inertialBody(
             mass = 60.kg,
-            density = DefaultTestDensity,
             radius = 1.metres,
             position = Position(0, 0),
             velocity = Velocity(1, 0)
         )
         val smaller = inertialBody(
             mass = 50.kg,
-            density = DefaultTestDensity,
             radius = 1.metres,
-            position = Position(1, 0),
-            velocity = Velocity(-1, 0)
+            position = Position(0, 0),
+            velocity = Velocity(-2, 0)
         )
 
-        val before = Tracker(larger.copy(), smaller.copy())
-        applyCollision(larger, smaller, CollisionStyle.Merge)
-        val after = Tracker(larger.copy(), smaller.copy())
-
-        println("Before: $before")
-        println("After: $after")
-
-        before.totalMass shouldbe after.totalMass
-        before.totalMomentum shouldbe after.totalMomentum
+        assertConservationOfMomentum(larger, smaller)
     }
 }
 

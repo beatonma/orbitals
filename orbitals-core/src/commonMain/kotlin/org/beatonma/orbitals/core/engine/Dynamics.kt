@@ -13,7 +13,9 @@ import org.beatonma.orbitals.core.physics.InertialBody
 import org.beatonma.orbitals.core.physics.Mass
 import org.beatonma.orbitals.core.physics.Motion
 import org.beatonma.orbitals.core.physics.UniqueID
+import org.beatonma.orbitals.core.physics.distanceTo
 import org.beatonma.orbitals.core.physics.divideUnevenly
+import org.beatonma.orbitals.core.physics.inContactWith
 import org.beatonma.orbitals.core.util.currentTimeMillis
 import org.beatonma.orbitals.core.util.warn
 import kotlin.random.Random
@@ -25,6 +27,7 @@ internal fun applyCollision(
     collisionStyle: CollisionStyle,
     reporter: CollisionLog = CollisionResultsImpl,
 ): CollisionResults? {
+    if (!a.inContactWith(b)) return null
     if (collisionStyle == CollisionStyle.None) return null
 
     val now = currentTimeMillis()
@@ -102,4 +105,17 @@ fun Body.explode(ejectaCount: Int = Random.nextInt(5, 20)): List<Body> {
             )
         )
     }
+}
+
+
+/**
+ * Returns a 0..1 score of how much two bodies are overlapping each other.
+ */
+internal fun overlapOf(a: Body, b: Body): Float {
+    val distance = a.position.distanceTo(b.position)
+
+    val minDiameter = minOf(a.radius, b.radius) * 2
+    val radiiSum = a.radius + b.radius
+
+    return ((radiiSum - distance) / minDiameter).coerceIn(0f, 1f)
 }

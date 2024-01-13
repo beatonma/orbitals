@@ -2,7 +2,6 @@ package org.beatonma.orbitals.core.engine
 
 import org.beatonma.orbitals.core.OrbitalsBuildConfig
 import org.beatonma.orbitals.core.chance
-import org.beatonma.orbitals.core.engine.collision.CollisionResults
 import org.beatonma.orbitals.core.fastForEach
 import org.beatonma.orbitals.core.fastForEachIndexed
 import org.beatonma.orbitals.core.options.PhysicsOptions
@@ -14,16 +13,17 @@ import org.beatonma.orbitals.core.physics.Inertial
 import org.beatonma.orbitals.core.physics.InertialBody
 import org.beatonma.orbitals.core.physics.UniqueID
 import org.beatonma.orbitals.core.physics.contains
-import org.beatonma.orbitals.core.physics.inContactWith
 import org.beatonma.orbitals.core.physics.kg
 import org.beatonma.orbitals.core.physics.toInertialBody
 import org.beatonma.orbitals.core.util.timeIt
 import org.beatonma.orbitals.core.util.warn
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 private val BodySortBy = Body::mass
 
 private val BodyMassLimit = 1500.kg
+internal val CollisionMinimumAge = 150.milliseconds
 
 interface OrbitalsEngine {
     val space: Universe
@@ -38,7 +38,6 @@ interface OrbitalsEngine {
 
     fun onBodyCreated(body: Body) {}
     fun onBodyDestroyed(id: UniqueID) {}
-
 
     fun clear() {
         remove(bodies.map { it.id })
@@ -128,6 +127,7 @@ open class DefaultOrbitalsEngine(override var physics: PhysicsOptions) : Orbital
 
             if (bodyCount > 1) {
                 bodies.fastForEachIndexed { index, body ->
+
                     for (i in (index + 1) until bodyCount) {
                         val other = bodies[i]
                         body.applyGravity(other, timeDelta, G = physics.G)

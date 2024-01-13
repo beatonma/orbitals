@@ -36,7 +36,7 @@ class OrbitalsEngineTest {
                 inertialBody(-99, 10),
                 fixedBody(-15, -15),
                 inertialBody(10, -99),
-                inertialBody(15, 15),
+                inertialBody(15, 15, age = 100.seconds),
                 greatAttractor(300, 0),
             )
         ) { actual, expected ->
@@ -59,8 +59,10 @@ class OrbitalsEngineTest {
 private fun inertialBody(
     x: Int,
     y: Int,
+    age: Duration = 0.seconds,
 ) = inertialBody(
     motion = Motion(Position(x, y)),
+    age = age,
 )
 
 

@@ -1,13 +1,14 @@
 package org.beatonma.orbitals.core.physics
 
+import org.beatonma.orbitals.core.engine.CollisionMinimumAge
 import org.beatonma.orbitals.core.util.currentTimeMillis
+import kotlin.math.PI
 import kotlin.math.pow
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
-private val CollisionMinimumAge = 1.seconds
 
-val ZeroMass = 0.0.kg
+val ZeroMass = 0f.kg
 val ZeroDistance = 0f.metres
 val ZeroAcceleration = Acceleration(AccelerationScalar(0f), AccelerationScalar(0f))
 val ZeroPosition = Position(ZeroDistance, ZeroDistance)
@@ -51,8 +52,8 @@ sealed interface Body : Collider {
     val momentum: Momentum get() = mass * velocity
 
     override var lastCollision: Long
-    override fun canCollide(now: Long): Boolean =
-        now - lastCollision > CollisionMinimumAge.inWholeMilliseconds
+    override fun canCollide(now: Long): Boolean = mass != ZeroMass &&
+            now - lastCollision > CollisionMinimumAge.inWholeMilliseconds
 
     fun applyInertia(timeDelta: Duration)
     fun applyGravity(other: Body, timeDelta: Duration, G: Float)
@@ -113,6 +114,7 @@ fun FixedBody.toInertialBody() = InertialBody(
     mass = mass,
     radius = radius,
     motion = motion,
+    age = age,
 )
 
 data class InertialBody(
@@ -130,6 +132,8 @@ data class InertialBody(
     }
 
     override fun applyGravity(other: Body, timeDelta: Duration, G: Float) {
+        if (mass == ZeroMass || other.mass == ZeroMass) return
+
         val theta: Angle = position.angleTo(other.position)
         val force: Force = calculateForce(other, G)
         val acceleration: Acceleration = calculateAcceleration(force, theta)
@@ -176,7 +180,7 @@ data class GreatAttractor(
 
 fun sizeOf(mass: Mass, density: Density): Distance {
     val volume = mass / density
-    val radius = ((volume * 3f / 4f).value.toDouble() * kotlin.math.PI).pow(1.0 / 3.0)
+    val radius = ((volume * 3f).value.toDouble() / (4.0 * PI)).pow(1.0 / 3.0)
     return radius.metres
 }
 

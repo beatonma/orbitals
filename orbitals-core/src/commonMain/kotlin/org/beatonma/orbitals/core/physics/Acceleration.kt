@@ -13,9 +13,8 @@ value class AccelerationScalar(override val value: Float) : Scalar {
     operator fun times(multiplier: Float): AccelerationScalar =
         AccelerationScalar(value * multiplier)
 
-    operator fun times(duration: Duration): Speed {
-        return Speed(value * duration.toDouble(DurationUnit.SECONDS).toFloat())
-    }
+    operator fun times(duration: Duration): Speed =
+        Speed(value * duration.toDouble(DurationUnit.SECONDS).toFloat())
 
     override fun toString(): String {
         return "${value}m/s²"
