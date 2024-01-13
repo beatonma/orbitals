@@ -2,6 +2,7 @@ package org.beatonma.orbitals.render.options
 
 import org.beatonma.orbitals.core.engine.SystemGenerator
 import org.beatonma.orbitals.core.options.CollisionStyle
+import org.beatonma.orbitals.render.color.Color
 import kotlin.jvm.JvmInline
 
 sealed interface Key<T> {
@@ -21,22 +22,25 @@ value class FloatKey(override val key: String) : Key<Float>
 value class IntKey(override val key: String) : Key<Int>
 
 @JvmInline
+value class ColorKey(override val key: String) : Key<Color>
+
+@JvmInline
 value class BooleanKey(override val key: String) : Key<Boolean>
 
-object VisualKey {
+object VisualKeys {
     val DrawStyle = StringKey<DrawStyle>("style")
     val TraceLength = IntKey("trace_length")
     val StrokeWidth = FloatKey("stroke_width")
     val RenderLayers = StringSetKey<RenderLayer>("layers")
 }
 
-object ColorKey {
-    val BackgroundColor = IntKey("background")
+object ColorKeys {
+    val BackgroundColor = ColorKey("background")
     val Colors = StringSetKey<ObjectColors>("colors")
     val BodyAlpha = FloatKey("alpha")
 }
 
-object PhysicsKey {
+object PhysicsKeys {
     val MaxFixedBodyAgeSeconds = IntKey("max_fixedbody_age_seconds")
     val Generators = StringSetKey<SystemGenerator>("generators")
     val AutoAddBodies = BooleanKey("auto")

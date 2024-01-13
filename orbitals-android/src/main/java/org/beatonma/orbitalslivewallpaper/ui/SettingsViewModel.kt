@@ -8,7 +8,9 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import org.beatonma.orbitals.render.color.Color
 import org.beatonma.orbitals.render.options.BooleanKey
+import org.beatonma.orbitals.render.options.ColorKey
 import org.beatonma.orbitals.render.options.FloatKey
 import org.beatonma.orbitals.render.options.IntKey
 import org.beatonma.orbitals.render.options.OptionPersistence
@@ -35,6 +37,10 @@ class SettingsViewModel(
 
     override fun <E : Enum<E>> updateOption(key: StringSetKey<E>, value: Set<E>) {
         savePreference(key.asPreferenceKey, value.map { it.name }.toSet())
+    }
+
+    override fun updateOption(key: ColorKey, value: Color) {
+        savePreference(key.asPreferenceKey, value.toRgbInt())
     }
 
     override fun updateOption(key: IntKey, value: Int) {

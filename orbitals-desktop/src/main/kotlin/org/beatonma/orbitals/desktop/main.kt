@@ -10,8 +10,10 @@ import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import org.beatonma.orbitals.compose.ui.EditableOrbitals
 import org.beatonma.orbitals.compose.ui.OrbitalsTheme
+import org.beatonma.orbitals.render.color.Color
 import org.beatonma.orbitals.render.compose.rememberOrbitalsRenderEngine
 import org.beatonma.orbitals.render.options.BooleanKey
+import org.beatonma.orbitals.render.options.ColorKey
 import org.beatonma.orbitals.render.options.FloatKey
 import org.beatonma.orbitals.render.options.IntKey
 import org.beatonma.orbitals.render.options.Key
@@ -60,6 +62,11 @@ private object PersistentOptions : OptionPersistence, OptionsStore {
     }
 
     override fun updateOption(key: IntKey, value: Int) {
+        optionMap[key] = value
+        options = loadOptions()
+    }
+
+    override fun updateOption(key: ColorKey, value: Color) {
         optionMap[key] = value
         options = loadOptions()
     }

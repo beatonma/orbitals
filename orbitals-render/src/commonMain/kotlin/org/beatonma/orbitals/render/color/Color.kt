@@ -120,7 +120,10 @@ fun Color(value: Int): Color {
     return Color(value.toULong() or 0xff000000UL)
 }
 
+fun Int.toColor(): Color = Color(this)
+
 fun Color(value: Long): Color = Color(value.toULong())
+fun Long.toColor(): Color = Color(this)
 
 /**
  * Convert 0f..1f -> 0..255

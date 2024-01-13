@@ -40,8 +40,10 @@ import org.beatonma.orbitals.compose.ui.settings.SwitchSetting
 import org.beatonma.orbitals.core.engine.SystemGenerator
 import org.beatonma.orbitals.core.options.CollisionStyle
 import org.beatonma.orbitals.core.options.PhysicsOptions
+import org.beatonma.orbitals.render.color.Color
 import org.beatonma.orbitals.render.options.BooleanKey
 import org.beatonma.orbitals.render.options.ColorKey
+import org.beatonma.orbitals.render.options.ColorKeys
 import org.beatonma.orbitals.render.options.ColorOptions
 import org.beatonma.orbitals.render.options.DrawStyle
 import org.beatonma.orbitals.render.options.FloatKey
@@ -49,11 +51,11 @@ import org.beatonma.orbitals.render.options.IntKey
 import org.beatonma.orbitals.render.options.ObjectColors
 import org.beatonma.orbitals.render.options.OptionPersistence
 import org.beatonma.orbitals.render.options.Options
-import org.beatonma.orbitals.render.options.PhysicsKey
+import org.beatonma.orbitals.render.options.PhysicsKeys
 import org.beatonma.orbitals.render.options.RenderLayer
 import org.beatonma.orbitals.render.options.StringKey
 import org.beatonma.orbitals.render.options.StringSetKey
-import org.beatonma.orbitals.render.options.VisualKey
+import org.beatonma.orbitals.render.options.VisualKeys
 import org.beatonma.orbitals.render.options.VisualOptions
 
 
@@ -214,7 +216,7 @@ private fun LazyListScope.visualSettings(
     settingsGroup("Visual")
     multiSelectSetting(
         name = "Layers",
-        key = VisualKey.RenderLayers,
+        key = VisualKeys.RenderLayers,
         value = visualOptions.renderLayers,
         values = RenderLayer.values(),
         onValueChange = persistence::updateOption,
@@ -222,7 +224,7 @@ private fun LazyListScope.visualSettings(
 
     singleSelectSetting(
         name = "Style",
-        key = VisualKey.DrawStyle,
+        key = VisualKeys.DrawStyle,
         value = visualOptions.drawStyle,
         values = DrawStyle.values(),
         onValueChange = persistence::updateOption,
@@ -231,7 +233,7 @@ private fun LazyListScope.visualSettings(
     conditional(visualOptions.drawStyle == DrawStyle.Wireframe) {
         FloatSetting(
             name = "Stroke width",
-            key = VisualKey.StrokeWidth,
+            key = VisualKeys.StrokeWidth,
             value = visualOptions.strokeWidth,
             onValueChange = persistence::updateOption,
             min = 1f,
@@ -242,7 +244,7 @@ private fun LazyListScope.visualSettings(
     conditional(RenderLayer.Trails in visualOptions.renderLayers) {
         IntegerSetting(
             name = "History length",
-            key = VisualKey.TraceLength,
+            key = VisualKeys.TraceLength,
             value = visualOptions.traceLineLength,
             onValueChange = persistence::updateOption,
             min = 1,
@@ -256,20 +258,20 @@ private fun LazyListScope.colorSettings(options: ColorOptions, persistence: Opti
 
     colorSetting(
         name = "Background color",
-        key = ColorKey.BackgroundColor,
-        value = options.background.toRgbInt(),
+        key = ColorKeys.BackgroundColor,
+        value = options.background,
         onValueChange = persistence::updateOption,
     )
     multiSelectSetting(
         name = "Object colors",
-        key = ColorKey.Colors,
+        key = ColorKeys.Colors,
         value = options.bodies,
         values = ObjectColors.values(),
         onValueChange = persistence::updateOption,
     )
     floatSetting(
         name = "Opacity",
-        key = ColorKey.BodyAlpha,
+        key = ColorKeys.BodyAlpha,
         value = options.foregroundAlpha,
         onValueChange = persistence::updateOption,
         min = 0f,
@@ -282,13 +284,13 @@ private fun LazyListScope.physicsSettings(physics: PhysicsOptions, persistence: 
 
     switchSetting(
         "Auto-add bodies",
-        key = PhysicsKey.AutoAddBodies,
+        key = PhysicsKeys.AutoAddBodies,
         value = physics.autoAddBodies,
         onValueChange = persistence::updateOption,
     )
     integerSetting(
         name = "Maximum population",
-        key = PhysicsKey.MaxEntities,
+        key = PhysicsKeys.MaxEntities,
         value = physics.maxEntities,
         onValueChange = persistence::updateOption,
         min = 1,
@@ -296,7 +298,7 @@ private fun LazyListScope.physicsSettings(physics: PhysicsOptions, persistence: 
     )
     integerSetting(
         name = "Maximum age of fixed bodies (seconds)",
-        key = PhysicsKey.MaxFixedBodyAgeSeconds,
+        key = PhysicsKeys.MaxFixedBodyAgeSeconds,
         value = physics.maxFixedBodyAge.inWholeSeconds.toInt(),
         onValueChange = persistence::updateOption,
         min = 10,
@@ -304,7 +306,7 @@ private fun LazyListScope.physicsSettings(physics: PhysicsOptions, persistence: 
     )
     floatSetting(
         name = "Gravity multiplier",
-        key = PhysicsKey.GravityMultiplier,
+        key = PhysicsKeys.GravityMultiplier,
         value = physics.gravityMultiplier,
         onValueChange = persistence::updateOption,
         min = .1f,
@@ -312,21 +314,21 @@ private fun LazyListScope.physicsSettings(physics: PhysicsOptions, persistence: 
     )
     multiSelectSetting(
         name = "System generators",
-        key = PhysicsKey.Generators,
+        key = PhysicsKeys.Generators,
         value = physics.systemGenerators,
         values = SystemGenerator.values(),
         onValueChange = persistence::updateOption,
     )
     singleSelectSetting(
         name = "Collision style",
-        key = PhysicsKey.CollisionStyle,
+        key = PhysicsKeys.CollisionStyle,
         value = physics.collisionStyle,
         values = CollisionStyle.values(),
         onValueChange = persistence::updateOption,
     )
     floatSetting(
         name = "Body density",
-        key = PhysicsKey.Density,
+        key = PhysicsKeys.Density,
         value = physics.bodyDensity.value,
         onValueChange = persistence::updateOption,
         min = .05f,
@@ -351,9 +353,9 @@ private fun LazyListScope.conditional(
 
 private fun LazyListScope.colorSetting(
     name: String,
-    key: IntKey,
-    value: Int,
-    onValueChange: (key: IntKey, newValue: Int) -> Unit,
+    key: ColorKey,
+    value: Color,
+    onValueChange: (key: ColorKey, newValue: Color) -> Unit,
 ) {
     item {
         ColorSetting(

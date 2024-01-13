@@ -31,6 +31,7 @@ import org.beatonma.orbitals.compose.ui.components.DraggableRow
 import org.beatonma.orbitals.render.color.Color
 import org.beatonma.orbitals.render.color.MaterialColorSwatch
 import org.beatonma.orbitals.render.compose.toComposeColor
+import org.beatonma.orbitals.render.options.ColorKey
 import org.beatonma.orbitals.render.options.IntKey
 import kotlin.math.max
 import androidx.compose.ui.graphics.Color as ComposeColor
@@ -39,21 +40,21 @@ import androidx.compose.ui.graphics.Color as ComposeColor
 @Composable
 fun ColorSetting(
     name: String,
-    key: IntKey,
-    value: Int,
-    onValueChange: (key: IntKey, newValue: Int) -> Unit,
+    key: ColorKey,
+    value: Color,
+    onValueChange: (key: ColorKey, newValue: Color) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val scope = rememberCoroutineScope()
-    val hsl = rememberHsl(Color(value))
+    val hsl = rememberHsl(value)
     val colors = MaterialColorSwatch
     val swatchState = rememberLazyListState()
 
     LaunchedEffect(hsl.hue, hsl.saturation, hsl.lightness) {
-        onValueChange(key, Color.hsla(hsl.hue, hsl.saturation, hsl.lightness).toRgbInt())
+        onValueChange(key, Color.hsla(hsl.hue, hsl.saturation, hsl.lightness))
     }
 
-    val swatchIndex = colors.indexOf(value)
+    val swatchIndex = colors.indexOf(value.toRgbInt())
     if (swatchIndex >= 0) {
         scope.launch { swatchState.animateScrollToItem(max(0, swatchIndex - 1)) }
     }
@@ -72,7 +73,7 @@ fun ColorSetting(
                 Patch(
                     color = composeColor,
                     contentColor = contentColor,
-                    isSelected = c == value,
+                    isSelected = c == value.toRgbInt(),
                 ) {
                     val (h, s, l) = color.hsl()
                     hsl.hue = h
