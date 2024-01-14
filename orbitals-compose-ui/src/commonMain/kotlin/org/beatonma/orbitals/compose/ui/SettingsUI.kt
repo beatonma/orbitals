@@ -23,7 +23,7 @@ import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.MaterialTheme.shapes
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -100,7 +100,7 @@ internal fun SettingsUI(
                 options,
                 persistence,
                 modifier,
-                PaddingValues(vertical = 32.dp),
+                PaddingValues(bottom = 32.dp),
                 onClose
             )
 
@@ -110,7 +110,7 @@ internal fun SettingsUI(
                 options,
                 persistence,
                 modifier,
-                PaddingValues(vertical = 32.dp),
+                PaddingValues(bottom = 32.dp),
                 onClose
             )
     }
@@ -143,9 +143,12 @@ private fun SettingsSingleColumn(
 
 @Composable
 private fun CloseSettings(onClick: () -> Unit, modifier: Modifier = Modifier) {
-    IconButton(onClick, modifier.background(colorScheme.settingsScrim, shapes.medium)) {
-        Icon(Icons.Default.Close, "Close settings")
-    }
+    ExtendedFloatingActionButton(
+        text = { Text("Close settings") },
+        icon = { Icon(Icons.Default.Close, "") },
+        onClick = onClick,
+        modifier = modifier,
+    )
 }
 
 @Composable
@@ -155,7 +158,7 @@ private fun MultiColumn(
     content: @Composable () -> Unit,
 ) {
     Column(modifier.padding(horizontal = 24.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        CloseSettings(onClose, Modifier.align(Alignment.End))
+        CloseSettings(onClose, Modifier.align(Alignment.End).padding(top = 16.dp))
 
         Row(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -332,7 +335,7 @@ private fun LazyListScope.physicsSettings(physics: PhysicsOptions, persistence: 
         value = physics.bodyDensity.value,
         onValueChange = persistence::updateOption,
         min = .05f,
-        max = 1f,
+        max = 10f,
     )
 }
 
