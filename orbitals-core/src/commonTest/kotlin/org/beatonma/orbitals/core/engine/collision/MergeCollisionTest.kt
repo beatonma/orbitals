@@ -15,14 +15,17 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 
-private fun assertConservationOfMomentum(larger: InertialBody, smaller: InertialBody) {
+private fun assertConservationOfMomentum(
+    larger: InertialBody,
+    smaller: InertialBody
+): CollisionResults? {
     val originalMass = larger.mass + smaller.mass
     val originalMomentum = larger.momentum + smaller.momentum
 
     val originalLarger = larger.copy()
     val originalSmaller = smaller.copy()
 
-    applyCollision(larger, smaller, CollisionStyle.Merge)
+    val result = applyCollision(larger, smaller, CollisionStyle.Merge, now = Long.MAX_VALUE)
 
     assertEquals(originalMass, larger.mass + smaller.mass)
     assertEquals(originalMomentum, larger.momentum + smaller.momentum)
@@ -30,6 +33,8 @@ private fun assertConservationOfMomentum(larger: InertialBody, smaller: Inertial
     // ...make sure that something actually happened
     assertFalse(originalLarger.physicsEquals(larger), message = "No change after collision.")
     assertFalse(originalSmaller.physicsEquals(smaller), message = "No change after collision.")
+
+    return result
 }
 
 class MergeCollisionTest {
@@ -39,12 +44,12 @@ class MergeCollisionTest {
             mass = 60.kg,
             radius = 1.metres,
             position = Position(0, 0),
-            velocity = Velocity(1, 0)
+            velocity = Velocity(1, 0),
         )
         val smaller = inertialBody(
             mass = 50.kg,
             radius = 1.metres,
-            position = Position(0, 0),
+            position = Position(0, .5),
             velocity = Velocity(-2, 0)
         )
 
