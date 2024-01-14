@@ -28,8 +28,8 @@ internal fun applyCollision(
     reporter: CollisionLog = CollisionResultsImpl,
     now: Long = currentTimeMillis(),
 ): CollisionResults? {
-    if (!a.inContactWith(b)) return null
     if (collisionStyle == CollisionStyle.None) return null
+    if (!a.inContactWith(b)) return null
 
     if (!a.canCollide(now) || !b.canCollide(now)) {
         return null
