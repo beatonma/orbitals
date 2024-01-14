@@ -6,7 +6,7 @@ import org.beatonma.orbitals.core.physics.UniqueID
 import org.beatonma.orbitals.core.physics.sizeOf
 
 internal fun interface Collision {
-    fun invoke(larger: Body, smaller: Body, changes: CollisionLog): CollisionResults?
+    operator fun invoke(larger: Body, smaller: Body, changes: CollisionLog): CollisionResults?
 
     companion object {
         fun Body.updateMassAndSize(mass: Mass) {

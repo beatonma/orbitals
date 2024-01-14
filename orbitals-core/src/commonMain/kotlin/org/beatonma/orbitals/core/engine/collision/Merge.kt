@@ -17,7 +17,9 @@ internal val MergeCollision = Collision { larger, smaller, changes ->
 
     val transferredMomentum = smaller.momentum * overlapAmount
 
-    if (transferredMomentum.magnitude.isZero()) return@Collision null
+    if (transferredMomentum.magnitude.isZero()) {
+        return@Collision NoMomentumMerge(larger, smaller, changes)
+    }
 
     val largeMomentum = larger.momentum + transferredMomentum
     val smallMomentum = smaller.momentum - transferredMomentum
@@ -30,6 +32,20 @@ internal val MergeCollision = Collision { larger, smaller, changes ->
         smaller.mass == ZeroMass -> ZeroVelocity
         else -> smallMomentum / smaller.mass
     }
+
+    when {
+        smaller.mass < 1.kg -> changes.remove(smaller.id)
+        else -> null
+    }
+}
+
+private val NoMomentumMerge = Collision { larger, smaller, changes ->
+    val overlapAmount = overlapOf(larger, smaller)
+
+    val transferredMass = smaller.mass * overlapAmount
+
+    larger.updateMassAndSize(larger.mass + transferredMass)
+    smaller.updateMassAndSize(smaller.mass - transferredMass)
 
     when {
         smaller.mass < 1.kg -> changes.remove(smaller.id)

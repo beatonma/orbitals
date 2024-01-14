@@ -1,6 +1,5 @@
 package org.beatonma.orbitals.core.test
 
-import org.beatonma.orbitals.core.physics.Body
 import org.beatonma.orbitals.core.physics.Density
 import org.beatonma.orbitals.core.physics.Distance
 import org.beatonma.orbitals.core.physics.FixedBody
@@ -14,7 +13,6 @@ import org.beatonma.orbitals.core.physics.ZeroPosition
 import org.beatonma.orbitals.core.physics.ZeroVelocity
 import org.beatonma.orbitals.core.physics.kg
 import org.beatonma.orbitals.core.physics.sizeOf
-import kotlin.test.assertTrue
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
@@ -68,8 +66,3 @@ fun greatAttractor(
     radius,
     age = age,
 )
-
-//
-//infix fun Body.shouldbe(other: Body) {
-//    assertTrue()
-//}

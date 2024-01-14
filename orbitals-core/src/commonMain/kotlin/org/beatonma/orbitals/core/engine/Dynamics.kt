@@ -44,6 +44,7 @@ internal fun applyCollision(
     }
 
     try {
+        reporter.clear()
         val collision: Collision = when (collisionStyle) {
             CollisionStyle.None -> return null
             CollisionStyle.Merge -> MergeCollision
@@ -51,8 +52,7 @@ internal fun applyCollision(
             CollisionStyle.Bouncy -> BouncyCollision
             CollisionStyle.Sticky -> StickyCollision
         }
-        reporter.clear()
-        return collision.invoke(larger, smaller, reporter)
+        return collision(larger, smaller, reporter)
     } catch (e: IllegalStateException) {
         warn("Error applying collision $collisionStyle (${larger.toSimpleString()} vs ${smaller.toSimpleString()}): $e")
         throw e

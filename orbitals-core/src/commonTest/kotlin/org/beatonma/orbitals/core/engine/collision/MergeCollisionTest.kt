@@ -11,6 +11,7 @@ import org.beatonma.orbitals.core.physics.Velocity
 import org.beatonma.orbitals.core.physics.kg
 import org.beatonma.orbitals.core.physics.metres
 import org.beatonma.orbitals.core.test.inertialBody
+import org.beatonma.orbitals.test.shouldbe
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -31,8 +32,14 @@ private fun assertConservationOfMomentum(
     assertEquals(originalMomentum, larger.momentum + smaller.momentum)
 
     // ...make sure that something actually happened
-    assertFalse(originalLarger.physicsEquals(larger), message = "No change after collision.")
-    assertFalse(originalSmaller.physicsEquals(smaller), message = "No change after collision.")
+    assertFalse(
+        originalLarger.physicsEquals(larger),
+        message = "No change after collision. $larger"
+    )
+    assertFalse(
+        originalSmaller.physicsEquals(smaller),
+        message = "No change after collision. $smaller"
+    )
 
     return result
 }
@@ -55,16 +62,17 @@ class MergeCollisionTest {
 
         assertConservationOfMomentum(larger, smaller)
     }
-}
 
+    @Test
+    fun testOverlapping() {
+        val a = inertialBody(mass = 51.kg, radius = 10.metres)
+        val b = inertialBody(mass = 50.kg, radius = 10.metres)
 
-private data class Tracker(val body: Body, val other: Body) {
-    val totalMass: Mass = body.mass + other.mass
-    val totalVelocity: Velocity = body.velocity + other.velocity
-    val totalMomentum: Momentum = body.momentum + other.momentum
+        val result = assertConservationOfMomentum(
+            a,
+            b,
+        )
 
-    override fun toString(): String =
-        "total ${totalMass}, $totalVelocity, $totalMomentum\n${describe(body)}\nvs\n${describe(other)}\n\n"
-
-    private fun describe(b: Body): String = "${b.mass}, ${b.velocity}, ${b.momentum}"
+        result!!.removed.size shouldbe 1
+    }
 }
