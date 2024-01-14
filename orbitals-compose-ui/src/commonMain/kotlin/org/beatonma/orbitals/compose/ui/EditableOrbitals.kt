@@ -13,10 +13,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,6 +29,9 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import org.beatonma.orbitals.core.OrbitalsBuildConfig
 import org.beatonma.orbitals.render.OrbitalsRenderEngine
 import org.beatonma.orbitals.render.compose.Orbitals
 import org.beatonma.orbitals.render.compose.toComposeColor
@@ -44,6 +50,11 @@ fun EditableOrbitals(
     engine: OrbitalsRenderEngine<DrawScope>,
 ) {
     var settingsVisible by remember { mutableStateOf(true) }
+    val onBackgroundColor = if (options.visualOptions
+            .colorOptions.background
+            .toComposeColor()
+            .luminance() > .5f
+    ) Color.Black else Color.White
 
     BoxWithConstraints {
         Orbitals(options, Modifier.fillMaxSize(), engine)
@@ -80,13 +91,32 @@ fun EditableOrbitals(
                     Icons.Default.Menu,
                     "Show settings",
                     Modifier.alpha(.4f),
-                    tint = if (options.visualOptions
-                            .colorOptions.background
-                            .toComposeColor()
-                            .luminance() > .5f
-                    ) Color.Black else Color.White
+                    tint = onBackgroundColor
                 )
             }
         }
+
+        if (OrbitalsBuildConfig.DEBUG) {
+            val bodyCount = poll(500L) { engine.bodies.size }
+
+            Text("$bodyCount objects", color = onBackgroundColor)
+        }
     }
+}
+
+@Composable
+private fun <T> poll(intervalMillis: Long, update: () -> T): T {
+    var value by remember { mutableStateOf(update()) }
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+        scope.launch {
+            while (true) {
+                delay(intervalMillis)
+                value = update()
+            }
+        }
+    }
+
+    return value
 }
