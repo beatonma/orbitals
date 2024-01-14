@@ -13,37 +13,27 @@ import org.beatonma.orbitals.render.color.MaterialRed
 import org.beatonma.orbitals.render.color.MaterialYellow
 
 data class ColorOptions(
-    val background: Color = Color(0xff000000),
+    val background: Color = Color.Black,
     val bodies: Set<ObjectColors> = setOf(
+        ObjectColors.Blue,
         ObjectColors.Greyscale,
+        ObjectColors.Yellow,
     ),
     val foregroundAlpha: Float = 1f,
 ) {
     fun colorFor(body: Body): Color =
-        Color(bodies.random().colors().random())
+        Color(bodies.random().colors.random())
 }
 
-enum class ObjectColors {
-    Greyscale,
-    Red,
-    Orange,
-    Yellow,
-    Green,
-    Blue,
-    Purple,
-    Pink,
-    Any,
+enum class ObjectColors(val colors: Array<Int>) {
+    Greyscale(MaterialGrey),
+    Red(MaterialRed),
+    Orange(MaterialOrange),
+    Yellow(MaterialYellow),
+    Green(MaterialGreen),
+    Blue(MaterialBlue),
+    Purple(MaterialPurple),
+    Pink(MaterialPink),
+    Any(MaterialColors),
     ;
-
-    fun colors(): Array<Int> = when (this) {
-        Greyscale -> MaterialGrey
-        Red -> MaterialRed
-        Orange -> MaterialOrange
-        Yellow -> MaterialYellow
-        Green -> MaterialGreen
-        Blue -> MaterialBlue
-        Purple -> MaterialPurple
-        Pink -> MaterialPink
-        Any -> MaterialColors
-    }
 }

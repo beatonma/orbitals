@@ -16,7 +16,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import org.beatonma.orbitals.core.util.info
 import org.beatonma.orbitals.render.color.Color
 import org.beatonma.orbitals.render.compose.toComposeColor
 import org.beatonma.orbitals.render.options.ColorOptions
@@ -76,7 +75,6 @@ private fun lightColors(
 private fun darkColors(
     colors: UiColors
 ): ColorScheme {
-    info(colors)
     return darkColorScheme(
         primary = colors.primary.toComposeColor(),
         onPrimary = colors.onPrimary.toComposeColor(),
@@ -127,10 +125,6 @@ private fun UiColors(isDark: Boolean, objectColors: Set<ObjectColors>): UiColors
         }
     )
 
-    info("primarySet: ${primarySet.joinToString(",")}")
-    info("secondarySet: ${secondarySet.joinToString(",")}")
-    info("tertiarySet: ${tertiarySet.joinToString(",")}")
-
     return UiColors(
         primary = primarySet.colorAt(5),
         onPrimary = primarySet.colorAt(9),
@@ -151,20 +145,20 @@ private fun UiColors(isDark: Boolean, objectColors: Set<ObjectColors>): UiColors
 private fun chooseColorSets(colors: Set<ObjectColors>): Triple<Array<Int>, Array<Int>, Array<Int>> {
     when (colors.size) {
         1 -> {
-            val c = colors.first().colors()
+            val c = colors.first().colors
             return Triple(c, c, c)
         }
 
         2 -> {
-            return Triple(colors.first().colors(), colors.last().colors(), colors.random().colors())
+            return Triple(colors.first().colors, colors.last().colors, colors.random().colors)
         }
 
         else -> {
             val sets = colors.toMutableList()
             return Triple(
-                sets.removeAt(Random.nextInt(sets.size)).colors(),
-                sets.removeAt(Random.nextInt(sets.size)).colors(),
-                sets.removeAt(Random.nextInt(sets.size)).colors()
+                sets.removeAt(Random.nextInt(sets.size)).colors,
+                sets.removeAt(Random.nextInt(sets.size)).colors,
+                sets.removeAt(Random.nextInt(sets.size)).colors
             )
         }
     }

@@ -540,8 +540,6 @@ val MaterialBlueGrey
 
 val MaterialColors
     get() = arrayOf(
-        0x000000,
-        0xffffff,
         *MaterialRed,
         *MaterialPink,
         *MaterialPurple,
