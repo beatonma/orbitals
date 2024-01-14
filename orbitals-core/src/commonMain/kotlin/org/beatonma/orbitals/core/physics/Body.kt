@@ -184,10 +184,8 @@ fun sizeOf(mass: Mass, density: Density): Distance {
     return radius.metres
 }
 
-fun Body.inContactWith(other: Body): Boolean {
-    val distance = this.position.distanceTo(other.position)
-    return distance < radius || distance < other.radius
-}
+fun Body.inContactWith(other: Body): Boolean =
+    position.distanceTo(other.position) < (radius + other.radius)
 
 fun centerOfMass(a: Body, b: Body): Position {
     val totalMass = a.mass + b.mass
