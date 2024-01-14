@@ -3,8 +3,10 @@ package org.beatonma.orbitals.core.physics
 import org.beatonma.orbitals.core.test.DefaultTestDensity
 import org.beatonma.orbitals.core.test.DefaultTestG
 import org.beatonma.orbitals.core.test.differenceWith
+import org.beatonma.orbitals.core.test.fixedBody
 import org.beatonma.orbitals.core.test.inertialBody
 import org.beatonma.orbitals.core.test.shouldbe
+import org.beatonma.orbitals.test.shouldbe
 import kotlin.test.Test
 import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.milliseconds
@@ -197,6 +199,26 @@ class BodyTest {
             inertialBody(5.kg, position = Position(-10, 35)),
             inertialBody(15.kg, position = Position(10, -5))
         ) shouldbe Position(5, 5)
+    }
+
+    @Test
+    fun testInContactWith() {
+        inertialBody().inContactWith(inertialBody()) shouldbe true
+        fixedBody().inContactWith(inertialBody()) shouldbe true
+
+        inertialBody(radius = 1.metres).inContactWith(
+            inertialBody(
+                position = Position(2, 0),
+                radius = 1.metres
+            )
+        ) shouldbe true
+
+        inertialBody(radius = .95.metres).inContactWith(
+            inertialBody(
+                position = Position(2, 0),
+                radius = 1.metres
+            )
+        ) shouldbe false
     }
 }
 
