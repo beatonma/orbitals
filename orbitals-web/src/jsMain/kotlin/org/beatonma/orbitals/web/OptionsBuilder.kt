@@ -102,10 +102,7 @@ private fun aboutVisualOptions(): String {
         VisualKeys.DrawStyle to DrawStyle.values().chooseOne(),
         VisualKeys.TraceLength to int(50),
         VisualKeys.StrokeWidth to float(4f),
-        VisualKeys.RenderLayers to RenderLayer.values().filterNot {
-            // Alpha compositing issues in the browser make this kind of ugly
-            it == RenderLayer.Drip
-        }.toTypedArray().chooseMultiple(),
+        VisualKeys.RenderLayers to RenderLayer.values().chooseMultiple(),
     ).join("Visual options")
 }
 

@@ -4,7 +4,6 @@ import org.beatonma.orbitals.core.physics.Body
 import org.beatonma.orbitals.render.options.RenderLayer
 import org.beatonma.orbitals.render.options.VisualOptions
 import org.beatonma.orbitals.render.renderer.AccelerationRenderer
-import org.beatonma.orbitals.render.renderer.DripRenderer
 import org.beatonma.orbitals.render.renderer.SimpleRenderer
 import org.beatonma.orbitals.render.renderer.TrailRenderer
 import kotlin.reflect.KClass
@@ -24,7 +23,6 @@ private class LayerRegistry<Canvas> {
             AccelerationRenderer::class,
             ::AccelerationRenderer
         ),
-        RenderLayer.Drip to LayerRenderer(DripRenderer::class, ::DripRenderer),
     )
 
     operator fun get(key: RenderLayer) = registry[key]!!

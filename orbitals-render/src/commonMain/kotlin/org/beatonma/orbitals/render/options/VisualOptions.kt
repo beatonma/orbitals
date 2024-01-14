@@ -5,7 +5,7 @@ data class VisualOptions(
     val renderLayers: Set<RenderLayer> = setOf(RenderLayer.Default),
     val focusCenterOfMass: Boolean = false,
     val traceLineLength: Int = 25,
-    val drawStyle: DrawStyle = DrawStyle.Wireframe,
+    val drawStyle: DrawStyle = DrawStyle.Solid,
     val strokeWidth: Float = 4f,
     val bodyScale: Float = 1f,
     val colorOptions: ColorOptions = ColorOptions(),
@@ -31,6 +31,5 @@ enum class RenderLayer {
     Default,
     Acceleration,
     Trails,
-    Drip,
     ;
 }
