@@ -19,6 +19,7 @@ import kotlin.time.Duration.Companion.seconds
 const val DefaultTestG = 6.674f
 val DefaultTestDensity = Density(1f)
 val DefaultTestMass = 100.kg
+val DefaultColliderAge = 10.seconds
 
 
 fun inertialBody(

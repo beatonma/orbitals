@@ -1,6 +1,6 @@
 package org.beatonma.orbitals.core.physics
 
-import org.beatonma.orbitals.core.engine.CollisionMinimumAge
+import org.beatonma.orbitals.core.engine.Config
 import org.beatonma.orbitals.core.util.currentTimeMillis
 import kotlin.math.PI
 import kotlin.math.pow
@@ -52,8 +52,8 @@ sealed interface Body : Collider {
     val momentum: Momentum get() = mass * velocity
 
     override var lastCollision: Long
-    override fun canCollide(now: Long): Boolean = mass != ZeroMass &&
-            now - lastCollision > CollisionMinimumAge.inWholeMilliseconds
+    override fun canCollide(now: Long): Boolean = mass != ZeroMass
+            && age > Config.CollisionMinimumAge
 
     fun applyInertia(timeDelta: Duration)
     fun applyGravity(other: Body, timeDelta: Duration, G: Float)

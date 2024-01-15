@@ -34,5 +34,10 @@ internal interface CollisionLog : CollisionResults {
     fun add(bodies: List<Body>): CollisionLog
     fun remove(bodies: List<UniqueID>): CollisionLog
 
+    operator fun plus(body: Body) = add(body)
+    operator fun plus(bodies: List<Body>) = add(bodies)
+    operator fun minus(body: UniqueID) = remove(body)
+    operator fun minus(bodies: List<UniqueID>) = remove(bodies)
+
     fun clear()
 }

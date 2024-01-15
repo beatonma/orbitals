@@ -37,6 +37,7 @@ value class Mass internal constructor(override val value: Float) : Scalar {
 
     operator fun div(distance: Distance): Float = value / distance.value
     operator fun div(factor: Float): Mass = (value / factor).kg
+    operator fun div(factor: Int): Mass = (value / factor).kg
     operator fun div(other: Mass): Float = value / other.value
     operator fun div(density: Density): Volume = Volume(value / density.value)
 }

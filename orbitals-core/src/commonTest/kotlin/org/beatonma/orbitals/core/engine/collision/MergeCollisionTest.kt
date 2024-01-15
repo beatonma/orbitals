@@ -2,14 +2,12 @@ package org.beatonma.orbitals.core.engine.collision
 
 import org.beatonma.orbitals.core.engine.applyCollision
 import org.beatonma.orbitals.core.options.CollisionStyle
-import org.beatonma.orbitals.core.physics.Body
 import org.beatonma.orbitals.core.physics.InertialBody
-import org.beatonma.orbitals.core.physics.Mass
-import org.beatonma.orbitals.core.physics.Momentum
 import org.beatonma.orbitals.core.physics.Position
 import org.beatonma.orbitals.core.physics.Velocity
 import org.beatonma.orbitals.core.physics.kg
 import org.beatonma.orbitals.core.physics.metres
+import org.beatonma.orbitals.core.test.DefaultColliderAge
 import org.beatonma.orbitals.core.test.inertialBody
 import org.beatonma.orbitals.test.shouldbe
 import kotlin.test.Test
@@ -52,12 +50,14 @@ class MergeCollisionTest {
             radius = 1.metres,
             position = Position(0, 0),
             velocity = Velocity(1, 0),
+            age = DefaultColliderAge,
         )
         val smaller = inertialBody(
             mass = 50.kg,
             radius = 1.metres,
             position = Position(0, .5),
-            velocity = Velocity(-2, 0)
+            velocity = Velocity(-2, 0),
+            age = DefaultColliderAge,
         )
 
         assertConservationOfMomentum(larger, smaller)
@@ -65,8 +65,8 @@ class MergeCollisionTest {
 
     @Test
     fun testOverlapping() {
-        val a = inertialBody(mass = 51.kg, radius = 10.metres)
-        val b = inertialBody(mass = 50.kg, radius = 10.metres)
+        val a = inertialBody(mass = 51.kg, radius = 10.metres, age = DefaultColliderAge)
+        val b = inertialBody(mass = 50.kg, radius = 10.metres, age = DefaultColliderAge)
 
         val result = assertConservationOfMomentum(
             a,

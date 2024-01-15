@@ -61,3 +61,13 @@ value class Speed internal constructor(override val value: Float) : Scalar {
 
 operator fun Float.times(speed: Speed) = speed * this
 operator fun Float.times(velocity: Velocity) = velocity * this
+
+fun Velocity(magnitude: Speed, theta: Angle) = Velocity(
+    x = magnitude * cos(theta),
+    y = magnitude * sin(theta),
+)
+
+fun Velocity.rotateBy(angle: Angle): Velocity = Velocity(
+    (cos(angle) * x) - (sin(angle) * y),
+    (sin(angle) * x) + (cos(angle) * y)
+)
