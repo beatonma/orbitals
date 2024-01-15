@@ -33,10 +33,7 @@ internal val MergeCollision = Collision { larger, smaller, changes ->
         else -> smallMomentum / smaller.mass
     }
 
-    when {
-        smaller.mass < 1.kg -> changes.remove(smaller.id)
-        else -> null
-    }
+    null
 }
 
 private val NoMomentumMerge = Collision { larger, smaller, changes ->
