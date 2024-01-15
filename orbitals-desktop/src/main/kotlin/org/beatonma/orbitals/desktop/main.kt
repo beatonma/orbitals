@@ -3,6 +3,9 @@ package org.beatonma.orbitals.desktop
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
@@ -22,6 +25,7 @@ import org.beatonma.orbitals.render.options.Options
 import org.beatonma.orbitals.render.options.OptionsStore
 import org.beatonma.orbitals.render.options.StringKey
 import org.beatonma.orbitals.render.options.StringSetKey
+import androidx.compose.ui.input.key.Key as KeyCode
 
 fun main() = application {
     val persistence = PersistentOptions
@@ -32,7 +36,23 @@ fun main() = application {
         state = rememberWindowState(
             size = DpSize(1600.dp, 1200.dp),
         ),
-        title = "Orbitals"
+        title = "Orbitals",
+        onKeyEvent = { event ->
+            if (event.type != KeyEventType.KeyDown) return@Window false
+            when (event.key) {
+                KeyCode.Spacebar -> {
+                    engine.addBodies()
+                    true
+                }
+
+                KeyCode.Delete, KeyCode.Backspace -> {
+                    engine.clear()
+                    true
+                }
+
+                else -> false
+            }
+        }
     ) {
         OrbitalsTheme(
             persistence.options.visualOptions.colorOptions,
