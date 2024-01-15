@@ -4,8 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import org.beatonma.orbitalslivewallpaper.ui.App
 import org.beatonma.orbitalslivewallpaper.ui.AppTheme
-import org.beatonma.orbitalslivewallpaper.ui.SettingsUI
 
 
 class MainActivity : ComponentActivity() {
@@ -16,7 +16,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             AppTheme {
-                SettingsUI()
+                App()
             }
         }
     }

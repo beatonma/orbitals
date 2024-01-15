@@ -12,21 +12,23 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme.colorScheme
-import androidx.compose.material3.MaterialTheme.typography
-import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.typography
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
@@ -69,6 +71,19 @@ private val SettingModifier: Modifier
         .padding(16.dp)
         .fillMaxWidth()
 
+@Composable
+private operator fun PaddingValues.plus(other: PaddingValues): PaddingValues {
+    val layoutDirection = LocalLayoutDirection.current
+    return PaddingValues(
+        start = this.calculateStartPadding(layoutDirection) + other.calculateStartPadding(
+            layoutDirection
+        ),
+        top = this.calculateTopPadding() + other.calculateTopPadding(),
+        end = this.calculateEndPadding(layoutDirection) + other.calculateEndPadding(layoutDirection),
+        bottom = this.calculateBottomPadding() + other.calculateBottomPadding()
+    )
+}
+
 
 @Composable
 internal fun SettingsUI(
@@ -76,6 +91,7 @@ internal fun SettingsUI(
     availableHeight: Dp,
     options: Options,
     persistence: OptionPersistence,
+    insets: PaddingValues = PaddingValues(),
     modifier: Modifier = Modifier,
     onClose: () -> Unit,
 ) {
@@ -85,7 +101,7 @@ internal fun SettingsUI(
                 options,
                 persistence,
                 modifier,
-                PaddingValues(
+                insets + PaddingValues(
                     top = min(availableHeight / 2, 320.dp),
                     bottom = 160.dp,
                     start = 16.dp,

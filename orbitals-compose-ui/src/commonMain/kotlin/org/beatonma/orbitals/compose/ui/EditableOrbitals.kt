@@ -46,24 +46,46 @@ private val ContentPadding = 16.dp
 fun EditableOrbitals(
     options: Options,
     persistence: OptionPersistence,
-    contentPadding: PaddingValues = PaddingValues(),
+    insets: PaddingValues = PaddingValues(),
     engine: OrbitalsRenderEngine<DrawScope>,
 ) {
-    var settingsVisible by remember { mutableStateOf(true) }
-    val onBackgroundColor = if (options.visualOptions
-            .colorOptions.background
-            .toComposeColor()
-            .luminance() > .5f
-    ) Color.Black else Color.White
+    var settingsVisible by remember { mutableStateOf(false) }
+
+    EditableOrbitals(
+        settingsVisible,
+        { settingsVisible = it },
+        options,
+        persistence,
+        insets,
+        engine,
+    )
+}
+
+@Composable
+fun EditableOrbitals(
+    settingsVisible: Boolean,
+    onSettingsVisibleChange: (Boolean) -> Unit,
+    options: Options,
+    persistence: OptionPersistence,
+    insets: PaddingValues = PaddingValues(),
+    engine: OrbitalsRenderEngine<DrawScope>,
+) {
+    var onBackgroundColor by remember { mutableStateOf(Color.Black) }
+
+    LaunchedEffect(options) {
+        onBackgroundColor = if (options.visualOptions
+                .colorOptions.background
+                .toComposeColor()
+                .luminance() > .5f
+        ) Color.Black else Color.White
+    }
 
     BoxWithConstraints {
         Orbitals(options, Modifier.fillMaxSize(), engine)
 
         AnimatedVisibility(
             settingsVisible,
-            Modifier
-                .align(Alignment.BottomEnd)
-                .padding(contentPadding),
+            Modifier.align(Alignment.BottomEnd),
             enter = slideInVertically { it },
             exit = slideOutVertically { it },
         ) {
@@ -73,20 +95,22 @@ fun EditableOrbitals(
                     constraints.maxHeight.toDp(),
                     options,
                     persistence,
-                ) { settingsVisible = false }
+                    insets = insets,
+                    onClose = { onSettingsVisibleChange(false) }
+                )
             }
         }
 
         AnimatedVisibility(
             !settingsVisible,
             Modifier
-                .padding(contentPadding)
+                .padding(insets)
                 .padding(ContentPadding)
                 .align(Alignment.BottomEnd),
             enter = fadeIn(),
             exit = fadeOut()
         ) {
-            IconButton({ settingsVisible = true }) {
+            IconButton({ onSettingsVisibleChange(true) }) {
                 Icon(
                     Icons.Default.Menu,
                     "Show settings",

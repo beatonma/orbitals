@@ -3,6 +3,7 @@ package org.beatonma.orbitalslivewallpaper.ui
 import android.app.Application
 import android.view.KeyEvent
 import android.view.View
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.material3.Scaffold
@@ -10,6 +11,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.lifecycle.ViewModel
@@ -21,7 +25,7 @@ import org.beatonma.orbitals.render.options.Options
 import org.beatonma.orbitalslivewallpaper.Settings
 
 @Composable
-fun SettingsUI(
+fun App(
     viewmodel: SettingsViewModel = viewModel(
         factory = SettingsViewModelFactory(
             LocalContext.current.applicationContext as Application,
@@ -33,6 +37,11 @@ fun SettingsUI(
 
     val options by viewmodel.getOptions().collectAsState(initial = Options())
     val engine = rememberOrbitalsRenderEngine(options = options)
+    var settingsVisible by remember { mutableStateOf(false) }
+
+    BackHandler(enabled = settingsVisible) {
+        settingsVisible = false
+    }
 
     DisposableEffect(view) {
         val keyListener: View.OnKeyListener = View.OnKeyListener { v, keyCode, event ->
@@ -54,9 +63,11 @@ fun SettingsUI(
 
     Scaffold(contentWindowInsets = WindowInsets.safeDrawing) { insets ->
         EditableOrbitals(
-            options,
+            settingsVisible,
+            { settingsVisible = it },
+            options = options,
             persistence = viewmodel,
-            contentPadding = insets,
+            insets = insets,
             engine = engine,
         )
     }
