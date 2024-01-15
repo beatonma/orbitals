@@ -190,11 +190,8 @@ fun Body.inContactWith(other: Body): Boolean =
 fun centerOfMass(a: Body, b: Body): Position {
     val totalMass = a.mass + b.mass
 
-    val centerOfMass =
-        (
-                (a.position.toGeneric() * a.mass.toGeneric())
-                        + (b.position.toGeneric() * b.mass.toGeneric())
-                ) * (1f / totalMass.value)
+    val x = ((a.position.x * a.mass.value) + (b.position.x * b.mass.value)) / (totalMass.value)
+    val y = ((a.position.y * a.mass.value) + (b.position.y * b.mass.value)) / (totalMass.value)
 
-    return Position(centerOfMass.x.value, centerOfMass.y.value)
+    return Position(x, y)
 }
