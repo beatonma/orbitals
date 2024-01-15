@@ -63,8 +63,5 @@ tasks.withType<KotlinCompile>().all {
         jvmTarget = Versions.Java.toString()
         languageVersion = Versions.KotlinLanguage
         apiVersion = Versions.KotlinLanguage
-//        freeCompilerArgs = freeCompilerArgs + listOf(
-//            "-Xopt-in=kotlin.RequiresOptIn", // Hide warnings about @OptIn annotations.
-//        )
     }
 }
