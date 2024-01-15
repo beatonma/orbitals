@@ -32,7 +32,6 @@ import org.beatonma.orbitals.render.color.Color
 import org.beatonma.orbitals.render.color.MaterialColorSwatch
 import org.beatonma.orbitals.render.compose.toComposeColor
 import org.beatonma.orbitals.render.options.ColorKey
-import org.beatonma.orbitals.render.options.IntKey
 import kotlin.math.max
 import androidx.compose.ui.graphics.Color as ComposeColor
 
@@ -54,9 +53,11 @@ fun ColorSetting(
         onValueChange(key, Color.hsla(hsl.hue, hsl.saturation, hsl.lightness))
     }
 
-    val swatchIndex = colors.indexOf(value.toRgbInt())
-    if (swatchIndex >= 0) {
-        scope.launch { swatchState.animateScrollToItem(max(0, swatchIndex - 1)) }
+    LaunchedEffect(value) {
+        val swatchIndex = colors.indexOf(value.toRgbInt())
+        if (swatchIndex >= 0) {
+            scope.launch { swatchState.animateScrollToItem(max(0, swatchIndex - 1)) }
+        }
     }
 
     OutlinedSettingLayout(modifier.heightIn(max = 450.dp)) {
