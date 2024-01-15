@@ -13,17 +13,12 @@ import org.beatonma.orbitals.core.physics.Inertial
 import org.beatonma.orbitals.core.physics.InertialBody
 import org.beatonma.orbitals.core.physics.UniqueID
 import org.beatonma.orbitals.core.physics.contains
-import org.beatonma.orbitals.core.physics.kg
 import org.beatonma.orbitals.core.physics.toInertialBody
 import org.beatonma.orbitals.core.util.timeIt
 import org.beatonma.orbitals.core.util.warn
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.milliseconds
 
 private val BodySortBy = Body::mass
-
-private val BodyMassLimit = 1500.kg
-internal val CollisionMinimumAge = 150.milliseconds
 
 interface OrbitalsEngine {
     val space: Universe
@@ -96,9 +91,17 @@ open class DefaultOrbitalsEngine(override var physics: PhysicsOptions) : Orbital
     }
 
     final override fun add(bodies: List<Body>) {
-        if (bodies.isNotEmpty()) {
-            this.bodies += bodies
-            super.add(bodies)
+        when {
+            bodies.isEmpty() -> return
+
+            bodyCount + bodies.size > physics.maxEntities -> {
+                add(bodies.take((physics.maxEntities - bodyCount).coerceAtLeast(0)))
+            }
+
+            else -> {
+                this.bodies += bodies
+                super.add(bodies)
+            }
         }
     }
 
@@ -125,29 +128,33 @@ open class DefaultOrbitalsEngine(override var physics: PhysicsOptions) : Orbital
                 it.tick(timeDelta)
             }
 
-            if (bodyCount > 1) {
-                bodies.fastForEachIndexed { index, body ->
+            bodies.fastForEachIndexed { index, body ->
+                for (i in (index + 1) until bodyCount) {
+                    val other = bodies[i]
+                    body.applyGravity(other, timeDelta, G = physics.G)
+                    other.applyGravity(body, timeDelta, G = physics.G)
 
-                    for (i in (index + 1) until bodyCount) {
-                        val other = bodies[i]
-                        body.applyGravity(other, timeDelta, G = physics.G)
-                        other.applyGravity(body, timeDelta, G = physics.G)
-
-                        applyCollision(
-                            body,
-                            other,
-                            physics.collisionStyle
-                        )?.let { (added, removed) ->
-                            addedBodies += added
-                            removedBodyIds += removed
-                        }
+                    applyCollision(
+                        body,
+                        other,
+                        physics.collisionStyle
+                    )?.let { (added, removed) ->
+                        addedBodies += added
+                        removedBodyIds += removed
                     }
 
-                    if (body is Inertial && body.mass > BodyMassLimit) {
-                        val added = body.explode()
-                        addedBodies += added
+                    if (body.mass < Config.MinObjectMass) {
                         removedBodyIds += body.id
                     }
+                    if (other.mass < Config.MinObjectMass) {
+                        removedBodyIds += other.id
+                    }
+                }
+
+                if (body is Inertial && body.mass > Config.MaxObjectMass) {
+                    val added = body.explode()
+                    addedBodies += added
+                    removedBodyIds += body.id
                 }
             }
 
