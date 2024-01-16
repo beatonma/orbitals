@@ -29,4 +29,5 @@ internal fun Float.divideUnevenly(divisor: Int, variance: Float = .5f): List<Flo
 }
 
 val randomDirection: Float get() = if (Random.nextBoolean()) 1f else -1f
+fun randomDirection(magnitude: Float): Float = magnitude * randomDirection
 fun <T> randomChoice(vararg options: T): T = options[Random.nextInt(options.size)]

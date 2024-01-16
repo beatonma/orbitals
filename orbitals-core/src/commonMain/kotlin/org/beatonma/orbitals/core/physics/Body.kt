@@ -12,7 +12,7 @@ val ZeroMass = 0f.kg
 val ZeroDistance = 0f.metres
 val ZeroAcceleration = Acceleration(AccelerationScalar(0f), AccelerationScalar(0f))
 val ZeroPosition = Position(ZeroDistance, ZeroDistance)
-val ZeroVelocity = Velocity(0f.metres.perSecond, 0f.metres.perSecond)
+val ZeroVelocity = Velocity(0f.metresPerSecond, 0f.metresPerSecond)
 val ZeroMotion get() = Motion(ZeroPosition, ZeroVelocity)
 
 

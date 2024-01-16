@@ -6,7 +6,7 @@ import org.beatonma.orbitals.core.util.warn
 import kotlin.jvm.JvmInline
 
 val Float.kg: Mass get() = Mass(this)
-val Number.kg: Mass get() = this.toFloat().kg
+val Number.kg: Mass get() = Mass(this.toFloat())
 
 /**
  * Kilograms
@@ -31,13 +31,13 @@ value class Mass internal constructor(override val value: Float) : Scalar {
         } else Mass(result)
     }
 
-    operator fun times(multiplier: Float): Mass = (value * multiplier).kg
+    operator fun times(multiplier: Float): Mass = Mass(value * multiplier)
     operator fun times(other: Mass): Float = value * other.value
     operator fun times(velocity: Velocity): Momentum = velocity * this
 
     operator fun div(distance: Distance): Float = value / distance.value
-    operator fun div(factor: Float): Mass = (value / factor).kg
-    operator fun div(factor: Int): Mass = (value / factor).kg
+    operator fun div(factor: Float): Mass = Mass(value / factor)
+    operator fun div(factor: Int): Mass = Mass(value / factor)
     operator fun div(other: Mass): Float = value / other.value
     operator fun div(density: Density): Volume = Volume(value / density.value)
 }

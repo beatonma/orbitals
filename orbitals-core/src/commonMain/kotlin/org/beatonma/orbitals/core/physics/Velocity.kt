@@ -3,12 +3,9 @@ package org.beatonma.orbitals.core.physics
 import org.beatonma.orbitals.core.format
 import kotlin.jvm.JvmInline
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
 
-
-val Distance.perSecond: Speed
-    get() = this / 1.seconds
+val Float.metresPerSecond: Speed get() = Speed(this)
 
 data class Velocity internal constructor(
     override val x: Speed = Speed(0f),

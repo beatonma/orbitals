@@ -7,14 +7,13 @@ import org.beatonma.orbitals.core.physics.Motion
 import org.beatonma.orbitals.core.physics.Velocity
 import org.beatonma.orbitals.core.physics.angleTo
 import org.beatonma.orbitals.core.physics.kg
-import org.beatonma.orbitals.core.physics.metres
-import org.beatonma.orbitals.core.physics.perSecond
+import org.beatonma.orbitals.core.physics.metresPerSecond
 import kotlin.random.Random
 
 internal val CollisionTestGenerator = Generator { space, bodies, physics ->
     val firstPosition = space.relativePosition(position(), position())
     val secondPosition = space.relativePosition(position(), position())
-    val speed = 50.metres.perSecond
+    val speed = 50f.metresPerSecond
 
     listOf(
         InertialBody(

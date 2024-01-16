@@ -8,7 +8,6 @@ import org.beatonma.orbitals.core.engine.generators.IdealStarSystemGenerator
 import org.beatonma.orbitals.core.engine.generators.RandomGenerator
 import org.beatonma.orbitals.core.engine.generators.StarSystemGenerator
 import org.beatonma.orbitals.core.engine.generators.debug.CollisionTestGenerator
-import org.beatonma.orbitals.core.mapTo
 import org.beatonma.orbitals.core.options.PhysicsOptions
 import org.beatonma.orbitals.core.percent
 import org.beatonma.orbitals.core.physics.Body
@@ -22,8 +21,6 @@ import org.beatonma.orbitals.core.physics.Position
 import org.beatonma.orbitals.core.physics.Velocity
 import org.beatonma.orbitals.core.physics.ZeroVelocity
 import org.beatonma.orbitals.core.physics.getOrbitalMotion
-import org.beatonma.orbitals.core.physics.kg
-import org.beatonma.orbitals.core.physics.metres
 import org.beatonma.orbitals.core.physics.uniqueID
 import org.beatonma.orbitals.core.util.debug
 import kotlin.math.max
@@ -31,7 +28,7 @@ import kotlin.random.Random
 
 
 internal fun interface Generator {
-    fun GeneratorScope.invoke(
+    operator fun GeneratorScope.invoke(
         space: Space,
         bodies: List<Body>,
         physics: PhysicsOptions
@@ -48,7 +45,7 @@ internal object GeneratorScope {
         name: String,
         position: Position,
         density: Density,
-        mass: Mass = starMass(),
+        mass: Mass = Config.getStarMass(),
         velocity: Velocity = ZeroVelocity,
         asFixedBody: Boolean = chance(10.percent),
     ): Body {
@@ -72,7 +69,7 @@ internal object GeneratorScope {
     fun satelliteOf(
         parent: Body,
         distance: Distance,
-        mass: Mass = planetMass(),
+        mass: Mass = Config.getPlanetMass(),
         density: Density,
         G: Float,
     ): InertialBody =
@@ -83,25 +80,14 @@ internal object GeneratorScope {
             motion = getOrbitalMotion(mass, distance, parent, G = G),
         )
 
-    fun anyDistance(min: Distance, max: Distance) =
-        Random.nextFloat().mapTo(min.value, max.value).metres
-
     fun anyMass(): Mass = when {
-        chance(2.percent) -> asteroidMass()
-        chance(5.percent) -> starMass()
-        else -> planetMass()
+        chance(2.percent) -> Config.getAsteroidMass()
+        chance(5.percent) -> Config.getStarMass()
+        else -> Config.getPlanetMass()
     }
-
-    fun asteroidMass(): Mass = Random.nextFloat().kg
-    fun attractorMass(): Mass = Random.nextInt(2500, 5000).kg
-    private fun planetMass(): Mass = Random.nextInt(5, 20).kg
-    private fun starMass(): Mass = Random.nextInt(50, 200).kg
 
     val List<Body>.fixedBodies: List<FixedBody>
         get() = filterIsInstance<FixedBody>()
-
-
-    fun direction(): Int = if (chance(50.percent)) -1 else 1
 }
 
 enum class SystemGenerator(private val generator: Generator) {
@@ -146,7 +132,7 @@ enum class SystemGenerator(private val generator: Generator) {
         }
 
         return generator.run {
-            GeneratorScope.invoke(space, bodies, physics)
+            GeneratorScope(space, bodies, physics)
         }
     }
 }

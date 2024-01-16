@@ -1,10 +1,10 @@
 package org.beatonma.orbitals.core.engine.generators
 
+import org.beatonma.orbitals.core.engine.Config
 import org.beatonma.orbitals.core.engine.Generator
 import org.beatonma.orbitals.core.engine.relativePosition
 import org.beatonma.orbitals.core.physics.InertialBody
 import org.beatonma.orbitals.core.physics.Motion
-import org.beatonma.orbitals.core.physics.Velocity
 import org.beatonma.orbitals.core.physics.uniqueID
 import kotlin.random.Random
 
@@ -17,7 +17,7 @@ internal val RandomGenerator = Generator { space, _, physics ->
             density = physics.bodyDensity,
             motion = Motion(
                 space.relativePosition(Random.nextFloat(), Random.nextFloat()),
-                Velocity(Random.nextInt(-5, 5), Random.nextInt(-5, 5))
+                Config.getVelocity()
             )
         )
     }

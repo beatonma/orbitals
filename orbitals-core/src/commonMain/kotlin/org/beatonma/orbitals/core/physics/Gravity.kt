@@ -1,24 +1,24 @@
 package org.beatonma.orbitals.core.physics
 
 import org.beatonma.orbitals.core.chance
+import org.beatonma.orbitals.core.engine.Config
 import org.beatonma.orbitals.core.percent
 import kotlin.math.sqrt
 import kotlin.random.Random
 
-private const val SCALE = 1e14f
 
 /**
  * Units: m^3 kg^-1 s^-2
  */
 private const val GRAVITATIONAL_CONSTANT_ACTUAL = 6.674e-11f
-internal const val DefaultG = GRAVITATIONAL_CONSTANT_ACTUAL * SCALE
+internal const val DefaultG = GRAVITATIONAL_CONSTANT_ACTUAL * Config.GravityScale
 
 
 fun calculateGravitationalForce(
     mass: Mass,
     otherMass: Mass,
     distance: Distance,
-    minDistance: Distance = 30.metres, // Force a minimum distance to avoid extreme behaviour.
+    minDistance: Distance = Config.MinGravityDistance, // Force a minimum distance to avoid extreme behaviour.
     G: Float,
 ): Force {
     val distanceSquared = distance
@@ -75,7 +75,7 @@ private fun getOrbitalSpeed(
 ): Speed =
     sqrt(
         (G * (firstMass + secondMass).value / distance.value)
-    ).metres.perSecond
+    ).metresPerSecond
 
 private fun getVelocity(speed: Speed, tangentialAngle: Angle) = Velocity(
     speed * cos(tangentialAngle),

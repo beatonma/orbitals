@@ -5,11 +5,8 @@ import kotlin.jvm.JvmInline
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 
-val Float.km: Distance get() = Distance(this * 1000f)
-val Number.km: Distance get() = this.toFloat().km
-
 val Float.metres: Distance get() = Distance(this)
-val Number.metres: Distance get() = this.toFloat().metres
+val Number.metres: Distance get() = Distance(this.toFloat())
 
 /**
  * Metres
@@ -26,22 +23,20 @@ value class Distance internal constructor(
     operator fun minus(other: Distance) = Distance(value - other.value)
 
     operator fun div(other: Distance): Float = value / other.value
-    operator fun div(factor: Float): Distance = (value / factor).metres
+    operator fun div(factor: Float): Distance = Distance(value / factor)
 
     operator fun div(duration: Duration): Speed =
-        Speed(this.value / duration.toDouble(DurationUnit.SECONDS))
+        Speed(value / duration.toDouble(DurationUnit.SECONDS))
 
-    operator fun compareTo(other: Distance): Int = this.value.compareTo(other.value)
-    operator fun compareTo(other: Float): Int = this.value.compareTo(other)
+    operator fun compareTo(other: Distance): Int = value.compareTo(other.value)
+    operator fun compareTo(other: Float): Int = value.compareTo(other)
 
     operator fun unaryMinus(): Distance = Distance(-value)
 
     override fun toString(): String = "${value.format()}m"
 }
 
-val Distance.squared: Float get() = squareOf(this.value)
-fun Distance.coerceAtLeast(min: Distance): Distance {
-    return this.value.coerceAtLeast(min.value).metres
-}
+val Distance.squared: Float get() = squareOf(value)
+fun Distance.coerceAtLeast(min: Distance): Distance = Distance(value.coerceAtLeast(min.value))
 
 operator fun Float.times(distance: Distance) = distance * this

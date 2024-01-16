@@ -1,5 +1,6 @@
 package org.beatonma.orbitals.core.engine.generators
 
+import org.beatonma.orbitals.core.engine.Config
 import org.beatonma.orbitals.core.engine.Generator
 import org.beatonma.orbitals.core.engine.GeneratorScope
 import org.beatonma.orbitals.core.engine.Space
@@ -9,7 +10,6 @@ import org.beatonma.orbitals.core.physics.Body
 import org.beatonma.orbitals.core.physics.Distance
 import org.beatonma.orbitals.core.physics.Position
 import org.beatonma.orbitals.core.physics.distanceTo
-import org.beatonma.orbitals.core.physics.kg
 import org.beatonma.orbitals.core.physics.metres
 import kotlin.random.Random
 
@@ -25,13 +25,13 @@ internal val StarSystemGenerator = Generator { space, bodies, physics ->
         }
     }
 
-    val minDistance = (space.radius * .1f).metres
-    val maxDistance = (space.radius * .9f).metres
+    val minDistance: Int = (space.radius * .1f).toInt()
+    val maxDistance: Int = (space.radius * .9f).toInt()
 
     val satellites = createBodies(4) { _, _ ->
         satelliteOf(
             sun,
-            distance = anyDistance(minDistance, maxDistance),
+            distance = Random.nextInt(minDistance, maxDistance).metres,
             density = physics.bodyDensity,
             G = physics.G,
         )
@@ -55,15 +55,15 @@ internal val IdealStarSystemGenerator = Generator { space, bodies, physics ->
     val satellites = listOf<Body>(
         satelliteOf(
             sun,
-            space.radius.metres * .5f,
-            1.kg,
+            (space.radius * .5f).metres,
+            Config.getAsteroidMass(),
             physics.bodyDensity,
             G = physics.G,
         ),
         satelliteOf(
             sun,
-            space.radius.metres * .3f,
-            20.kg,
+            (space.radius * .3f).metres,
+            Config.getPlanetMass(),
             physics.bodyDensity,
             G = physics.G,
         )
@@ -78,10 +78,10 @@ internal val IdealStarSystemGenerator = Generator { space, bodies, physics ->
 /**
  * Try to find a random position that is at least [minDistance] away from any existing stars.
  */
-private fun GeneratorScope.generateStarPosition(
+internal fun GeneratorScope.generateStarPosition(
     space: Space,
     bodies: List<Body>,
-    minDistance: Distance = 300.metres
+    minDistance: Distance = Config.MinStarDistance,
 ): Position? {
     val existingStars = bodies.fixedBodies
 
@@ -93,14 +93,15 @@ private fun GeneratorScope.generateStarPosition(
 
         if (existingStars.isEmpty()) return candidatePosition
 
+        var acceptable = true
         for (star in existingStars) {
             val distance = candidatePosition.distanceTo(star.position)
             if (distance < minDistance) {
+                acceptable = false
                 break
-            } else {
-                return candidatePosition
             }
         }
+        if (acceptable) return candidatePosition
     }
 
     return null
