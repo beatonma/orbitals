@@ -1,5 +1,7 @@
 package org.beatonma.orbitals.core.physics
 
+import org.beatonma.orbitals.core.divideUnevenly
+import org.beatonma.orbitals.core.factorial
 import org.beatonma.orbitals.core.mapTo
 import org.beatonma.orbitals.core.test.shouldbe
 import org.beatonma.orbitals.core.test.shouldbePositive
@@ -19,9 +21,9 @@ class MathTest {
 
     @Test
     fun testSquareOf() {
-        squareOf(2f) shouldbe 4f
-        squareOf(3f) shouldbe 9f
-        squareOf(-1f) shouldbe 1f
+        org.beatonma.orbitals.core.squareOf(2f) shouldbe 4f
+        org.beatonma.orbitals.core.squareOf(3f) shouldbe 9f
+        org.beatonma.orbitals.core.squareOf(-1f) shouldbe 1f
     }
 
     @Test

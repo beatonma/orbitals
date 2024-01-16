@@ -2,33 +2,11 @@ package org.beatonma.orbitals.core
 
 import kotlin.random.Random
 
-/**
- * Calculate position relative to toMin..toMax based on relative position in range fromMin..fromMax.
- */
-fun Float.map(fromMin: Float, fromMax: Float, toMin: Float, toMax: Float): Float =
-    normalizeIn(fromMin, fromMax)
-        .mapTo(toMin, toMax)
-
-/**
- * Receiver value is assumed to be between 0F..1F!
- */
-fun Float.mapTo(min: Float, max: Float): Float {
-    val range: Float = max - min
-    return (min + (this * range))
-        .coerceIn(min, max)
-}
-
-/**
- * Map to a value between 0F..1F relative to the given limits.
- */
-fun Float.normalizeIn(min: Float, max: Float): Float {
-    val range = max - min
-    return ((this - min) / range)
-        .coerceIn(0F, 1F)
-}
-
-fun chance(likelihood: Float): Boolean =
-    Random.nextFloat() < likelihood
+fun chance(likelihood: Float): Boolean = Random.nextFloat() < likelihood
+val randomDirection: Float get() = if (Random.nextBoolean()) 1f else -1f
+fun randomDirection(magnitude: Float): Float = magnitude * randomDirection
+fun <T> randomChoice(vararg options: T): T = options[Random.nextInt(options.size)]
+fun Random.nextFloat(min: Float, max: Float) = Random.nextFloat().mapTo(min, max)
 
 val Int.percent get() = this.toFloat().percent
 val Float.percent get() = this / 100f

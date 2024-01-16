@@ -1,5 +1,6 @@
 package org.beatonma.orbitals.core.physics
 
+import org.beatonma.orbitals.core.divideUnevenly
 import org.beatonma.orbitals.core.format
 import kotlin.jvm.JvmInline
 

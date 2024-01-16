@@ -18,14 +18,26 @@ value class Angle internal constructor(override val value: Float) : Scalar {
     operator fun minus(other: Angle) = Angle(this.value - other.value)
 
     operator fun times(factor: Float) = Angle(this.value * factor)
-    operator fun times(distance: Distance) = Position(cos(this) * distance.value, sin(this) * distance.value)
+    operator fun times(distance: Distance) =
+        Position(cos(this) * distance.value, sin(this) * distance.value)
 
     operator fun div(divisor: Int) = Angle(this.value / divisor)
     operator fun div(divisor: Float) = Angle(this.value / divisor)
 
     internal fun toDirection() = Direction(this)
     override fun toString(): String = "$asDegrees°"
+    operator fun unaryMinus(): Angle = Angle(-value)
 }
+
+private class ClosedAngleRange(
+    override val start: Angle,
+    override val endInclusive: Angle
+) : ClosedFloatingPointRange<Angle> {
+    override fun lessThanOrEquals(a: Angle, b: Angle): Boolean = a.value <= b.value
+}
+
+operator fun Angle.rangeTo(that: Angle): ClosedFloatingPointRange<Angle> =
+    ClosedAngleRange(this, that)
 
 class Direction private constructor(
     override val x: Distance,
@@ -38,7 +50,8 @@ class Direction private constructor(
     override val magnitude: Distance
         get() = Distance(magnitude(x, y))
 
-    operator fun times(distance: Distance) = Position(x.value * distance.value, y.value * distance.value)
+    operator fun times(distance: Distance) =
+        Position(x.value * distance.value, y.value * distance.value)
 
     fun toAngle() = atan2(y.value, x.value).radians
 

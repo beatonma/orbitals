@@ -5,7 +5,7 @@ import org.beatonma.orbitals.core.engine.Generator
 import org.beatonma.orbitals.core.engine.relativePosition
 import org.beatonma.orbitals.core.physics.GreatAttractor
 import org.beatonma.orbitals.core.physics.Motion
-import org.beatonma.orbitals.core.physics.randomDirection
+import org.beatonma.orbitals.core.randomDirection
 
 
 internal val GreatAttractorGenerator = Generator { space, bodies, physics ->

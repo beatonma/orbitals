@@ -36,7 +36,7 @@ value class Distance internal constructor(
     override fun toString(): String = "${value.format()}m"
 }
 
-val Distance.squared: Float get() = squareOf(value)
+val Distance.squared: Float get() = org.beatonma.orbitals.core.squareOf(value)
 fun Distance.coerceAtLeast(min: Distance): Distance = Distance(value.coerceAtLeast(min.value))
 
 operator fun Float.times(distance: Distance) = distance * this

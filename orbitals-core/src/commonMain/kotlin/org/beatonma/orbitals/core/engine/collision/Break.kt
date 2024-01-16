@@ -2,23 +2,27 @@ package org.beatonma.orbitals.core.engine.collision
 
 import org.beatonma.orbitals.core.engine.Config
 import org.beatonma.orbitals.core.engine.collision.Collision.Companion.updateMassAndSize
+import org.beatonma.orbitals.core.engine.explode
 import org.beatonma.orbitals.core.engine.overlapOf
 import org.beatonma.orbitals.core.options.CollisionStyle
-import org.beatonma.orbitals.core.physics.Body
-import org.beatonma.orbitals.core.physics.Density
-import org.beatonma.orbitals.core.physics.InertialBody
-import org.beatonma.orbitals.core.physics.Mass
-import org.beatonma.orbitals.core.physics.Momentum
-import org.beatonma.orbitals.core.physics.Motion
-import org.beatonma.orbitals.core.physics.Position
+import org.beatonma.orbitals.core.physics.Angle
 import org.beatonma.orbitals.core.physics.angleTo
 import org.beatonma.orbitals.core.physics.degrees
-import org.beatonma.orbitals.core.physics.divideUnevenly
-import org.beatonma.orbitals.core.physics.randomChoice
-import org.beatonma.orbitals.core.physics.rotateBy
+import org.beatonma.orbitals.core.physics.rangeTo
 import org.beatonma.orbitals.core.physics.times
-import kotlin.random.Random
 
+
+// Ejecta will be directed in a cone of this size, centered around the normal.
+private val EjectaAngle = 120.degrees
+
+private enum class Direction(val angle: Angle) {
+    Forward(0.degrees),
+    Backward(180.degrees),
+    ;
+}
+
+private fun ejectaAngleRange(direction: Direction) =
+    (direction.angle - (EjectaAngle / 2))..(direction.angle + (EjectaAngle / 2))
 
 /**
  * See [CollisionStyle.Break].
@@ -29,8 +33,13 @@ internal val BreakCollision = Collision { larger, smaller, changes ->
     }
 
     val overlapAmount = overlapOf(larger, smaller)
-
     if (overlapAmount > .75f) return@Collision MergeCollision(larger, smaller, changes)
+
+    val massRatio = larger.mass / smaller.mass
+    if (massRatio in 0.8f..1.2f) {
+        // Similarly sized objects -> destroy both!
+        return@Collision changes + larger.explode() + smaller.explode() - larger.id - smaller.id
+    }
 
     val angle = smaller.position.angleTo(larger.position)
     val distance = larger.distanceTo(smaller)
@@ -38,7 +47,18 @@ internal val BreakCollision = Collision { larger, smaller, changes ->
 
     val ejectaMass = overlapAmount * smaller.mass
     val ejectaMomentum = ejectaMass * smaller.velocity
-    val ejecta = createEjecta(collisionPoint, ejectaMass, smaller.density, ejectaMomentum)
+    val direction = when {
+        massRatio > 2f -> Direction.Backward
+        else -> Direction.Forward
+    }
+    val ejecta =
+        explode(
+            collisionPoint,
+            ejectaMass,
+            smaller.density,
+            ejectaMomentum,
+            ejectaAngleRange(direction),
+        )
 
     when {
         ejecta.isEmpty() -> null
@@ -46,35 +66,5 @@ internal val BreakCollision = Collision { larger, smaller, changes ->
             smaller.updateMassAndSize(smaller.mass - ejectaMass)
             changes + ejecta
         }
-    }
-}
-
-
-private fun createEjecta(
-    origin: Position,
-    ejectaMass: Mass,
-    density: Density,
-    totalMomentum: Momentum,
-): List<Body> {
-    val ejectaCount = Random.nextInt(2, 20)
-
-    // Artificially reduce mass so we can dump more momentum into velocity.
-    val mass = ejectaMass / (ejectaCount * 2)
-    if (mass < Config.MinObjectMass) return emptyList()
-
-    return totalMomentum.divideUnevenly(ejectaCount).map { momentum ->
-        InertialBody(
-            mass,
-            density,
-            motion = Motion(
-                position = origin,
-                velocity = (momentum / mass).rotateBy(
-                    (randomChoice(0, 180) + Random.nextInt(
-                        -80,
-                        80
-                    )).degrees
-                )
-            )
-        )
     }
 }

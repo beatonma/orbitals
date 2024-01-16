@@ -7,15 +7,24 @@ import org.beatonma.orbitals.core.engine.collision.CollisionLog
 import org.beatonma.orbitals.core.engine.collision.CollisionResults
 import org.beatonma.orbitals.core.engine.collision.MergeCollision
 import org.beatonma.orbitals.core.engine.collision.StickyCollision
+import org.beatonma.orbitals.core.nextFloat
 import org.beatonma.orbitals.core.options.CollisionStyle
+import org.beatonma.orbitals.core.physics.Angle
 import org.beatonma.orbitals.core.physics.Body
+import org.beatonma.orbitals.core.physics.Density
 import org.beatonma.orbitals.core.physics.InertialBody
 import org.beatonma.orbitals.core.physics.Mass
+import org.beatonma.orbitals.core.physics.Momentum
 import org.beatonma.orbitals.core.physics.Motion
+import org.beatonma.orbitals.core.physics.Position
 import org.beatonma.orbitals.core.physics.UniqueID
+import org.beatonma.orbitals.core.physics.degrees
 import org.beatonma.orbitals.core.physics.distanceTo
 import org.beatonma.orbitals.core.physics.divideUnevenly
 import org.beatonma.orbitals.core.physics.inContactWith
+import org.beatonma.orbitals.core.physics.rangeTo
+import org.beatonma.orbitals.core.physics.rawDegrees
+import org.beatonma.orbitals.core.physics.rotateBy
 import org.beatonma.orbitals.core.util.currentTimeMillis
 import org.beatonma.orbitals.core.util.warn
 import kotlin.random.Random
@@ -87,26 +96,37 @@ private object CollisionResultsImpl : CollisionResults, CollisionLog {
 }
 
 
-fun Body.explode(ejectaCount: Int = Random.nextInt(5, 20)): List<Body> {
-    val ejectaMass = mass.value.divideUnevenly(ejectaCount)
-        .map(::Mass)
+fun explode(
+    position: Position,
+    totalMass: Mass,
+    density: Density,
+    totalMomentum: Momentum,
+    angleRange: ClosedFloatingPointRange<Angle> = 0.degrees..360.rawDegrees,
+): List<Body> {
+    val ejectaCount = Random.nextInt(2, 20)
 
-    val ejectaMomentum = momentum.divideUnevenly(ejectaCount)
+    // Artificially reduce mass so we can dump more momentum into velocity.
+    val mass = totalMass / (ejectaCount * 2.5f)
+    if (mass < Config.MinObjectMass) return emptyList()
 
-    return ejectaMass.zip(ejectaMomentum) { mass, momentum ->
-        val velocity = momentum / mass
-
+    return totalMomentum.divideUnevenly(ejectaCount).map { momentum ->
         InertialBody(
-            mass = mass,
-            density = density,
+            mass,
+            density,
             motion = Motion(
-                position,
-                velocity,
+                position = position,
+                velocity = (momentum / mass).rotateBy(
+                    Random.nextFloat(
+                        angleRange.start.asDegrees,
+                        angleRange.endInclusive.asDegrees
+                    ).degrees
+                )
             )
         )
     }
 }
 
+fun Body.explode(): List<Body> = explode(position, mass, density, momentum)
 
 /**
  * Returns a 0..1 score of how much two bodies are overlapping each other.
