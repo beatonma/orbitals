@@ -1,31 +1,17 @@
+import buildSrc.gradle.orbitalsLibrary
+
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
     id("org.jetbrains.compose") version Versions.Compose
 }
 
-
-repositories {
-    mavenCentral()
-    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-    google()
+android {
+    orbitalsLibrary("org.beatonma.orbitals.render.compose")
 }
 
 kotlin {
-    android {
-
-    }
-
-    jvm {
-
-    }
-
-    js(IR) {
-        browser {
-
-        }
-        binaries.executable()
-    }
+    orbitalsLibrary()
 
     sourceSets {
         val androidMain by getting {}
@@ -45,22 +31,4 @@ kotlin {
         }
         val jsMain by getting {}
     }
-}
-
-android {
-    compileSdk = AppConfig.SdkTarget
-
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-
-    defaultConfig {
-        minSdk = AppConfig.SdkMin
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    compileOptions {
-        sourceCompatibility = Versions.Java
-        targetCompatibility = Versions.Java
-    }
-    namespace = "org.beatonma.orbitals.render.compose"
 }
