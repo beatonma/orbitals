@@ -1,5 +1,6 @@
 package org.beatonma.orbitals.core.options
 
+import org.beatonma.orbitals.core.engine.Config
 import org.beatonma.orbitals.core.engine.SystemGenerator
 import org.beatonma.orbitals.core.physics.DefaultG
 import org.beatonma.orbitals.core.physics.Density
@@ -17,7 +18,7 @@ data class PhysicsOptions(
     ),
     val gravityMultiplier: Float = 1f,
     val collisionStyle: CollisionStyle = CollisionStyle.Merge,
-    val bodyDensity: Density = Density(1f),
+    val bodyDensity: Density = Config.DefaultDensity,
 ) {
     val G = DefaultG * gravityMultiplier
 }

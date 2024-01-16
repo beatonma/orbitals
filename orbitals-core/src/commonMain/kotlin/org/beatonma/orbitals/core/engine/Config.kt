@@ -7,7 +7,7 @@ import org.beatonma.orbitals.core.physics.Speed
 import org.beatonma.orbitals.core.physics.Velocity
 import org.beatonma.orbitals.core.physics.kg
 import org.beatonma.orbitals.core.physics.metres
-import org.beatonma.orbitals.core.physics.randomDirection
+import org.beatonma.orbitals.core.randomDirection
 import kotlin.random.Random
 import kotlin.random.nextInt
 import kotlin.time.Duration
@@ -15,7 +15,7 @@ import kotlin.time.Duration.Companion.milliseconds
 
 object Config {
     // Multiplier to greatly exaggerate the real value of G.
-    const val GravityScale = 1e14f
+    const val GravityScale = 1e12f
 
     // Minimum distance used in gravity calculations between bodies.
     val MinGravityDistance = 30.metres
@@ -26,20 +26,20 @@ object Config {
     val CollisionMinimumAge: Duration = 250.milliseconds
 
     // Objects that get too small will be removed from the simulation.
-    val MinObjectMass: Mass = 0.25f.kg
+    val MinObjectMass: Mass = 1f.kg
 
     // Objects that get too big will be removed from the simulation.
-    val MaxObjectMass: Mass = 1000f.kg
+    val MaxObjectMass: Mass = 20_000f.kg
     val DefaultDensity: Density = Density(1f)
 
     // Generated object mass ranges
-    fun getAsteroidMass(): Mass = Random.nextInt(1, 10).kg
-    fun getPlanetMass(): Mass = Random.nextInt(10..50).kg
-    fun getStarMass(): Mass = Random.nextInt(80..200).kg
-    fun getGreatAttractorMass(): Mass = Random.nextInt(2500..5000).kg
+    fun getAsteroidMass(): Mass = Random.nextInt(1, 80).kg
+    fun getPlanetMass(): Mass = Random.nextInt(100..750).kg
+    fun getStarMass(): Mass = Random.nextInt(1_000..3_000).kg
+    fun getGreatAttractorMass(): Mass = Random.nextInt(7_500..10_000).kg
 
     // Generated object distance ranges
-    fun getAsteroidDistance(): Distance = Random.nextInt(80, 100).metres
+    fun getAsteroidDistance(): Distance = Random.nextInt(80, 150).metres
 
     // Minimum distance from existing stars to generate a new star.
     val MinStarDistance: Distance = 300f.metres
