@@ -1,10 +1,4 @@
-import org.jetbrains.kotlin.gradle.plugin.KotlinDependencyHandler
-
 object Dependencies {
-    val GradlePlugin = dependency("com.android.tools.build:gradle", Versions.GradlePlugin)
-
-    val KotlinStdLib = dependency("org.jetbrains.kotlin:kotlin-stdlib", Versions.Kotlin)
-    val KotlinReflect = dependency("org.jetbrains.kotlin:kotlin-reflect", Versions.Kotlin)
     const val KotlinTest = "org.jetbrains.kotlin:kotlin-test"
 
     val CoroutinesCore =
@@ -32,16 +26,3 @@ object Dependencies {
 
     private fun dependency(name: String, version: String) = "$name:$version"
 }
-
-interface BaseDependency {
-    val name: String
-    val version: String
-}
-
-data class NpmDependency(
-    override val name: String,
-    override val version: String
-) : BaseDependency
-
-fun KotlinDependencyHandler.npm(dependency: NpmDependency) =
-    npm(dependency.name, dependency.version)

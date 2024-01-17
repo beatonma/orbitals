@@ -56,7 +56,7 @@ android {
 
     kotlinOptions {
         jvmTarget = Versions.Java.toString()
-        languageVersion = Versions.KotlinLanguage
+        languageVersion = Versions.kotlinLanguage(project)
     }
 
     composeOptions {

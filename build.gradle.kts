@@ -5,8 +5,8 @@ buildscript {
     }
 
     dependencies {
-        classpath("com.android.tools.build:gradle:${Versions.GradlePlugin}")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.Kotlin}")
+        classpath("com.android.tools.build:gradle:${Versions.gradlePlugin(project)}")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlin(project)}")
     }
 }
 

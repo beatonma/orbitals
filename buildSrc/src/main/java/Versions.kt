@@ -1,12 +1,29 @@
 import org.gradle.api.JavaVersion
+import org.gradle.api.Project
+import java.io.File
+import java.io.FileInputStream
+import java.util.Properties
+
 
 object Versions {
-    const val GradlePlugin = "8.0.2"
+    private var _properties: Properties? = null
+    private fun properties(project: Project): Properties = _properties ?: Properties().apply {
+        load(
+            FileInputStream(
+                File(
+                    project.rootProject.projectDir,
+                    "buildSrc/versions.properties"
+                )
+            )
+        )
+    }
+
+    fun gradlePlugin(project: Project): String = properties(project).getProperty("gradle")
+    fun kotlin(project: Project): String = properties(project).getProperty("kotlin")
+    fun kotlinLanguage(project: Project): String = properties(project).getProperty("kotlinLanguage")
 
     val Java = JavaVersion.VERSION_17
 
-    const val Kotlin = "1.8.20"
-    const val KotlinLanguage = "1.8"
     const val KotlinCoroutines = "1.7.3"
     const val Compose = "1.5.11"
 
@@ -15,7 +32,6 @@ object Versions {
         const val Annotation = "1.2.0"
         const val Compose = "1.4.6"
         const val DataStore = "1.0.0"
-        const val Material3 = "1.2.0-beta01"
         const val NavigationCompose = "2.7.6"
         const val ViewModelCompose = "2.6.2"
     }

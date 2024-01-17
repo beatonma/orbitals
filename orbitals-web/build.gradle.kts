@@ -36,8 +36,8 @@ kotlin {
             dependencies {
                 implementation(compose.runtime)
                 implementation(compose.html.core)
-                implementation(project(":${Module.Core}"))
-                implementation(project(":${Module.Render}"))
+                implementation(project(Module.Core))
+                implementation(project(Module.Render))
             }
         }
     }

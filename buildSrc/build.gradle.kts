@@ -1,6 +1,13 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 // Versions object is not accessible here.
-val gradleVersion = "8.0.2"
-val kotlinVersion = "1.8.20"
+val versions = Properties().apply {
+    load(FileInputStream(file("versions.properties")))
+}
+val gradleVersion = versions.getProperty("gradle")
+val kotlinVersion = versions.getProperty("kotlin")
+
 val kotlinLanguageVersion = "1.8"
 val javaVersion = "17"
 

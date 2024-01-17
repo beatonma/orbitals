@@ -19,7 +19,7 @@ kotlin {
         val commonTest by getting {
             dependencies {
                 implementation(Dependencies.KotlinTest)
-                implementation(project(":${Module.Test}"))
+                implementation(project(Module.Test))
             }
         }
     }

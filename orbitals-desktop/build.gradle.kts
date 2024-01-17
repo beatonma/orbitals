@@ -15,10 +15,10 @@ dependencies {
     implementation(compose.foundation)
     implementation(compose.material3)
 
-    implementation(project(":${Module.Core}"))
-    implementation(project(":${Module.Render}"))
-    implementation(project(":${Module.ComposeRender}"))
-    implementation(project(":${Module.ComposeUi}"))
+    implementation(project(Module.Core))
+    implementation(project(Module.Render))
+    implementation(project(Module.ComposeRender))
+    implementation(project(Module.ComposeUi))
 }
 
 compose.desktop {

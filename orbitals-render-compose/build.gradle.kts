@@ -17,8 +17,8 @@ kotlin {
         val androidMain by getting {}
         val commonMain by getting {
             dependencies {
-                implementation(project(":${Module.Core}"))
-                implementation(project(":${Module.Render}"))
+                implementation(project(Module.Core))
+                implementation(project(Module.Render))
                 implementation(compose.foundation)
                 implementation(compose.material3)
                 implementation(compose.ui)

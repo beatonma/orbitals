@@ -23,11 +23,3 @@ kotlin {
         val commonTest by getting {}
     }
 }
-//
-//tasks.withType<KotlinCompile>().all {
-//    kotlinOptions {
-//        jvmTarget = Versions.Java.toString()
-//        languageVersion = Versions.KotlinLanguage
-//        apiVersion = Versions.KotlinLanguage
-//    }
-//}
