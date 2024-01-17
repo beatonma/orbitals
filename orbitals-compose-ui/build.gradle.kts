@@ -3,7 +3,7 @@ import buildSrc.gradle.orbitalsLibrary
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
-    id("org.jetbrains.compose") version Versions.Compose
+    id("org.jetbrains.compose") version Versions.JetbrainsCompose
 }
 
 android {

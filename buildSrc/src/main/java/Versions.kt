@@ -25,12 +25,12 @@ object Versions {
     val Java = JavaVersion.VERSION_17
 
     const val KotlinCoroutines = "1.7.3"
-    const val Compose = "1.5.11"
+    const val JetbrainsCompose = "1.5.11"
 
     object Android {
         const val ActivityCompose = "1.8.2"
         const val Annotation = "1.2.0"
-        const val Compose = "1.4.6"
+        const val ComposeExtension = "1.5.8"
         const val DataStore = "1.0.0"
         const val NavigationCompose = "2.7.6"
         const val ViewModelCompose = "2.6.2"

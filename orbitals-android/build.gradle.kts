@@ -1,7 +1,7 @@
 plugins {
     id("com.android.application")
     id("kotlin-android")
-    id("org.jetbrains.compose") version Versions.Compose
+    id("org.jetbrains.compose") version Versions.JetbrainsCompose
 }
 
 repositories {
@@ -60,7 +60,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = Versions.Android.Compose
+        kotlinCompilerExtensionVersion = Versions.Android.ComposeExtension
     }
     namespace = "org.beatonma.orbitalslivewallpaper"
 }

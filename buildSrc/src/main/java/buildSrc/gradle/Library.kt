@@ -26,7 +26,7 @@ fun LibraryExtension.orbitalsLibrary(namespace: String) {
 }
 
 fun KotlinMultiplatformExtension.orbitalsLibrary() {
-    android {}
+    androidTarget {}
 
     jvm {}
 
