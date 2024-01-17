@@ -6,10 +6,8 @@ import android.graphics.Canvas
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import org.beatonma.orbitals.render.android.AndroidCanvasDelegate
 import org.beatonma.orbitals.render.OrbitalsRenderEngine
-import org.beatonma.orbitals.render.diffRenderers
-import org.beatonma.orbitals.render.getRenderers
+import org.beatonma.orbitals.render.android.AndroidCanvasDelegate
 import org.beatonma.orbitalslivewallpaper.Settings
 import org.beatonma.orbitalslivewallpaper.dataStore
 import org.beatonma.orbitalslivewallpaper.getSavedOptionsSync
@@ -54,10 +52,9 @@ class OrbitalsView @JvmOverloads constructor(
         val timeDelta = now - lastFrameMillis
         lastFrameMillis = now
 
-        if (canvas != null) {
-            canvas.drawColor((options.visualOptions.colorOptions.background.toAndroidColor()))
-            renderEngine.update(canvas, timeDelta.milliseconds)
-        }
+        canvas.drawColor((options.visualOptions.colorOptions.background.toAndroidColor()))
+        renderEngine.update(canvas, timeDelta.milliseconds)
+
         postInvalidateOnAnimation()
     }
 

@@ -7,6 +7,7 @@ import org.beatonma.orbitals.core.physics.angleTo
 import org.beatonma.orbitals.core.physics.metresPerSecond
 import kotlin.random.Random
 
+@Suppress("UNUSED_ANONYMOUS_PARAMETER")
 internal val CollisionTestGenerator = Generator { space, bodies, physics ->
     val firstPosition = space.relativePosition(position(), position())
     val secondPosition = space.relativePosition(position(), position())

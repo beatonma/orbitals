@@ -44,7 +44,7 @@ fun App(
     }
 
     DisposableEffect(view) {
-        val keyListener: View.OnKeyListener = View.OnKeyListener { v, keyCode, event ->
+        val keyListener: View.OnKeyListener = View.OnKeyListener { _, keyCode, _ ->
             when (keyCode) {
                 KeyEvent.KEYCODE_SPACE -> {
                     engine.addBodies()

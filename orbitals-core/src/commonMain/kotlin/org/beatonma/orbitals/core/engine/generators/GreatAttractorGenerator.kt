@@ -8,6 +8,7 @@ import org.beatonma.orbitals.core.physics.Motion
 import org.beatonma.orbitals.core.randomDirection
 
 
+@Suppress("UNUSED_ANONYMOUS_PARAMETER")
 internal val GreatAttractorGenerator = Generator { space, bodies, physics ->
     listOf(
         GreatAttractor(
