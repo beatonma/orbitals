@@ -70,6 +70,7 @@ suspend fun <T> updateOption(
 
 
 val <T> Key<T>.asPreferenceKey: Preferences.Key<T>
+    @Suppress("UNCHECKED_CAST")
     get() = when (this) {
         is BooleanKey -> this.asPreferenceKey
         is ColorKey -> this.asPreferenceKey
