@@ -25,28 +25,35 @@ interface OptionsStore {
 
     fun loadPhysics(): PhysicsOptions {
         return PhysicsOptions(
-            autoAddBodies = this[PhysicsKeys.AutoAddBodies] ?: DefaultPhysics.autoAddBodies,
-            maxEntities = this[PhysicsKeys.MaxEntities] ?: DefaultPhysics.maxEntities,
-            maxFixedBodyAge = (this[PhysicsKeys.MaxFixedBodyAgeSeconds])?.seconds
+            autoAddBodies = this[PhysicsKeys.AutoAddBodies]
+                ?: DefaultPhysics.autoAddBodies,
+            maxEntities = this[PhysicsKeys.MaxEntities]
+                ?: DefaultPhysics.maxEntities,
+            maxFixedBodyAge = this[PhysicsKeys.MaxFixedBodyAgeSeconds]
+                ?.seconds
                 ?: DefaultPhysics.maxFixedBodyAge,
             systemGenerators = this[PhysicsKeys.Generators]
-                ?.map(SystemGenerator::valueOf)
-                ?.toSet()
+                ?.mapToEnumOrNull(SystemGenerator::valueOf)
                 ?: DefaultPhysics.systemGenerators,
             gravityMultiplier = this[PhysicsKeys.GravityMultiplier]
                 ?: DefaultPhysics.gravityMultiplier,
-            collisionStyle = this[PhysicsKeys.CollisionStyle]?.let(CollisionStyle::valueOf)
+            collisionStyle = this[PhysicsKeys.CollisionStyle]
+                ?.toEnumOrNull(CollisionStyle::valueOf)
                 ?: DefaultPhysics.collisionStyle,
-            bodyDensity = this[PhysicsKeys.Density]?.let(::Density)
+            bodyDensity = this[PhysicsKeys.Density]
+                ?.let(::Density)
                 ?: DefaultPhysics.bodyDensity,
         )
     }
 
     fun loadColors(): ColorOptions {
         return ColorOptions(
-            background = this[ColorKeys.BackgroundColor] ?: DefaultColors.background,
-            foregroundAlpha = this[ColorKeys.BodyAlpha] ?: DefaultColors.foregroundAlpha,
-            bodies = this[ColorKeys.Colors]?.map(ObjectColors::valueOf)?.toSet()
+            background = this[ColorKeys.BackgroundColor]
+                ?: DefaultColors.background,
+            foregroundAlpha = this[ColorKeys.BodyAlpha]
+                ?: DefaultColors.foregroundAlpha,
+            bodies = this[ColorKeys.Colors]
+                ?.mapToEnumOrNull(ObjectColors::valueOf)
                 ?: DefaultColors.bodies
         )
     }
@@ -54,12 +61,16 @@ interface OptionsStore {
     fun loadVisuals(colors: ColorOptions = loadColors()): VisualOptions {
         return VisualOptions(
             colorOptions = colors,
-            renderLayers = this[VisualKeys.RenderLayers]?.map(RenderLayer::valueOf)?.toSet()
+            renderLayers = this[VisualKeys.RenderLayers]
+                ?.mapToEnumOrNull(RenderLayer::valueOf)
                 ?: DefaultVisuals.renderLayers,
-            traceLineLength = this[VisualKeys.TraceLength] ?: DefaultVisuals.traceLineLength,
-            drawStyle = this[VisualKeys.DrawStyle]?.let(DrawStyle::valueOf)
+            traceLineLength = this[VisualKeys.TraceLength]
+                ?: DefaultVisuals.traceLineLength,
+            drawStyle = this[VisualKeys.DrawStyle]
+                ?.toEnumOrNull(DrawStyle::valueOf)
                 ?: DefaultVisuals.drawStyle,
-            strokeWidth = this[VisualKeys.StrokeWidth] ?: DefaultVisuals.strokeWidth,
+            strokeWidth = this[VisualKeys.StrokeWidth]
+                ?: DefaultVisuals.strokeWidth,
         )
     }
 
@@ -70,4 +81,21 @@ interface OptionsStore {
 
         return Options(physics, visuals)
     }
+}
+
+
+/**
+ * Return null if set is empty or
+ */
+private fun <E : Enum<E>> Set<String>.mapToEnumOrNull(transform: (String) -> E): Set<E>? =
+    this.let { it.ifEmpty { null } }
+        ?.mapNotNull { it.toEnumOrNull(transform) }
+        ?.toSet()
+        ?.let { it.ifEmpty { null } }
+
+
+private fun <E : Enum<E>> String.toEnumOrNull(transform: (String) -> E): E? = try {
+    transform(this)
+} catch (e: IllegalArgumentException) {
+    null
 }
