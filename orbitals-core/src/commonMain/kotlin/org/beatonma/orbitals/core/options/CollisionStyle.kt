@@ -7,14 +7,14 @@ enum class CollisionStyle {
     None,
 
     /**
-     * Collisions cause ejecta - bits of the colliding bodies break away.
-     */
-    Break,
-
-    /**
      * Larger objects absorb mass from smaller colliders.
      */
     Merge,
+
+    /**
+     * Collisions cause ejecta - bits of the colliding bodies break away.
+     */
+    Break,
 
     /**
      * Bodies are bouncy.

@@ -5,6 +5,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -72,7 +73,7 @@ fun EditableOrbitals(
 ) {
     var onBackgroundColor by remember { mutableStateOf(Color.Black) }
 
-    LaunchedEffect(options) {
+    LaunchedEffect(options.visualOptions.colorOptions.background) {
         onBackgroundColor = if (options.visualOptions
                 .colorOptions.background
                 .toComposeColor()
@@ -80,8 +81,16 @@ fun EditableOrbitals(
         ) Color.Black else Color.White
     }
 
-    BoxWithConstraints {
-        Orbitals(options, Modifier.fillMaxSize(), engine)
+    BoxWithConstraints(
+        Modifier.keyboardHandler(engine, options, persistence) {
+            onSettingsVisibleChange(!settingsVisible)
+        }
+    ) {
+        Orbitals(
+            options,
+            Modifier.fillMaxSize(),
+            engine,
+        )
 
         AnimatedVisibility(
             settingsVisible,
@@ -121,11 +130,16 @@ fun EditableOrbitals(
         }
 
         if (OrbitalsBuildConfig.DEBUG) {
-            val bodyCount = poll(500L) { engine.bodies.size }
-
-            Text("$bodyCount objects", color = onBackgroundColor)
+            DebugOverlay(engine, onBackgroundColor)
         }
     }
+}
+
+@Composable
+private fun BoxScope.DebugOverlay(engine: OrbitalsRenderEngine<*>, color: Color) {
+    val bodyCount = poll(500L) { engine.bodies.size }
+
+    Text("$bodyCount objects", color = color)
 }
 
 @Composable

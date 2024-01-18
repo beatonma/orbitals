@@ -1,21 +1,17 @@
 package org.beatonma.orbitalslivewallpaper.ui
 
 import android.app.Application
-import android.view.KeyEvent
-import android.view.View
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -33,32 +29,12 @@ fun App(
         )
     )
 ) {
-    val view = LocalView.current
-
     val options by viewmodel.getOptions().collectAsState(initial = Options())
     val engine = rememberOrbitalsRenderEngine(options = options)
     var settingsVisible by remember { mutableStateOf(false) }
 
     BackHandler(enabled = settingsVisible) {
         settingsVisible = false
-    }
-
-    DisposableEffect(view) {
-        val keyListener: View.OnKeyListener = View.OnKeyListener { _, keyCode, _ ->
-            when (keyCode) {
-                KeyEvent.KEYCODE_SPACE -> {
-                    engine.addBodies()
-                    true
-                }
-
-                else -> false
-            }
-        }
-        view.setOnKeyListener(keyListener)
-
-        onDispose {
-            view.setOnKeyListener(null)
-        }
     }
 
     Scaffold(contentWindowInsets = WindowInsets.safeDrawing) { insets ->
