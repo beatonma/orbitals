@@ -1,7 +1,6 @@
 package org.beatonma.orbitals.render.color
 
 import org.beatonma.orbitals.core.physics.degrees
-import org.beatonma.orbitals.core.util.info
 import kotlin.jvm.JvmInline
 import kotlin.math.min
 
@@ -59,8 +58,11 @@ value class Color(val value: ULong) {
 
     fun hsla(): FloatArray = floatArrayOf(*hsl(), alpha.normalised())
 
+    fun toStringRgb(): String = rgb().joinToString("") { it.toString(16).padStart(2, '0') }
+    fun toStringArgb(): String = argb().joinToString("") { it.toString(16).padStart(2, '0') }
+
     override fun toString(): String =
-        "Color(${argb().joinToString("") { it.toString(16).padStart(2, '0') }} [$value])"
+        "Color(argb#${argb().joinToString("") { it.toString(16).padStart(2, '0') }} [$value])"
 
     companion object {
         fun argb(alpha: UByte, red: UByte, green: UByte, blue: UByte): Color =
@@ -121,9 +123,9 @@ fun Color(value: Int): Color {
 }
 
 fun Int.toColor(): Color = Color(this)
-
+fun ULong.toColor(): Color = Color(this)
 fun Color(value: Long): Color = Color(value.toULong())
-fun Long.toColor(): Color = Color(this)
+fun Long.toColor(): Color = Color(toULong())
 
 /**
  * Convert 0f..1f -> 0..255
@@ -134,3 +136,42 @@ internal fun Float.toUByte(): UByte = (this * 255f).toInt().toUByte()
  * Convert 0..255 -> 0f..1f.
  */
 internal fun Int.normalised(): Float = this.toFloat() / 255f
+
+/**
+ * String may be formatted as
+ * - a 3-character RGB hex string (with or without '#')
+ * - A 6-character RGB hex string (with or without '#')
+ * - An 8-character ARGB hex string (with or without '#')
+ * - ULong.toString()
+ */
+fun String.toColor(): Color {
+    val hex = this.removePrefix("#")
+    return when (hex.length) {
+        3 -> {
+            val (r, g, b) = hex.map {
+                "$it$it".toUByte(16)
+            }
+            Color.argb(255u, r, g, b)
+        }
+
+        6 -> {
+            val (r, g, b) = arrayOf(0, 2, 4).map { index ->
+                "${hex[index]}${hex[index + 1]}".toUByte(16)
+            }
+            Color.argb(255u, r, g, b)
+        }
+
+        8 -> {
+            val (a, r, g, b) = arrayOf(0, 2, 4, 6).map { index ->
+                "${hex[index]}${hex[index + 1]}".toUByte(16)
+            }
+            Color.argb(a, r, g, b)
+        }
+
+        else -> try {
+            this.toULong().toColor()
+        } catch (e: NumberFormatException) {
+            Color.Black
+        }
+    }
+}

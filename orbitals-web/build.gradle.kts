@@ -25,34 +25,32 @@ kotlin {
     js(IR) {
         browser {
             webpackTask {
-                outputFileName = versionedFilename
+                mainOutputFileName = versionedFilename
             }
         }
         binaries.executable()
     }
 
     sourceSets {
-        val jsMain by getting {
+        val commonMain by getting {
             dependencies {
                 implementation(compose.runtime)
-                implementation(compose.html.core)
+                implementation(compose.ui)
+                implementation(compose.foundation)
+                implementation(compose.material3)
+
                 implementation(project(Module.Core))
                 implementation(project(Module.Render))
+                implementation(project(Module.ComposeRender))
+                implementation(project(Module.ComposeUi))
             }
         }
-    }
-
-    afterEvaluate {
-        val taskName = "copyToStandardFilename"
-        val dirPath = "build/distributions"
-
-        tasks.register<Copy>(taskName) {
-            from(dirPath)
-            include("$versionedFilenameRoot*")
-            rename("($filenameRoot)(-\\d+)(.*?)", "$1$3")
-            into(dirPath)
+        val commonTest by getting {
+            dependencies {
+                implementation(project(Module.Test))
+                implementation(Dependencies.KotlinTest)
+            }
         }
-
-        tasks.named("jsBrowserWebpack").get().finalizedBy(taskName)
+        val jsMain by getting
     }
 }

@@ -25,7 +25,7 @@ object Versions {
     val Java = JavaVersion.VERSION_17
 
     const val KotlinCoroutines = "1.7.3"
-    const val JetbrainsCompose = "1.5.11"
+    const val JetbrainsCompose = "1.6.0-alpha01"
 
     object Android {
         const val ActivityCompose = "1.8.2"

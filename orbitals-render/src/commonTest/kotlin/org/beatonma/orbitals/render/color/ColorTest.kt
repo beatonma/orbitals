@@ -107,11 +107,70 @@ class ColorTest {
     }
 
     @Test
-    fun testHsl() {
+    fun hsl() {
         Color.Black.hsl() shouldbe floatArrayOf(0f, 0f, 0f)
         Color.White.hsl() shouldbe floatArrayOf(0f, 0f, 1f)
         Color.Red.hsl() shouldbe floatArrayOf(0f, 1f, .5f)
         Color.Green.hsl() shouldbe floatArrayOf(120f, 1f, .5f)
         Color.Blue.hsl() shouldbe floatArrayOf(240f, 1f, .5f)
+    }
+
+    @Test
+    fun string_ToColor_rgbHex() {
+        "000000".toColor() shouldbe Color.Black
+        "ff0000".toColor() shouldbe Color.Red
+        "00ff00".toColor() shouldbe Color.Green
+        "0000ff".toColor() shouldbe Color.Blue
+        "ffffff".toColor() shouldbe Color.White
+
+        "#000000".toColor() shouldbe Color.Black
+        "#ff0000".toColor() shouldbe Color.Red
+        "#00ff00".toColor() shouldbe Color.Green
+        "#0000ff".toColor() shouldbe Color.Blue
+        "#ffffff".toColor() shouldbe Color.White
+
+        "000".toColor() shouldbe Color.Black
+        "f00".toColor() shouldbe Color.Red
+        "0f0".toColor() shouldbe Color.Green
+        "00f".toColor() shouldbe Color.Blue
+        "fff".toColor() shouldbe Color.White
+
+        "#000".toColor() shouldbe Color.Black
+        "#f00".toColor() shouldbe Color.Red
+        "#0f0".toColor() shouldbe Color.Green
+        "#00f".toColor() shouldbe Color.Blue
+        "#fff".toColor() shouldbe Color.White
+
+        "7fffffff".toColor() shouldbe Color.White.withOpacity(.5f)
+        "#7fffffff".toColor() shouldbe Color.White.withOpacity(.5f)
+    }
+
+    @Test
+    fun string_toColor_long() {
+        Color.Black.value.toString().toColor() shouldbe Color.Black
+        Color.Red.value.toString().toColor() shouldbe Color.Red
+        Color.Green.value.toString().toColor() shouldbe Color.Green
+        Color.Blue.value.toString().toColor() shouldbe Color.Blue
+        Color.White.value.toString().toColor() shouldbe Color.White
+    }
+
+    @Test
+    fun toStringRgb() {
+        Color.Black.toStringRgb() shouldbe "000000"
+        Color.Red.toStringRgb() shouldbe "ff0000"
+        Color.Green.toStringRgb() shouldbe "00ff00"
+        Color.Blue.toStringRgb() shouldbe "0000ff"
+        Color.White.toStringRgb() shouldbe "ffffff"
+    }
+
+    @Test
+    fun toStringArgb() {
+        Color.Black.toStringArgb() shouldbe "ff000000"
+        Color.Red.toStringArgb() shouldbe "ffff0000"
+        Color.Green.toStringArgb() shouldbe "ff00ff00"
+        Color.Blue.toStringArgb() shouldbe "ff0000ff"
+        Color.White.toStringArgb() shouldbe "ffffffff"
+
+        Color.White.withOpacity(.5f).toStringArgb() shouldbe "7fffffff"
     }
 }
