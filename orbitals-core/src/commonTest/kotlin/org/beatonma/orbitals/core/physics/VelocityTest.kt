@@ -1,13 +1,10 @@
 package org.beatonma.orbitals.core.physics
 
 import org.beatonma.orbitals.core.test.inertialBody
+import org.beatonma.orbitals.test.shouldbe
 import kotlin.test.Test
-import org.beatonma.orbitals.core.test.shouldbe
 
 class VelocityTest {
-    private infix fun Float.shouldbe(expected: Float) =
-        this.shouldbe(expected, delta = 0.01f)
-
     @Test
     fun testVelocity() {
         Velocity(0, 0).run {
@@ -20,7 +17,7 @@ class VelocityTest {
         }
 
         Velocity(1, 1).run {
-            magnitude.value shouldbe 1.41f
+            magnitude.value shouldbe 1.414f
             angle.asDegrees shouldbe 45f
         }
 
@@ -30,7 +27,7 @@ class VelocityTest {
         }
 
         Velocity(-1, 1).run {
-            magnitude.value shouldbe 1.41f
+            magnitude.value shouldbe 1.414f
             angle.asDegrees shouldbe 135f
         }
 
@@ -40,7 +37,7 @@ class VelocityTest {
         }
 
         Velocity(-1, -1).run {
-            magnitude.value shouldbe 1.41f
+            magnitude.value shouldbe 1.414f
             angle.asDegrees shouldbe 225f
         }
 
@@ -50,7 +47,7 @@ class VelocityTest {
         }
 
         Velocity(1, -1).run {
-            magnitude.value shouldbe 1.41f
+            magnitude.value shouldbe 1.414f
             angle.asDegrees shouldbe 315f
         }
     }

@@ -1,11 +1,47 @@
 package org.beatonma.orbitals.test
 
+import org.beatonma.orbitals.core.physics.Scalar
+import org.beatonma.orbitals.core.physics.Vector2D
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-infix fun <T> T?.shouldbe(expected: T?) {
+private val FloatAllowableDifference = 0.01f
+
+infix fun <T : Any> T.shouldbe(expected: T) {
     assertEquals(expected, this)
+}
+
+infix fun Float.shouldbe(expected: Float) {
+    this.shouldbe(expected, FloatAllowableDifference)
+}
+
+fun Float.shouldbe(expected: Float, delta: Float) {
+    val difference = differenceWith(expected)
+
+    assertTrue("Expected $expected | Got $this [difference=$difference | allowable=$delta]") {
+        difference <= delta
+    }
+}
+
+fun Float.differenceWith(expected: Float): Float = when {
+    this > expected -> this - expected
+    else -> expected - this
+}
+
+fun Float.shouldbeGreaterThan(other: Float) {
+    assertTrue("$this shouldbe > $other") { this > other }
+}
+
+fun Float.shouldbePositive() = shouldbeGreaterThan(0f)
+
+infix fun <T : Scalar> T.shouldbe(expected: T) {
+    this.value.shouldbe(expected.value, FloatAllowableDifference)
+}
+
+infix fun <T : Scalar> Vector2D<T>.shouldbe(expected: Vector2D<T>) {
+    this.x shouldbe expected.x
+    this.y shouldbe expected.y
 }
 
 infix fun <T> List<T>.shouldbe(expected: List<T>) {

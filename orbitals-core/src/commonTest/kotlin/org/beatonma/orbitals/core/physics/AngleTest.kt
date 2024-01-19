@@ -1,15 +1,11 @@
 package org.beatonma.orbitals.core.physics
 
-import org.beatonma.orbitals.core.test.shouldbe
+import org.beatonma.orbitals.test.shouldbe
 import kotlin.random.Random
 import kotlin.test.Test
 
 
 class AngleTest {
-    private infix fun Float.shouldbe(expected: Float) {
-        this.shouldbe(expected, 0.01f)
-    }
-
     @Test
     fun testAngle() {
         0f.degrees.asRadians shouldbe 0f

@@ -16,6 +16,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(Dependencies.KotlinTest)
+                implementation(project(Module.Core))
             }
         }
         val androidMain by getting {}

@@ -3,9 +3,8 @@ package org.beatonma.orbitals.core.physics
 import org.beatonma.orbitals.core.divideUnevenly
 import org.beatonma.orbitals.core.factorial
 import org.beatonma.orbitals.core.mapTo
-import org.beatonma.orbitals.core.test.shouldbe
-import org.beatonma.orbitals.core.test.shouldbePositive
 import org.beatonma.orbitals.test.shouldbe
+import org.beatonma.orbitals.test.shouldbePositive
 import kotlin.random.Random
 import kotlin.test.Test
 

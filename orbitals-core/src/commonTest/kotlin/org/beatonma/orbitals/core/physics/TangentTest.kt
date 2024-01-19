@@ -1,31 +1,21 @@
 package org.beatonma.orbitals.core.physics
 
-import org.beatonma.orbitals.core.test.shouldbe
 import org.beatonma.orbitals.test.shouldbe
 import kotlin.test.Test
 
 class TangentTest {
-    private infix fun Float.shouldbe(expected: Float) {
-        this.shouldbe(expected, 0.01f)
-    }
-
     @Test
     fun getRadialPosition_isCorrect() {
         fun check(parent: Position, distance: Distance, angle: Angle) {
             val radial = getRadialPosition(parent, distance = distance, angle = angle)
-            parent.angleTo(radial).value shouldbe angle.value
-            parent.distanceTo(radial).value shouldbe distance.value
+            parent.angleTo(radial) shouldbe angle
+            parent.distanceTo(radial) shouldbe distance
         }
 
         check(Position(30, 40), 10.metres, 0.degrees)
         check(Position(30, 40), 20.metres, 30.degrees)
         check(Position(30, 40), 15.metres, 271.degrees)
         check(Position(30, 40), 5.metres, 357.degrees)
-
-        val parent = Position(30, 40)
-        val radial = getRadialPosition(parent, distance = 10.metres, angle = 0.degrees)
-        parent.angleTo(radial) shouldbe 0.degrees
-        parent.distanceTo(radial) shouldbe 10.metres
     }
 
     @Test

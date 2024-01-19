@@ -2,10 +2,9 @@ package org.beatonma.orbitals.core.physics
 
 import org.beatonma.orbitals.core.test.DefaultTestDensity
 import org.beatonma.orbitals.core.test.DefaultTestG
-import org.beatonma.orbitals.core.test.differenceWith
 import org.beatonma.orbitals.core.test.fixedBody
 import org.beatonma.orbitals.core.test.inertialBody
-import org.beatonma.orbitals.core.test.shouldbe
+import org.beatonma.orbitals.test.differenceWith
 import org.beatonma.orbitals.test.shouldbe
 import kotlin.test.Test
 import kotlin.test.assertTrue
@@ -41,7 +40,7 @@ class BodyTest {
             )
 
             val distance = body.distanceTo(other)
-            distance.value.shouldbe(500.0f, delta = 0.01f)
+            distance.value shouldbe 500f
         }
     }
 
@@ -56,7 +55,7 @@ class BodyTest {
             )
 
             val force: Force = body.calculateForce(other, TestG)
-            force.value.shouldbe(5.606e2f, delta = 1f)
+            force.value shouldbe 560.616f
         }
     }
 
@@ -99,7 +98,7 @@ class BodyTest {
             )
 
             val distanceBefore = body.distanceTo(other)
-            distanceBefore.value.shouldbe(100f, delta = 0.0001f)
+            distanceBefore.value shouldbe 100f
 
             body.applyGravity(other, 1000.ms, TestG)
             body.applyInertia(1000.ms)
@@ -109,7 +108,7 @@ class BodyTest {
             if (distance == null) {
                 distance = distanceAfter
             } else {
-                distanceAfter.value.shouldbe(93.326f, delta = 0.0001f)
+                distanceAfter.value shouldbe 93.326f
             }
 
             val errorMessage = when {
