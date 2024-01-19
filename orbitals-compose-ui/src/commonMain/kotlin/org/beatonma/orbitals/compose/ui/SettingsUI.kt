@@ -328,7 +328,7 @@ private fun LazyListScope.physicsSettings(physics: PhysicsOptions, persistence: 
         key = PhysicsKeys.GravityMultiplier,
         value = physics.gravityMultiplier,
         onValueChange = persistence::updateOption,
-        min = .1f,
+        min = -10f,
         max = 10f,
     )
     multiSelectSetting(

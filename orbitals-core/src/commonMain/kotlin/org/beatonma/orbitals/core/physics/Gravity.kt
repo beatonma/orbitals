@@ -2,7 +2,9 @@ package org.beatonma.orbitals.core.physics
 
 import org.beatonma.orbitals.core.chance
 import org.beatonma.orbitals.core.engine.Config
+import org.beatonma.orbitals.core.nextFloat
 import org.beatonma.orbitals.core.percent
+import kotlin.math.absoluteValue
 import kotlin.math.sqrt
 import kotlin.random.Random
 
@@ -23,7 +25,7 @@ fun calculateGravitationalForce(
 ): Force {
     val distanceSquared = distance
         .coerceAtLeast(minDistance)
-        .squared
+        .squared.value
 
     val m = mass * otherMass
 
@@ -34,7 +36,7 @@ fun getOrbitalMotion(
     mass: Mass,
     distance: Distance,
     parent: Body,
-    radialAngle: Angle = Random.nextInt(0, 359).degrees,
+    radialAngle: Angle = Random.nextFloat(0f, 359f).degrees,
     prograde: Boolean = chance(.995f), // Small chance of retrograde orbit
     G: Float,
 ): Motion {
@@ -74,7 +76,7 @@ private fun getOrbitalSpeed(
     G: Float,
 ): Speed =
     sqrt(
-        (G * (firstMass + secondMass).value / distance.value)
+        (G * (firstMass + secondMass).value / distance.value).absoluteValue // G may be negative
     ).metresPerSecond
 
 private fun getVelocity(speed: Speed, tangentialAngle: Angle) = Velocity(
@@ -84,5 +86,5 @@ private fun getVelocity(speed: Speed, tangentialAngle: Angle) = Velocity(
 
 private fun getTangentialAngle(radialAngle: Angle, prograde: Boolean): Angle {
     val direction = if (prograde) 1 else -1
-    return radialAngle + (90 * direction).degrees
+    return radialAngle + (90f * direction).degrees
 }
