@@ -54,7 +54,7 @@ fun ColorSetting(
     }
 
     LaunchedEffect(value) {
-        val swatchIndex = colors.indexOf(value.toRgbInt())
+        val swatchIndex = colors.indexOf(value.value)
         if (swatchIndex >= 0) {
             scope.launch { swatchState.animateScrollToItem(max(0, swatchIndex - 1)) }
         }
@@ -74,7 +74,7 @@ fun ColorSetting(
                 Patch(
                     color = composeColor,
                     contentColor = contentColor,
-                    isSelected = c == value.toRgbInt(),
+                    isSelected = c == value.value,
                 ) {
                     val (h, s, l) = color.hsl()
                     hsl.hue = h

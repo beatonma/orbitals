@@ -96,8 +96,9 @@ private fun darkColors(
 private fun rememberColors(
     isDark: Boolean,
     objectColors: Set<ObjectColors>
-): MutableState<UiColors> =
-    remember(isDark, objectColors) { mutableStateOf(UiColors(isDark, objectColors)) }
+): MutableState<UiColors> = remember(isDark, objectColors) {
+    mutableStateOf(UiColors(isDark, objectColors))
+}
 
 private data class UiColors(
     val primary: Color,
@@ -118,31 +119,45 @@ private data class UiColors(
 private fun UiColors(isDark: Boolean, objectColors: Set<ObjectColors>): UiColors {
     val (primarySet, secondarySet, tertiarySet) = chooseColorSets(objectColors)
 
-    fun Array<Int>.colorAt(index: Int) = Color(
+    fun Array<ULong>.colorAt(index: Int) = Color(
         when {
             isDark -> this[size - index]
             else -> this[index]
         }
     )
 
+    fun Array<ULong>.first() = Color(
+        when {
+            isDark -> this[size - 1]
+            else -> this[0]
+        }
+    )
+
+    fun Array<ULong>.last() = Color(
+        when {
+            isDark -> this[0]
+            else -> this[size - 1]
+        }
+    )
+
     return UiColors(
-        primary = primarySet.colorAt(5),
-        onPrimary = primarySet.colorAt(9),
-        primaryContainer = primarySet.colorAt(1),
-        onPrimaryContainer = primarySet.colorAt(9),
+        primary = primarySet.colorAt(4),
+        onPrimary = primarySet.colorAt(8),
+        primaryContainer = primarySet.first(),
+        onPrimaryContainer = primarySet.last(),
         inversePrimary = primarySet.colorAt(1),
         secondary = secondarySet.colorAt(4),
-        onSecondary = secondarySet.colorAt(9),
-        secondaryContainer = secondarySet.colorAt(1),
-        onSecondaryContainer = secondarySet.colorAt(9),
+        onSecondary = secondarySet.colorAt(8),
+        secondaryContainer = secondarySet.first(),
+        onSecondaryContainer = secondarySet.last(),
         tertiary = tertiarySet.colorAt(4),
-        onTertiary = tertiarySet.colorAt(9),
-        tertiaryContainer = tertiarySet.colorAt(1),
-        onTertiaryContainer = tertiarySet.colorAt(9),
+        onTertiary = tertiarySet.colorAt(8),
+        tertiaryContainer = tertiarySet.first(),
+        onTertiaryContainer = tertiarySet.last(),
     )
 }
 
-private fun chooseColorSets(colors: Set<ObjectColors>): Triple<Array<Int>, Array<Int>, Array<Int>> {
+private fun chooseColorSets(colors: Set<ObjectColors>): Triple<Array<ULong>, Array<ULong>, Array<ULong>> {
     when (colors.size) {
         1 -> {
             val c = colors.first().colors
@@ -158,7 +173,7 @@ private fun chooseColorSets(colors: Set<ObjectColors>): Triple<Array<Int>, Array
             return Triple(
                 sets.removeAt(Random.nextInt(sets.size)).colors,
                 sets.removeAt(Random.nextInt(sets.size)).colors,
-                sets.removeAt(Random.nextInt(sets.size)).colors
+                sets.removeAt(Random.nextInt(sets.size)).colors,
             )
         }
     }

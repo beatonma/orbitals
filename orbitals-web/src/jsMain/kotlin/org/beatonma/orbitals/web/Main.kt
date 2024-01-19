@@ -1,6 +1,7 @@
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.window.CanvasBasedWindow
 import org.beatonma.orbitals.compose.ui.EditableOrbitals
+import org.beatonma.orbitals.compose.ui.OrbitalsTheme
 import org.beatonma.orbitals.render.compose.rememberOrbitalsRenderEngine
 
 import org.jetbrains.skiko.wasm.onWasmReady
@@ -13,7 +14,16 @@ fun main() {
         CanvasBasedWindow(canvasElementId = "orbitals") {
             val engine = rememberOrbitalsRenderEngine(persistence.options)
 
-            EditableOrbitals(persistence.options, persistence, engine = engine)
+            OrbitalsTheme(
+                persistence.options.visualOptions.colorOptions,
+                isDark = true,
+            ) {
+                EditableOrbitals(
+                    persistence.options,
+                    persistence,
+                    engine = engine
+                )
+            }
         }
     }
 }
