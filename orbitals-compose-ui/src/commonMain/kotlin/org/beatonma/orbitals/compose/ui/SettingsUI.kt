@@ -237,7 +237,7 @@ private fun LazyListScope.visualSettings(
         name = "Layers",
         key = VisualKeys.RenderLayers,
         value = visualOptions.renderLayers,
-        values = RenderLayer.values(),
+        values = RenderLayer.entries.toTypedArray(),
         onValueChange = persistence::updateOption,
     )
 
@@ -245,7 +245,7 @@ private fun LazyListScope.visualSettings(
         name = "Style",
         key = VisualKeys.DrawStyle,
         value = visualOptions.drawStyle,
-        values = DrawStyle.values(),
+        values = DrawStyle.entries.toTypedArray(),
         onValueChange = persistence::updateOption,
     )
 
@@ -285,7 +285,7 @@ private fun LazyListScope.colorSettings(options: ColorOptions, persistence: Opti
         name = "Object colors",
         key = ColorKeys.Colors,
         value = options.bodies,
-        values = ObjectColors.values(),
+        values = ObjectColors.entries.toTypedArray(),
         onValueChange = persistence::updateOption,
     )
     floatSetting(
@@ -335,14 +335,14 @@ private fun LazyListScope.physicsSettings(physics: PhysicsOptions, persistence: 
         name = "System generators",
         key = PhysicsKeys.Generators,
         value = physics.systemGenerators,
-        values = SystemGenerator.values(),
+        values = SystemGenerator.entries.toTypedArray(),
         onValueChange = persistence::updateOption,
     )
     singleSelectSetting(
         name = "Collision style",
         key = PhysicsKeys.CollisionStyle,
         value = physics.collisionStyle,
-        values = CollisionStyle.values(),
+        values = CollisionStyle.entries.toTypedArray(),
         onValueChange = persistence::updateOption,
     )
     floatSetting(
