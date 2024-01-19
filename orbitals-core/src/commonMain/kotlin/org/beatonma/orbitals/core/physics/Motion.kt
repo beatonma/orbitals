@@ -14,9 +14,7 @@ class Motion(
     var acceleration: Acceleration = ZeroAcceleration
         internal set
 
-    override fun toString(): String {
-        return "Motion($position, $velocity)"
-    }
+    override fun toString(): String = "Motion($position, $velocity)"
 
     /**
      * Warning: With large [timeDelta], position will move in long straight lines

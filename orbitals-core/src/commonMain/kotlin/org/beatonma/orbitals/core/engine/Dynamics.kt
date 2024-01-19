@@ -101,7 +101,7 @@ fun explode(
     totalMass: Mass,
     density: Density,
     totalMomentum: Momentum,
-    angleRange: ClosedFloatingPointRange<Angle> = 0.degrees..360.rawDegrees,
+    angleRange: ClosedFloatingPointRange<Angle> = 0f.degrees..360f.rawDegrees,
 ): List<Body> {
     val ejectaCount = Random.nextInt(2, 20)
 

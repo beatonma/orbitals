@@ -4,7 +4,6 @@ import org.beatonma.orbitals.core.engine.Space
 import kotlin.math.atan2
 import kotlin.math.roundToInt
 
-fun Position(x: Number, y: Number) = Position(x.metres, y.metres)
 
 data class Position(
     override val x: Distance,

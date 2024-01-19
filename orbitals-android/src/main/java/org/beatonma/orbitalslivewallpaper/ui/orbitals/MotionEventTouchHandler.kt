@@ -42,8 +42,8 @@ internal class OrbitalsGestureDetector(
 
     init {
         with(ViewConfiguration.get(context)) {
-            touchSlop = scaledTouchSlop.metres
-            doubleTapSlop = scaledDoubleTapSlop.metres
+            touchSlop = scaledTouchSlop.toFloat().metres
+            doubleTapSlop = scaledDoubleTapSlop.toFloat().metres
         }
     }
 
@@ -184,7 +184,7 @@ internal class OrbitalsGestureDetector(
 
     private inner class OrbitalsGestureHandler(looper: Looper) : Handler(looper) {
         override fun handleMessage(msg: Message) {
-            val message = GestureMessage.values().getOrNull(msg.what) ?: return
+            val message = GestureMessage.entries.getOrNull(msg.what) ?: return
 
             when (message) {
                 GestureMessage.Tap -> {
@@ -219,5 +219,5 @@ private enum class GestureMessage {
     ;
 }
 
-private fun MotionEvent.toPosition() = Position(x, y)
-private fun MotionEvent.PointerCoords.toPosition() = Position(x, y)
+private fun MotionEvent.toPosition() = Position(x.metres, y.metres)
+private fun MotionEvent.PointerCoords.toPosition() = Position(x.metres, y.metres)

@@ -4,10 +4,9 @@ import org.beatonma.orbitals.core.divideUnevenly
 import org.beatonma.orbitals.core.format
 import kotlin.jvm.JvmInline
 
+
 @JvmInline
 value class MomentumScalar(override val value: Float) : Scalar {
-    constructor(value: Number) : this(value.toFloat())
-
     operator fun plus(other: MomentumScalar) = MomentumScalar(value + other.value)
     operator fun minus(other: MomentumScalar) = MomentumScalar(value - other.value)
     operator fun times(factor: Float) = MomentumScalar(value * factor)
@@ -21,8 +20,6 @@ data class Momentum internal constructor(
     override val x: MomentumScalar,
     override val y: MomentumScalar,
 ) : Vector2D<MomentumScalar> {
-    constructor(x: Number, y: Number) : this(MomentumScalar(x), MomentumScalar(y))
-
     override val magnitude: MomentumScalar
         get() = MomentumScalar(magnitude(x, y))
 

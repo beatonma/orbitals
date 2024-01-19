@@ -16,19 +16,16 @@ interface Scalar : Comparable<Scalar> {
     }
 
     fun isZero(): Boolean = value == 0f
-
-    fun toGeneric() = GenericScalar(this)
 }
 
 private fun sqrt(scalar: Scalar): Float = sqrt(scalar.value)
 private fun squareOf(scalar: Scalar): Float = scalar.value * scalar.value
 internal fun <T : Scalar> magnitude(x: T, y: T): Float = sqrt(squareOf(x) + squareOf(y))
 
+operator fun <T : Scalar> T.div(other: T): Float = this.value / other.value
+
 @JvmInline
 value class GenericScalar(override val value: Float) : Scalar {
-    constructor(value: Number) : this(value.toFloat())
-    constructor(value: Scalar) : this(value.value)
-
     operator fun times(multiplier: Float) = GenericScalar(value * multiplier)
     operator fun div(divisor: Float) = GenericScalar(value / divisor)
 

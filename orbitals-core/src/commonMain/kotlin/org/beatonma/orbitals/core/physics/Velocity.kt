@@ -11,8 +11,6 @@ data class Velocity internal constructor(
     override val x: Speed = Speed(0f),
     override val y: Speed = Speed(0f),
 ) : Vector2D<Speed> {
-    constructor(x: Number, y: Number) : this(Speed(x), Speed(y))
-
     override val magnitude: Speed get() = Speed(magnitude(x, y))
 
     operator fun plus(other: Velocity): Velocity =
@@ -40,10 +38,8 @@ data class Velocity internal constructor(
  */
 @JvmInline
 value class Speed internal constructor(override val value: Float) : Scalar {
-    constructor(speed: Number) : this(speed.toFloat())
-
     operator fun times(time: Duration): Distance =
-        (this.value * time.toDouble(DurationUnit.SECONDS)).metres
+        (this.value * time.toDouble(DurationUnit.SECONDS).toFloat()).metres
 
     operator fun times(multiplier: Float): Speed = Speed(value * multiplier)
     operator fun times(mass: Mass): MomentumScalar = MomentumScalar(value * mass.value)

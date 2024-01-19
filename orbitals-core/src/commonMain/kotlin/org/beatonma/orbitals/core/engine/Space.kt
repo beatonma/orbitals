@@ -1,7 +1,7 @@
 package org.beatonma.orbitals.core.engine
 
 import org.beatonma.orbitals.core.physics.Position
-import org.beatonma.orbitals.core.util.info
+import org.beatonma.orbitals.core.physics.metres
 import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.random.Random
@@ -20,8 +20,8 @@ interface Space {
 
     val center: Position
         get() = Position(
-            start + width / 2,
-            top + height / 2
+            (start + width / 2f).metres,
+            (top + height / 2f).metres
         )
 
     /**
@@ -85,8 +85,8 @@ fun Space.relativePosition(
     x: Float,
     y: Float,
 ): Position = Position(
-    start.toFloat() + (width.toFloat() * x),
-    top.toFloat() + (height.toFloat() * y)
+    (start + width * x).metres,
+    (top + height * y).metres
 )
 
 fun Universe.relativeVisiblePosition(

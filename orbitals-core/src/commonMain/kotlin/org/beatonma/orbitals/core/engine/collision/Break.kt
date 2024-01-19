@@ -13,11 +13,11 @@ import org.beatonma.orbitals.core.physics.times
 
 
 // Ejecta will be directed in a cone of this size, centered around the normal.
-private val EjectaAngle = 120.degrees
+private val EjectaAngle = 120f.degrees
 
 private enum class Direction(val angle: Angle) {
-    Forward(0.degrees),
-    Backward(180.degrees),
+    Forward(0f.degrees),
+    Backward(180f.degrees),
     ;
 }
 

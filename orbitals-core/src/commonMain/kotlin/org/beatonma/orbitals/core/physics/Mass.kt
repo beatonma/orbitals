@@ -6,7 +6,6 @@ import org.beatonma.orbitals.core.util.warn
 import kotlin.jvm.JvmInline
 
 val Float.kg: Mass get() = Mass(this)
-val Number.kg: Mass get() = Mass(this.toFloat())
 
 /**
  * Kilograms

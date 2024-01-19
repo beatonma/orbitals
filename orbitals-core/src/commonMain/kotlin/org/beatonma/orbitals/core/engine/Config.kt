@@ -1,5 +1,6 @@
 package org.beatonma.orbitals.core.engine
 
+import org.beatonma.orbitals.core.nextFloat
 import org.beatonma.orbitals.core.physics.Density
 import org.beatonma.orbitals.core.physics.Distance
 import org.beatonma.orbitals.core.physics.Mass
@@ -9,7 +10,6 @@ import org.beatonma.orbitals.core.physics.kg
 import org.beatonma.orbitals.core.physics.metres
 import org.beatonma.orbitals.core.randomDirection
 import kotlin.random.Random
-import kotlin.random.nextInt
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -18,7 +18,7 @@ object Config {
     const val GravityScale = 1e12f
 
     // Minimum distance used in gravity calculations between bodies.
-    val MinGravityDistance = 30.metres
+    val MinGravityDistance = 30f.metres
 
     // Minimum age for a body to take part in collisions.
     // Allows a grace period for newly-created objects to move away
@@ -33,18 +33,18 @@ object Config {
     val DefaultDensity: Density = Density(1f)
 
     // Generated object mass ranges
-    fun getAsteroidMass(): Mass = Random.nextInt(1, 80).kg
-    fun getPlanetMass(): Mass = Random.nextInt(100..750).kg
-    fun getStarMass(): Mass = Random.nextInt(1_000..3_000).kg
-    fun getGreatAttractorMass(): Mass = Random.nextInt(7_500..10_000).kg
+    fun getAsteroidMass(): Mass = Random.nextFloat(1f, 80f).kg
+    fun getPlanetMass(): Mass = Random.nextFloat(100f, 750f).kg
+    fun getStarMass(): Mass = Random.nextFloat(1_000f, 3_000f).kg
+    fun getGreatAttractorMass(): Mass = Random.nextFloat(7_500f, 20_000f).kg
 
     // Generated object distance ranges
-    fun getAsteroidDistance(): Distance = Random.nextInt(80, 150).metres
+    fun getAsteroidDistance(): Distance = Random.nextFloat(80f, 150f).metres
 
     // Minimum distance from existing stars to generate a new star.
     val MinStarDistance: Distance = 300f.metres
 
     // Generated object velocity ranges
-    private fun getSpeed(): Speed = Speed(Random.nextInt(20) * randomDirection)
+    private fun getSpeed(): Speed = Speed(Random.nextFloat(0f, 20f) * randomDirection)
     fun getVelocity(): Velocity = Velocity(getSpeed(), getSpeed())
 }

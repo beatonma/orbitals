@@ -18,15 +18,15 @@ value class Angle internal constructor(override val value: Float) : Scalar {
     operator fun minus(other: Angle) = Angle(this.value - other.value)
 
     operator fun times(factor: Float) = Angle(this.value * factor)
-    operator fun times(distance: Distance) =
-        Position(cos(this) * distance.value, sin(this) * distance.value)
+    operator fun times(distance: Distance) = Position(cos(this) * distance, sin(this) * distance)
 
     operator fun div(divisor: Int) = Angle(this.value / divisor)
     operator fun div(divisor: Float) = Angle(this.value / divisor)
 
+    operator fun unaryMinus(): Angle = Angle(-value)
+
     internal fun toDirection() = Direction(this)
     override fun toString(): String = "$asDegrees°"
-    operator fun unaryMinus(): Angle = Angle(-value)
 }
 
 private class ClosedAngleRange(
@@ -39,19 +39,16 @@ private class ClosedAngleRange(
 operator fun Angle.rangeTo(that: Angle): ClosedFloatingPointRange<Angle> =
     ClosedAngleRange(this, that)
 
-class Direction private constructor(
+class Direction internal constructor(
     override val x: Distance,
     override val y: Distance,
 ) : Vector2D<Distance> {
-
     internal constructor(angle: Angle) : this(cos(angle).metres, sin(angle).metres)
-    internal constructor(x: Number, y: Number) : this(x.metres, y.metres)
 
     override val magnitude: Distance
         get() = Distance(magnitude(x, y))
 
-    operator fun times(distance: Distance) =
-        Position(x.value * distance.value, y.value * distance.value)
+    operator fun times(distance: Distance) = Position(x.value * distance, y.value * distance)
 
     fun toAngle() = atan2(y.value, x.value).radians
 
@@ -79,8 +76,7 @@ class Direction private constructor(
 
 val Float.radians: Angle get() = positiveRadians
 val Float.degrees: Angle get() = (this * PI_FLOAT / 180f).positiveRadians
-val Number.degrees: Angle get() = toFloat().degrees
-val Number.rawDegrees: Angle get() = Angle(this.toFloat() * PI_FLOAT / 180f)
+val Float.rawDegrees: Angle get() = Angle(this * PI.toFloat() / 180f)
 
 fun sin(angle: Angle) = sin(angle.value)
 fun cos(angle: Angle) = cos(angle.value)

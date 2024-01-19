@@ -26,8 +26,6 @@ interface Vector2D<T : Scalar> : Comparable<Vector2D<T>> {
             "Cannot compare different Vector2D implementations: ${this::class} vs ${other::class}"
         )
     }
-
-    fun toGeneric() = GenericVector2D(x, y)
 }
 
 /**
@@ -45,9 +43,6 @@ data class GenericVector2D internal constructor(
     override val x: GenericScalar,
     override val y: GenericScalar,
 ) : Vector2D<GenericScalar> {
-    constructor(x: Number, y: Number) : this(GenericScalar(x), GenericScalar(y))
-    constructor(x: Scalar, y: Scalar) : this(GenericScalar(x), GenericScalar(y))
-
     override val magnitude: GenericScalar
         get() = GenericScalar(magnitude(x, y))
 

@@ -4,6 +4,7 @@ import org.beatonma.orbitals.core.physics.Acceleration
 import org.beatonma.orbitals.core.physics.AccelerationScalar
 import org.beatonma.orbitals.core.physics.Body
 import org.beatonma.orbitals.core.physics.Position
+import org.beatonma.orbitals.core.physics.metres
 import org.beatonma.orbitals.render.CanvasDelegate
 import org.beatonma.orbitals.render.OrbitalsRenderer
 import org.beatonma.orbitals.render.options.VisualOptions
@@ -28,8 +29,8 @@ class AccelerationRenderer<Canvas> internal constructor(
             color = props.color.withOpacity(.5f),
             start = body.position,
             end = Position(
-                scaledAcceleration.x.value,
-                scaledAcceleration.y.value,
+                scaledAcceleration.x.value.metres,
+                scaledAcceleration.y.value.metres,
             ) + body.position,
             strokeWidth = max(1f, body.radius.value / 2),
         )

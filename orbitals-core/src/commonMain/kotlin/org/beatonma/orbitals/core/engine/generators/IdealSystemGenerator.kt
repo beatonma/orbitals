@@ -6,6 +6,7 @@ import org.beatonma.orbitals.core.engine.GeneratorScope
 import org.beatonma.orbitals.core.engine.Space
 import org.beatonma.orbitals.core.engine.relativePosition
 import org.beatonma.orbitals.core.mapTo
+import org.beatonma.orbitals.core.nextFloat
 import org.beatonma.orbitals.core.physics.Body
 import org.beatonma.orbitals.core.physics.Distance
 import org.beatonma.orbitals.core.physics.Position
@@ -25,13 +26,13 @@ internal val StarSystemGenerator = Generator { space, bodies, physics ->
         }
     }
 
-    val minDistance: Int = (space.radius * .1f).toInt()
-    val maxDistance: Int = (space.radius * .9f).toInt()
+    val minDistance = space.radius * .1f
+    val maxDistance = space.radius * .9f
 
     val satellites = createBodies(4) { _, _ ->
         satelliteOf(
             sun,
-            distance = Random.nextInt(minDistance, maxDistance).metres,
+            distance = Random.nextFloat(minDistance, maxDistance).metres,
             density = physics.bodyDensity,
             G = physics.G,
         )

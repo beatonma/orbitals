@@ -27,7 +27,7 @@ internal val MergeCollision = Collision { larger, smaller, changes ->
     larger.updateMassAndSize(larger.mass + transferredMomentum / smaller.velocity)
     larger.velocity = largeMomentum / larger.mass
 
-    smaller.updateMassAndSize(maxOf(0.kg, totalMass - larger.mass))
+    smaller.updateMassAndSize(maxOf(0f.kg, totalMass - larger.mass))
     smaller.velocity = when {
         smaller.mass == ZeroMass -> ZeroVelocity
         else -> smallMomentum / smaller.mass
@@ -45,7 +45,7 @@ private val NoMomentumMerge = Collision { larger, smaller, changes ->
     smaller.updateMassAndSize(smaller.mass - transferredMass)
 
     when {
-        smaller.mass < 1.kg -> changes.remove(smaller.id)
+        smaller.mass < 1f.kg -> changes.remove(smaller.id)
         else -> null
     }
 }

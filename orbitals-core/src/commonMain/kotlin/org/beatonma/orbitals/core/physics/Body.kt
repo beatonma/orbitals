@@ -180,7 +180,7 @@ data class GreatAttractor(
 
 fun sizeOf(mass: Mass, density: Density): Distance {
     val volume = mass / density
-    val radius = ((volume * 3f).value.toDouble() / (4.0 * PI)).pow(1.0 / 3.0)
+    val radius = ((volume * 3f).value.toDouble() / (4.0 * PI)).pow(1.0 / 3.0).toFloat()
     return radius.metres
 }
 

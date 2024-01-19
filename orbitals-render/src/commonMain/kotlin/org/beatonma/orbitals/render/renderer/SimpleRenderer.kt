@@ -42,7 +42,7 @@ class SimpleRenderer<Canvas> internal constructor(
         delegate.drawCircle(
             canvas,
             body.position,
-            maxOf(body.radius, 1.metres),
+            maxOf(body.radius, 1f.metres),
             Color(0xffffffff),
             strokeWidth = 8f,
             style = DrawStyle.Wireframe,
