@@ -2,6 +2,7 @@ package org.beatonma.orbitals.render.options
 
 
 data class VisualOptions(
+    val allowOverlay: Boolean = true,
     val renderLayers: Set<RenderLayer> = setOf(RenderLayer.Default),
     val focusCenterOfMass: Boolean = false,
     val traceLineLength: Int = 25,

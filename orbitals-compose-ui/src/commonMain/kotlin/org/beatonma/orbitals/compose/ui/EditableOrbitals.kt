@@ -33,11 +33,14 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.beatonma.orbitals.core.OrbitalsBuildConfig
+import org.beatonma.orbitals.core.Platform
+import org.beatonma.orbitals.core.platform
 import org.beatonma.orbitals.render.OrbitalsRenderEngine
 import org.beatonma.orbitals.render.compose.Orbitals
 import org.beatonma.orbitals.render.compose.toComposeColor
 import org.beatonma.orbitals.render.options.OptionPersistence
 import org.beatonma.orbitals.render.options.Options
+import org.beatonma.orbitals.render.options.VisualKeys
 
 
 private val ContentPadding = 16.dp
@@ -71,6 +74,15 @@ fun EditableOrbitals(
     insets: PaddingValues = PaddingValues(),
     engine: OrbitalsRenderEngine<DrawScope>,
 ) {
+    if (!options.visualOptions.allowOverlay) {
+        // Short-circuit if settings UI is disabled
+        return Orbitals(
+            options,
+            Modifier.fillMaxSize(),
+            engine,
+        )
+    }
+
     var onBackgroundColor by remember { mutableStateOf(Color.Black) }
 
     LaunchedEffect(options.visualOptions.colorOptions.background) {
@@ -105,7 +117,14 @@ fun EditableOrbitals(
                     options,
                     persistence,
                     insets = insets,
-                    onClose = { onSettingsVisibleChange(false) }
+                    onCloseUI = { onSettingsVisibleChange(false) },
+                    onDisableUI = when (platform) {
+                        Platform.Web -> {
+                            { persistence.updateOption(VisualKeys.AllowOverlay, false) }
+                        }
+
+                        else -> null
+                    }
                 )
             }
         }

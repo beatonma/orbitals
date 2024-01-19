@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme.colorScheme
@@ -93,7 +94,8 @@ internal fun SettingsUI(
     persistence: OptionPersistence,
     insets: PaddingValues = PaddingValues(),
     modifier: Modifier = Modifier,
-    onClose: () -> Unit,
+    onCloseUI: () -> Unit,
+    onDisableUI: (() -> Unit)?
 ) {
     when {
         availableWidth < (MaxColumnWidth + ColumnSpacing) * 2 ->
@@ -107,7 +109,8 @@ internal fun SettingsUI(
                     start = 16.dp,
                     end = 16.dp
                 ),
-                onClose
+                onCloseUI,
+                onDisableUI
             )
 
 
@@ -117,7 +120,8 @@ internal fun SettingsUI(
                 persistence,
                 modifier,
                 PaddingValues(bottom = 32.dp),
-                onClose
+                onCloseUI,
+                onDisableUI
             )
 
 
@@ -127,7 +131,8 @@ internal fun SettingsUI(
                 persistence,
                 modifier,
                 PaddingValues(bottom = 32.dp),
-                onClose
+                onCloseUI,
+                onDisableUI
             )
     }
 }
@@ -139,7 +144,8 @@ private fun SettingsSingleColumn(
     persistence: OptionPersistence,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
-    onClose: () -> Unit,
+    onCloseUI: () -> Unit,
+    onDisableUI: (() -> Unit)?,
 ) {
     DraggableColumn(
         modifier.then(ColumnModifier),
@@ -147,7 +153,11 @@ private fun SettingsSingleColumn(
     ) {
         item {
             Box(Modifier.fillMaxWidth()) {
-                CloseSettings(onClose, Modifier.align(Alignment.BottomEnd))
+                SettingsOverlayButtons(
+                    onCloseUI = onCloseUI,
+                    onDisableUI = onDisableUI,
+                    modifier = Modifier.align(Alignment.BottomEnd)
+                )
             }
         }
 
@@ -158,23 +168,43 @@ private fun SettingsSingleColumn(
 }
 
 @Composable
-private fun CloseSettings(onClick: () -> Unit, modifier: Modifier = Modifier) {
-    ExtendedFloatingActionButton(
-        text = { Text("Close settings") },
-        icon = { Icon(Icons.Default.Close, "") },
-        onClick = onClick,
-        modifier = modifier,
-    )
+private fun SettingsOverlayButtons(
+    onCloseUI: () -> Unit,
+    onDisableUI: (() -> Unit)?,
+    modifier: Modifier = Modifier,
+) {
+    Row(modifier, horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.End)) {
+        onDisableUI?.let {
+            ExtendedFloatingActionButton(
+                text = { Text("Disable settings UI") },
+                icon = { Icon(Icons.Default.Delete, "") },
+                onClick = it,
+                containerColor = colorScheme.surface,
+                contentColor = colorScheme.onSurface,
+            )
+        }
+
+        ExtendedFloatingActionButton(
+            text = { Text("Close settings") },
+            icon = { Icon(Icons.Default.Close, "") },
+            onClick = onCloseUI,
+        )
+    }
 }
 
 @Composable
 private fun MultiColumn(
     modifier: Modifier = Modifier,
-    onClose: () -> Unit,
+    onCloseUI: () -> Unit,
+    onDisableUI: (() -> Unit)?,
     content: @Composable () -> Unit,
 ) {
     Column(modifier.padding(horizontal = 24.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        CloseSettings(onClose, Modifier.align(Alignment.End).padding(top = 16.dp))
+        SettingsOverlayButtons(
+            onCloseUI = onCloseUI,
+            onDisableUI = onDisableUI,
+            modifier = Modifier.align(Alignment.End).padding(top = 16.dp)
+        )
 
         Row(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -191,9 +221,10 @@ private fun SettingsTwoColumns(
     persistence: OptionPersistence,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues,
-    onClose: () -> Unit,
+    onCloseUI: () -> Unit,
+    onDisableUI: (() -> Unit)?,
 ) {
-    MultiColumn(modifier, onClose) {
+    MultiColumn(modifier, onCloseUI, onDisableUI) {
         DraggableColumn(ColumnModifier, contentPadding = contentPadding) {
             visualSettings(options.visualOptions, persistence)
             colorSettings(options.visualOptions.colorOptions, persistence)
@@ -211,9 +242,10 @@ private fun SettingsThreeColumns(
     persistence: OptionPersistence,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues,
-    onClose: () -> Unit,
+    onCloseUI: () -> Unit,
+    onDisableUI: (() -> Unit)?,
 ) {
-    MultiColumn(modifier, onClose) {
+    MultiColumn(modifier, onCloseUI, onDisableUI) {
         DraggableColumn(ColumnModifier, contentPadding = contentPadding) {
             visualSettings(options.visualOptions, persistence)
         }
@@ -346,7 +378,7 @@ private fun LazyListScope.physicsSettings(physics: PhysicsOptions, persistence: 
         onValueChange = persistence::updateOption,
     )
     floatSetting(
-        name = "Body density",
+        name = "Object density",
         key = PhysicsKeys.Density,
         value = physics.bodyDensity.value,
         onValueChange = persistence::updateOption,
