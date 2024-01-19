@@ -8,7 +8,7 @@ import kotlin.test.assertTrue
 
 private val FloatAllowableDifference = 0.01f
 
-infix fun <T : Any> T.shouldbe(expected: T) {
+infix fun <T : Any> T?.shouldbe(expected: T?) {
     assertEquals(expected, this)
 }
 

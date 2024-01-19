@@ -28,8 +28,10 @@ interface OptionsStore {
             autoAddBodies = this[PhysicsKeys.AutoAddBodies]
                 ?: DefaultPhysics.autoAddBodies,
             maxEntities = this[PhysicsKeys.MaxEntities]
+                ?.coerceAtLeast(1)
                 ?: DefaultPhysics.maxEntities,
             maxFixedBodyAge = this[PhysicsKeys.MaxFixedBodyAgeSeconds]
+                ?.coerceAtLeast(0)
                 ?.seconds
                 ?: DefaultPhysics.maxFixedBodyAge,
             systemGenerators = this[PhysicsKeys.Generators]
@@ -41,6 +43,7 @@ interface OptionsStore {
                 ?.toEnumOrNull(CollisionStyle::valueOf)
                 ?: DefaultPhysics.collisionStyle,
             bodyDensity = this[PhysicsKeys.Density]
+                ?.coerceAtLeast(0.0001f)
                 ?.let(::Density)
                 ?: DefaultPhysics.bodyDensity,
         )
@@ -51,6 +54,7 @@ interface OptionsStore {
             background = this[ColorKeys.BackgroundColor]
                 ?: DefaultColors.background,
             foregroundAlpha = this[ColorKeys.BodyAlpha]
+                ?.coerceIn(0f, 1f)
                 ?: DefaultColors.foregroundAlpha,
             bodies = this[ColorKeys.Colors]
                 ?.mapToEnumOrNull(ObjectColors::valueOf)
@@ -65,11 +69,13 @@ interface OptionsStore {
                 ?.mapToEnumOrNull(RenderLayer::valueOf)
                 ?: DefaultVisuals.renderLayers,
             traceLineLength = this[VisualKeys.TraceLength]
+                ?.coerceAtLeast(1)
                 ?: DefaultVisuals.traceLineLength,
             drawStyle = this[VisualKeys.DrawStyle]
                 ?.toEnumOrNull(DrawStyle::valueOf)
                 ?: DefaultVisuals.drawStyle,
             strokeWidth = this[VisualKeys.StrokeWidth]
+                ?.coerceAtLeast(1f)
                 ?: DefaultVisuals.strokeWidth,
         )
     }

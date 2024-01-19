@@ -144,34 +144,35 @@ internal fun Int.normalised(): Float = this.toFloat() / 255f
  * - An 8-character ARGB hex string (with or without '#')
  * - ULong.toString()
  */
-fun String.toColor(): Color {
+fun String.toColor(): Color? {
     val hex = this.removePrefix("#")
-    return when (hex.length) {
-        3 -> {
-            val (r, g, b) = hex.map {
-                "$it$it".toUByte(16)
-            }
-            Color.argb(255u, r, g, b)
-        }
 
-        6 -> {
-            val (r, g, b) = arrayOf(0, 2, 4).map { index ->
-                "${hex[index]}${hex[index + 1]}".toUByte(16)
+    return try {
+        when (hex.length) {
+            3 -> {
+                val (r, g, b) = hex.map {
+                    "$it$it".toUByte(16)
+                }
+                Color.argb(255u, r, g, b)
             }
-            Color.argb(255u, r, g, b)
-        }
 
-        8 -> {
-            val (a, r, g, b) = arrayOf(0, 2, 4, 6).map { index ->
-                "${hex[index]}${hex[index + 1]}".toUByte(16)
+            6 -> {
+                val (r, g, b) = arrayOf(0, 2, 4).map { index ->
+                    "${hex[index]}${hex[index + 1]}".toUByte(16)
+                }
+                Color.argb(255u, r, g, b)
             }
-            Color.argb(a, r, g, b)
-        }
 
-        else -> try {
-            this.toULong().toColor()
-        } catch (e: NumberFormatException) {
-            Color.Black
+            8 -> {
+                val (a, r, g, b) = arrayOf(0, 2, 4, 6).map { index ->
+                    "${hex[index]}${hex[index + 1]}".toUByte(16)
+                }
+                Color.argb(a, r, g, b)
+            }
+
+            else -> this.toULong().toColor()
         }
+    } catch (e: NumberFormatException) {
+        null
     }
 }
