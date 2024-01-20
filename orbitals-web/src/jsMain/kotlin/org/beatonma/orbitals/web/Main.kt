@@ -1,3 +1,5 @@
+package org.beatonma.orbitals.web
+
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.window.CanvasBasedWindow
 import org.beatonma.orbitals.compose.ui.EditableOrbitals
@@ -19,6 +21,10 @@ fun main() {
                 isDark = true,
             ) {
                 EditableOrbitals(
+                    persistence.webOptions.enableSettingsUI,
+                    { persistence.updateOption(WebOptions.EnableSettingsUI, it) },
+                    persistence.webOptions.showSettingsUI,
+                    { persistence.updateOption(WebOptions.ShowSettingsUI, it) },
                     persistence.options,
                     persistence,
                     engine = engine

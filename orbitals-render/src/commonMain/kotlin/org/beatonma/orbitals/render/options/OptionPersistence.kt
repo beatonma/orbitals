@@ -64,7 +64,6 @@ interface OptionsStore {
 
     fun loadVisuals(colors: ColorOptions = loadColors()): VisualOptions {
         return VisualOptions(
-            allowOverlay = this[VisualKeys.AllowOverlay] ?: true,
             colorOptions = colors,
             renderLayers = this[VisualKeys.RenderLayers]
                 ?.mapToEnumOrNull(RenderLayer::valueOf)

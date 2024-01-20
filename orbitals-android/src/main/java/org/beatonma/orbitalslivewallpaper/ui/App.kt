@@ -39,8 +39,10 @@ fun App(
 
     Scaffold(contentWindowInsets = WindowInsets.safeDrawing) { insets ->
         EditableOrbitals(
-            settingsVisible,
-            { settingsVisible = it },
+            settingsEnabled = true,
+            onSettingsEnabledChange = {},
+            settingsVisible = settingsVisible,
+            onSettingsVisibleChange = { settingsVisible = it },
             options = options,
             persistence = viewmodel,
             insets = insets,

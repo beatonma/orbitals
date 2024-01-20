@@ -40,7 +40,6 @@ import org.beatonma.orbitals.render.compose.Orbitals
 import org.beatonma.orbitals.render.compose.toComposeColor
 import org.beatonma.orbitals.render.options.OptionPersistence
 import org.beatonma.orbitals.render.options.Options
-import org.beatonma.orbitals.render.options.VisualKeys
 
 
 private val ContentPadding = 16.dp
@@ -56,6 +55,8 @@ fun EditableOrbitals(
     var settingsVisible by remember { mutableStateOf(false) }
 
     EditableOrbitals(
+        true,
+        {},
         settingsVisible,
         { settingsVisible = it },
         options,
@@ -67,6 +68,8 @@ fun EditableOrbitals(
 
 @Composable
 fun EditableOrbitals(
+    settingsEnabled: Boolean,
+    onSettingsEnabledChange: (Boolean) -> Unit,
     settingsVisible: Boolean,
     onSettingsVisibleChange: (Boolean) -> Unit,
     options: Options,
@@ -74,7 +77,7 @@ fun EditableOrbitals(
     insets: PaddingValues = PaddingValues(),
     engine: OrbitalsRenderEngine<DrawScope>,
 ) {
-    if (!options.visualOptions.allowOverlay) {
+    if (!settingsEnabled) {
         // Short-circuit if settings UI is disabled
         return Orbitals(
             options,
@@ -120,7 +123,7 @@ fun EditableOrbitals(
                     onCloseUI = { onSettingsVisibleChange(false) },
                     onDisableUI = when (platform) {
                         Platform.Web -> {
-                            { persistence.updateOption(VisualKeys.AllowOverlay, false) }
+                            { onSettingsEnabledChange(false) }
                         }
 
                         else -> null

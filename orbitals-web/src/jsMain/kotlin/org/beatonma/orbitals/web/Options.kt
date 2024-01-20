@@ -1,3 +1,5 @@
+package org.beatonma.orbitals.web
+
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -18,21 +20,46 @@ import org.beatonma.orbitals.render.options.StringSetKey
 import org.w3c.dom.url.URLSearchParams
 
 
+class WebOptions(
+    val enableSettingsUI: Boolean = true,
+    showSettingsUI: Boolean = false,
+) {
+    private val _showSettingsUI = showSettingsUI
+    val showSettingsUI: Boolean get() = enableSettingsUI && _showSettingsUI
+
+    companion object WebKeys {
+        val EnableSettingsUI = BooleanKey("enable_settings_ui")
+        val ShowSettingsUI = BooleanKey("show_settings_ui")
+    }
+}
+
+
 /**
  * Read and write options via the URL ?search parameters.
  */
-class UrlOptionsPersistence : OptionPersistence {
-    var options: Options by mutableStateOf(createOptions(URLSearchParams(window.location.search)))
+internal class UrlOptionsPersistence(
+    initParams: OptionsStore = UrlOptionsStore(URLSearchParams(window.location.search))
+) : OptionPersistence {
+    var options: Options by mutableStateOf(createOptions(initParams))
+    var webOptions: WebOptions by mutableStateOf(createWebOptions(initParams))
 
     private fun set(key: Key<*>, value: String) {
         val params = URLSearchParams(window.location.search)
         params.set(key.key, value)
         window.history.replaceState(null, "options", "?$params")
-        options = createOptions(params)
+
+        val store = UrlOptionsStore(params)
+        options = createOptions(store)
+        webOptions = createWebOptions(store)
     }
 
-    private fun createOptions(params: URLSearchParams) =
-        UrlOptionsStore(params).loadOptions()
+    private fun createOptions(store: OptionsStore) = store.loadOptions()
+
+    private fun createWebOptions(store: OptionsStore): WebOptions =
+        WebOptions(
+            enableSettingsUI = store[WebOptions.EnableSettingsUI] ?: true,
+            showSettingsUI = store[WebOptions.ShowSettingsUI] ?: false,
+        )
 
     override fun updateOption(key: ColorKey, value: Color) {
         set(key, value.toStringRgb())
