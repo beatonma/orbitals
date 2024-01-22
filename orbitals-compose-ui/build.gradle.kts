@@ -27,3 +27,12 @@ kotlin {
         }
     }
 }
+
+dependencies {
+    commonMainImplementation(project(Module.Core))
+    commonMainImplementation(project(Module.Render))
+    commonMainImplementation(project(Module.ComposeRender))
+    commonMainImplementation(compose.ui)
+    commonMainImplementation(compose.foundation)
+    commonMainImplementation(compose.material3)
+}

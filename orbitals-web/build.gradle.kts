@@ -3,16 +3,8 @@ plugins {
     id("org.jetbrains.compose") version Versions.JetbrainsCompose
 }
 
-repositories {
-    mavenCentral()
-    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-    google()
-}
-
 compose.experimental {
-    web.application {
-
-    }
+    web.application {}
 }
 
 kotlin {
@@ -30,27 +22,18 @@ kotlin {
         }
         binaries.executable()
     }
+}
 
-    sourceSets {
-        val commonMain by getting {
-            dependencies {
-                implementation(compose.runtime)
-                implementation(compose.ui)
-                implementation(compose.foundation)
-                implementation(compose.material3)
+dependencies {
+    commonMainImplementation(compose.runtime)
+    commonMainImplementation(compose.ui)
+    commonMainImplementation(compose.foundation)
+    commonMainImplementation(compose.material3)
+    commonMainImplementation(project(Module.Core))
+    commonMainImplementation(project(Module.Render))
+    commonMainImplementation(project(Module.ComposeRender))
+    commonMainImplementation(project(Module.ComposeUi))
 
-                implementation(project(Module.Core))
-                implementation(project(Module.Render))
-                implementation(project(Module.ComposeRender))
-                implementation(project(Module.ComposeUi))
-            }
-        }
-        val commonTest by getting {
-            dependencies {
-                implementation(project(Module.Test))
-                implementation(Dependencies.KotlinTest)
-            }
-        }
-        val jsMain by getting
-    }
+    commonTestImplementation(project(Module.Test))
+    commonTestImplementation(Dependencies.KotlinTest)
 }

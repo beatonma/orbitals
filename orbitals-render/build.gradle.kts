@@ -11,21 +11,11 @@ android {
 
 kotlin {
     orbitalsLibrary()
+}
 
-    sourceSets {
-        val commonMain by getting {
-            dependencies {
-                implementation(project(Module.Core))
-            }
-        }
-        val commonTest by getting {
-            dependencies {
-                implementation(Dependencies.KotlinTest)
-                implementation(project(Module.Test))
-            }
-        }
-        val androidMain by getting {}
-        val jvmMain by getting {}
-        val jsMain by getting {}
-    }
+dependencies {
+    commonMainImplementation(project(Module.Core))
+
+    commonTestImplementation(Dependencies.KotlinTest)
+    commonTestImplementation(project(Module.Test))
 }
