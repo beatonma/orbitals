@@ -16,9 +16,9 @@ val ZeroVelocity = Velocity(0f.metresPerSecond, 0f.metresPerSecond)
 val ZeroMotion get() = Motion(ZeroPosition, ZeroVelocity)
 
 
-interface Fixed
-interface Inertial
-interface Collider {
+sealed interface Fixed
+sealed interface Inertial
+sealed interface Collider {
     var lastCollision: Long
     fun canCollide(now: Long = currentTimeMillis()): Boolean
 }
@@ -31,6 +31,8 @@ sealed interface Body : Collider {
     val motion: Motion
 
     var age: Duration
+    var isMortal: Boolean
+    val isImmortal: Boolean get() = !isMortal
 
     var position: Position
         get() = motion.position
@@ -93,6 +95,7 @@ data class FixedBody(
     override var age: Duration = 0.seconds
 ) : Body, Fixed {
     override var lastCollision: Long = currentTimeMillis()
+    override var isMortal: Boolean = true
 
     override fun applyInertia(timeDelta: Duration) {
         // N/A
@@ -126,6 +129,7 @@ data class InertialBody(
     override val id: UniqueID = uniqueID("InertialBody"),
 ) : Body, Inertial {
     override var lastCollision: Long = currentTimeMillis()
+    override var isMortal: Boolean = true
 
     override fun applyInertia(timeDelta: Duration) {
         motion.applyInertia(timeDelta)
@@ -162,6 +166,7 @@ data class GreatAttractor(
     override var age: Duration = 0.seconds
 ) : Body, Fixed {
     override var lastCollision: Long = currentTimeMillis()
+    override var isMortal: Boolean = true
 
     override fun applyInertia(timeDelta: Duration) {
         // N/A

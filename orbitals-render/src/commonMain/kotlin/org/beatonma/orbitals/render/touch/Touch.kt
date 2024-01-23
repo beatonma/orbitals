@@ -1,22 +1,23 @@
 package org.beatonma.orbitals.render.touch
 
+import org.beatonma.orbitals.core.engine.Config
 import org.beatonma.orbitals.core.engine.Region
-import org.beatonma.orbitals.core.physics.Density
+import org.beatonma.orbitals.core.options.PhysicsOptions
 import org.beatonma.orbitals.core.physics.GreatAttractor
 import org.beatonma.orbitals.core.physics.Motion
 import org.beatonma.orbitals.core.physics.Position
 import org.beatonma.orbitals.core.physics.UniqueID
-import org.beatonma.orbitals.core.physics.kg
 import org.beatonma.orbitals.core.physics.uniqueID
 import org.beatonma.orbitals.render.OrbitalsRenderEngine
 
-fun createTouchAttractor(position: Position) =
+
+fun createTouchAttractor(position: Position, physics: PhysicsOptions) =
     GreatAttractor(
         id = uniqueID("touch"),
-        mass = 5_000f.kg,
-        density = Density(1f),
+        mass = Config.getGreatAttractorMass(),
+        density = physics.bodyDensity,
         motion = Motion(position),
-    )
+    ).apply { isMortal = false }
 
 fun getTouchRegion(position: Position): Region {
     val x = position.x.value.toInt()

@@ -7,10 +7,9 @@ import org.beatonma.orbitals.core.fastForEachIndexed
 import org.beatonma.orbitals.core.options.PhysicsOptions
 import org.beatonma.orbitals.core.percent
 import org.beatonma.orbitals.core.physics.Body
+import org.beatonma.orbitals.core.physics.Fixed
 import org.beatonma.orbitals.core.physics.FixedBody
-import org.beatonma.orbitals.core.physics.GreatAttractor
 import org.beatonma.orbitals.core.physics.Inertial
-import org.beatonma.orbitals.core.physics.InertialBody
 import org.beatonma.orbitals.core.physics.UniqueID
 import org.beatonma.orbitals.core.physics.contains
 import org.beatonma.orbitals.core.physics.toInertialBody
@@ -209,16 +208,12 @@ internal fun pruneBodies(
     keepAgedRandomizer: () -> Boolean = { chance(10.percent) }
 ): Pair<List<Body>, List<Body>> {
     val (keep, furtherAction) = bodies.partition {
-        when (it) {
-            is FixedBody -> {
-                it.age < ageLimit || keepAgedRandomizer()
-            }
-
-            is InertialBody -> {
+        if (it.isImmortal) true else when (it) {
+            is Inertial -> {
                 space.contains(it.position)
             }
 
-            is GreatAttractor -> {
+            is Fixed -> {
                 it.age < ageLimit || keepAgedRandomizer()
             }
         }

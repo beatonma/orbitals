@@ -153,7 +153,7 @@ internal class OrbitalsGestureDetector(
 
             val id = bodies[pointerId]
             if (id == null) {
-                val body = createTouchAttractor(coords.toPosition())
+                val body = createTouchAttractor(coords.toPosition(), orbitals.options.physics)
                 bodies[pointerId] = body.id
                 orbitals.add(body)
             } else {
