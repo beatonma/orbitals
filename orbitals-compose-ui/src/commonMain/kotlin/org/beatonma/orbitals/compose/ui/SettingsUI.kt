@@ -162,6 +162,7 @@ private fun SettingsSingleColumn(
             }
         }
 
+        aboutOrbitals()
         visualSettings(options.visualOptions, persistence)
         colorSettings(options.visualOptions.colorOptions, persistence)
         physicsSettings(options.physics, persistence)
@@ -235,6 +236,7 @@ private fun SettingsTwoColumns(
         }
 
         DraggableColumn(ColumnModifier, contentPadding = contentPadding) {
+            aboutOrbitals()
             physicsSettings(options.physics, persistence)
         }
     }
@@ -259,6 +261,7 @@ private fun SettingsThreeColumns(
         }
 
         DraggableColumn(ColumnModifier, contentPadding = contentPadding) {
+            aboutOrbitals()
             physicsSettings(options.physics, persistence)
         }
     }
@@ -389,6 +392,12 @@ private fun LazyListScope.physicsSettings(physics: PhysicsOptions, persistence: 
         min = .05f,
         max = 10f,
     )
+}
+
+private fun LazyListScope.aboutOrbitals() {
+    item {
+        AboutOrbitals(SettingModifier)
+    }
 }
 
 private fun LazyListScope.conditional(
