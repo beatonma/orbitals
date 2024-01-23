@@ -81,7 +81,6 @@ private object PersistentOptions : OptionPersistence, OptionsStore {
         options = loadOptions()
     }
 
-    override fun <T> get(key: Key<T>): T? {
-        return optionMap[key] as? T
-    }
+    @Suppress("UNCHECKED_CAST")
+    override fun <T> get(key: Key<T>): T? = optionMap[key] as? T
 }

@@ -21,7 +21,8 @@ data class ColorOptions(
     ),
     val foregroundAlpha: Float = 1f,
 ) {
-    fun colorFor(body: Body): Color = Color(bodies.random().colors.random())
+    fun colorFor(@Suppress("UNUSED_PARAMETER") body: Body): Color =
+        Color(bodies.random().colors.random())
 }
 
 enum class ObjectColors(val colors: Array<ULong>) {
