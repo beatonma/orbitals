@@ -63,13 +63,14 @@ import org.beatonma.orbitals.render.options.VisualOptions
 
 
 private val MaxColumnWidth = 450.dp
-private val ColumnSpacing = 16.dp
+private val Spacing = 16.dp
+
 private val ColumnModifier = Modifier.widthIn(max = MaxColumnWidth)
 
 private val SettingModifier: Modifier
     @Composable get() = Modifier
         .background(colorScheme.settingsScrim)
-        .padding(16.dp)
+        .padding(Spacing)
         .fillMaxWidth()
 
 @Composable
@@ -98,7 +99,7 @@ internal fun SettingsUI(
     onDisableUI: (() -> Unit)?
 ) {
     when {
-        availableWidth < (MaxColumnWidth + ColumnSpacing) * 2 ->
+        availableWidth < (MaxColumnWidth + Spacing) * 2 ->
             SettingsSingleColumn(
                 options,
                 persistence,
@@ -106,15 +107,15 @@ internal fun SettingsUI(
                 insets + PaddingValues(
                     top = min(availableHeight / 2, 320.dp),
                     bottom = 160.dp,
-                    start = 16.dp,
-                    end = 16.dp
+                    start = Spacing,
+                    end = Spacing
                 ),
                 onCloseUI,
                 onDisableUI
             )
 
 
-        availableWidth < (MaxColumnWidth + ColumnSpacing) * 3 ->
+        availableWidth < (MaxColumnWidth + Spacing) * 3 ->
             SettingsTwoColumns(
                 options,
                 persistence,
@@ -156,7 +157,7 @@ private fun SettingsSingleColumn(
                 SettingsOverlayButtons(
                     onCloseUI = onCloseUI,
                     onDisableUI = onDisableUI,
-                    modifier = Modifier.align(Alignment.BottomEnd)
+                    modifier = Modifier.align(Alignment.BottomEnd).padding(vertical = Spacing)
                 )
             }
         }
@@ -173,7 +174,7 @@ private fun SettingsOverlayButtons(
     onDisableUI: (() -> Unit)?,
     modifier: Modifier = Modifier,
 ) {
-    Row(modifier, horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.End)) {
+    Row(modifier, horizontalArrangement = Arrangement.spacedBy(Spacing, Alignment.End)) {
         onDisableUI?.let {
             ExtendedFloatingActionButton(
                 text = { Text("Disable settings UI") },
@@ -199,15 +200,18 @@ private fun MultiColumn(
     onDisableUI: (() -> Unit)?,
     content: @Composable () -> Unit,
 ) {
-    Column(modifier.padding(horizontal = 24.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    Column(
+        modifier.padding(horizontal = 24.dp),
+        verticalArrangement = Arrangement.spacedBy(Spacing)
+    ) {
         SettingsOverlayButtons(
             onCloseUI = onCloseUI,
             onDisableUI = onDisableUI,
-            modifier = Modifier.align(Alignment.End).padding(top = 16.dp)
+            modifier = Modifier.align(Alignment.End).padding(top = Spacing)
         )
 
         Row(
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(Spacing),
             verticalAlignment = Alignment.Bottom
         ) {
             content()
@@ -521,7 +525,7 @@ private fun LazyListScope.settingsGroup(title: String) {
         Text(
             title,
             style = typography.headlineMedium,
-            modifier = Modifier.padding(top = 16.dp).then(SettingModifier)
+            modifier = Modifier.padding(top = Spacing).then(SettingModifier)
         )
     }
 }
