@@ -34,5 +34,6 @@ object Versions {
         const val DataStore = "1.0.0"
         const val NavigationCompose = "2.7.6"
         const val ViewModelCompose = "2.6.2"
+        const val LifecycleCoroutines = "2.4.0"
     }
 }

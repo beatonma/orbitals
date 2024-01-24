@@ -1,14 +1,19 @@
 package org.beatonma.orbitalslivewallpaper.services
 
 import android.graphics.Canvas
-import android.graphics.Color
 import android.os.Handler
 import android.service.wallpaper.WallpaperService
 import android.view.MotionEvent
 import android.view.SurfaceHolder
+import android.view.ViewConfiguration
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LifecycleRegistry
+import androidx.lifecycle.lifecycleScope
 import org.beatonma.orbitals.core.util.warn
-import org.beatonma.orbitals.render.android.AndroidCanvasDelegate
 import org.beatonma.orbitals.render.OrbitalsRenderEngine
+import org.beatonma.orbitals.render.android.AndroidCanvasDelegate
+import org.beatonma.orbitals.render.interaction.OrbitalsGestureHandler
 import org.beatonma.orbitals.render.options.Options
 import org.beatonma.orbitalslivewallpaper.Settings
 import org.beatonma.orbitalslivewallpaper.dataStore
@@ -21,12 +26,11 @@ private const val FPS = 60
 private const val FrameDelay: Long = 1000L / FPS
 
 class LwpService : WallpaperService() {
-
     override fun onCreateEngine() = LwpEngine()
 
-    inner class LwpEngine : Engine() {
-        private var options: Options =
-            getSavedOptionsSync(dataStore(Settings.Wallpaper))
+    inner class LwpEngine : Engine(), LifecycleOwner {
+        override val lifecycle: LifecycleRegistry = LifecycleRegistry(this)
+        private var options: Options = getSavedOptionsSync(dataStore(Settings.Wallpaper))
             set(value) {
                 field = value
                 renderEngine.options = value
@@ -48,10 +52,18 @@ class LwpService : WallpaperService() {
             options = options,
         )
 
-        private val touchHandler = OrbitalsGestureDetector(this@LwpService, renderEngine)
+        private val touchHandler = OrbitalsGestureDetector(
+            OrbitalsGestureHandler(
+                lifecycleScope,
+                renderEngine,
+                ViewConfiguration.get(this@LwpService).scaledTouchSlop.toFloat()
+            )
+        )
 
         override fun onCreate(surfaceHolder: SurfaceHolder?) {
             super.onCreate(surfaceHolder)
+
+            lifecycle.currentState = Lifecycle.State.CREATED
 
             setTouchEventsEnabled(true)
             visible = true
@@ -63,10 +75,12 @@ class LwpService : WallpaperService() {
 
         override fun onVisibilityChanged(visible: Boolean) {
             super.onVisibilityChanged(visible)
+
             this.visible = visible
 
             if (visible) {
                 options = getSavedOptionsSync(dataStore(Settings.Wallpaper))
+                lifecycle.currentState = Lifecycle.State.STARTED
             }
         }
 
@@ -83,6 +97,7 @@ class LwpService : WallpaperService() {
 
         override fun onSurfaceDestroyed(holder: SurfaceHolder?) {
             super.onSurfaceDestroyed(holder)
+            lifecycle.currentState = Lifecycle.State.DESTROYED
             visible = false
             renderEngine.recycle()
         }

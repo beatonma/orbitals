@@ -34,6 +34,11 @@ fun Position.distanceTo(other: Position): Distance =
                 + squareOf(other.y - this.y)
     )
 
+
+fun Position.distanceSquaredTo(other: Position) =
+    squareOf(other.x - this.x) + squareOf(other.y - this.y)
+
+
 fun centerOf(a: Position, b: Position) = Position((b.x + a.x) / 2f, (b.y + a.y) / 2f)
 
 fun Space.contains(position: Position): Boolean =

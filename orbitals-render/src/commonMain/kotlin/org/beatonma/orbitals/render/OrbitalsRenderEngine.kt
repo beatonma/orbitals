@@ -3,14 +3,14 @@ package org.beatonma.orbitals.render
 import org.beatonma.orbitals.core.engine.DefaultOrbitalsEngine
 import org.beatonma.orbitals.core.engine.Space
 import org.beatonma.orbitals.core.engine.Universe
-import org.beatonma.orbitals.render.options.Options
 import org.beatonma.orbitals.core.physics.Body
 import org.beatonma.orbitals.core.physics.UniqueID
+import org.beatonma.orbitals.render.options.Options
 import org.beatonma.orbitals.render.renderer.BodyProperties
 import kotlin.time.Duration
 
-class OrbitalsRenderEngine<T>(
-    private val canvasDelegate: CanvasDelegate<T>,
+class OrbitalsRenderEngine<Canvas>(
+    private val canvasDelegate: CanvasDelegate<Canvas>,
     options: Options,
 ) {
     var options: Options = options
@@ -20,7 +20,8 @@ class OrbitalsRenderEngine<T>(
             renderers = diffRenderers(value)
             renderers.forEach { it.options = value.visualOptions }
         }
-    var renderers: Set<OrbitalsRenderer<T>> = getRenderers(options.visualOptions, canvasDelegate)
+    var renderers: Set<OrbitalsRenderer<Canvas>> =
+        getRenderers(options.visualOptions, canvasDelegate)
 
     private val bodyProps = mutableMapOf<UniqueID, BodyProperties>()
     private val engine = object : DefaultOrbitalsEngine(options.physics) {
@@ -54,7 +55,7 @@ class OrbitalsRenderEngine<T>(
         }
     }
 
-    fun update(canvas: T, delta: Duration) {
+    fun update(canvas: Canvas, delta: Duration) {
         engine.tick(delta)
 
         renderers.forEach {
@@ -91,7 +92,7 @@ class OrbitalsRenderEngine<T>(
     }
 
     fun recycle() {
-        renderers.forEach(OrbitalsRenderer<T>::recycle)
+        renderers.forEach(OrbitalsRenderer<Canvas>::recycle)
     }
 
     private fun diffRenderers(options: Options) = diffRenderers(

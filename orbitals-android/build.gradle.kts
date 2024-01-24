@@ -24,6 +24,7 @@ dependencies {
     implementation(Dependencies.Android.ActivityCompose)
     implementation(Dependencies.Android.ViewModelCompose)
     implementation(Dependencies.Android.NavigationCompose)
+    implementation(Dependencies.Android.CoroutinesLifecycle)
 
     implementation(Dependencies.Android.DataStore)
 

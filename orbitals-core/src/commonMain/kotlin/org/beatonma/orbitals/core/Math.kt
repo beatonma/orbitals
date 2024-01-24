@@ -1,10 +1,11 @@
 package org.beatonma.orbitals.core
 
-import kotlin.math.pow
 import kotlin.random.Random
 
 
-fun squareOf(value: Float): Float = value.pow(2.0F)
+fun squareOf(value: Float): Float = value * value
+val Float.squared: Float get() = this * this
+val Int.squared: Int get() = this * this
 
 val Int.factorial: Int get() = (1..this).reduce { acc, i -> acc * i }
 

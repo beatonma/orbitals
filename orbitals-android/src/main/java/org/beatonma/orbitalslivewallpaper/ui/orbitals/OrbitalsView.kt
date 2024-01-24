@@ -6,8 +6,10 @@ import android.graphics.Canvas
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewConfiguration
 import org.beatonma.orbitals.render.OrbitalsRenderEngine
 import org.beatonma.orbitals.render.android.AndroidCanvasDelegate
+import org.beatonma.orbitals.render.interaction.OrbitalsGestureHandler
 import org.beatonma.orbitalslivewallpaper.Settings
 import org.beatonma.orbitalslivewallpaper.dataStore
 import org.beatonma.orbitalslivewallpaper.getSavedOptionsSync
@@ -24,24 +26,37 @@ class OrbitalsView @JvmOverloads constructor(
         AndroidCanvasDelegate,
         options = options,
     )
-    private val touchHandler = OrbitalsGestureDetector(context, renderEngine)
+
+//    private val touch = OrbitalsGestureHandler<Int>(
+//        viewScope,
+//        renderEngine,
+//        touchSlop = ViewConfiguration.get(context).scaledTouchSlop.toFloat()
+//    )
+
+    private val touchHandler = OrbitalsGestureDetector(
+        OrbitalsGestureHandler(
+            viewScope,
+            renderEngine,
+            ViewConfiguration.get(context).scaledTouchSlop.toFloat()
+        )
+    )
     private var lastFrameMillis = System.currentTimeMillis()
 
-    init {
-        setOnClickListener {
-            renderEngine.addBodies()
-        }
-    }
+//    init {
+//        setOnClickListener {
+//            renderEngine.addBodies()
+//        }
+//    }
 
-    private fun reset() {
-        renderEngine.clear()
-        renderEngine.addBodies()
-    }
+//    private fun reset() {
+//        renderEngine.clear()
+//        renderEngine.addBodies()
+//    }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         if (w != oldw && h != oldh) {
             renderEngine.onSizeChanged(w, h)
-            reset()
+//            reset()
         }
 
         super.onSizeChanged(w, h, oldw, oldh)
@@ -58,10 +73,10 @@ class OrbitalsView @JvmOverloads constructor(
         postInvalidateOnAnimation()
     }
 
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        reset()
-    }
+//    override fun onAttachedToWindow() {
+//        super.onAttachedToWindow()
+//        reset()
+//    }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
@@ -69,6 +84,5 @@ class OrbitalsView @JvmOverloads constructor(
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    override fun onTouchEvent(event: MotionEvent): Boolean =
-        touchHandler.onTouchEvent(event)
+    override fun onTouchEvent(event: MotionEvent): Boolean = touchHandler.onTouchEvent(event)
 }

@@ -22,6 +22,10 @@ object Dependencies {
             "androidx.lifecycle:lifecycle-viewmodel-compose",
             Versions.Android.ViewModelCompose
         )
+        val CoroutinesLifecycle = dependency(
+            "androidx.lifecycle:lifecycle-runtime-ktx",
+            Versions.Android.LifecycleCoroutines
+        )
     }
 
     private fun dependency(name: String, version: String) = "$name:$version"
