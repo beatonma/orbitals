@@ -31,10 +31,9 @@ enum class Settings {
 }
 
 fun getSavedOptionsSync(dataStore: DataStore<Preferences>): Options = runBlocking {
-    getSavedOptions(dataStore).first()
+    dataStore.options().first()
 }
 
-private operator fun <T> Preferences.get(key: Key<T>) = get(key.asPreferenceKey)
 
 private class AndroidOptionsStore(
     private val preferences: Preferences
@@ -46,17 +45,16 @@ private class AndroidOptionsStore(
             else -> preferences[key]
         }
     }
+
+    private operator fun <T> Preferences.get(key: Key<T>) = get(key.asPreferenceKey)
 }
 
-fun getSavedOptions(dataStore: DataStore<Preferences>): Flow<Options> {
-    return dataStore.data.map {
-        AndroidOptionsStore(it).loadOptions()
-    }
+fun DataStore<Preferences>.options(): Flow<Options> = data.map {
+    AndroidOptionsStore(it).loadOptions()
 }
 
-fun getSavedColors(dataStore: DataStore<Preferences>): Flow<ColorOptions> {
-    return dataStore.data.map { AndroidOptionsStore(it).loadColors() }
-}
+fun DataStore<Preferences>.colorOptions(): Flow<ColorOptions> =
+    data.map { AndroidOptionsStore(it).loadColors() }
 
 suspend fun <T> DataStore<Preferences>.updateOption(
     key: Preferences.Key<T>,
@@ -68,7 +66,7 @@ suspend fun <T> DataStore<Preferences>.updateOption(
 }
 
 
-val <T> Key<T>.asPreferenceKey: Preferences.Key<T>
+private val <T> Key<T>.asPreferenceKey: Preferences.Key<T>
     @Suppress("UNCHECKED_CAST")
     get() = when (this) {
         is BooleanKey -> this.asPreferenceKey

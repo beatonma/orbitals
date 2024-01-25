@@ -26,7 +26,7 @@ fun App(
         )
     )
 ) {
-    val options by viewmodel.getOptions().collectAsState(initial = Options())
+    val options by viewmodel.options.collectAsState(initial = Options())
     val engine = rememberOrbitalsRenderEngine(options = options)
     var settingsVisible by remember { mutableStateOf(false) }
 

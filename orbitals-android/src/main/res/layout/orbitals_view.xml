@@ -6,5 +6,5 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     orbitals:settings="screensaver"
-    android:background="@color/transparent"
+    android:background="@null"
     android:defaultFocusHighlightEnabled="false" />

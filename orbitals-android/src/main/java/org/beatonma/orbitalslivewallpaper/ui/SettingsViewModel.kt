@@ -22,17 +22,18 @@ import org.beatonma.orbitals.render.options.StringSetKey
 import org.beatonma.orbitalslivewallpaper.Settings
 import org.beatonma.orbitalslivewallpaper.asPreferenceKey
 import org.beatonma.orbitalslivewallpaper.dataStore
-import org.beatonma.orbitalslivewallpaper.getSavedOptions
+import org.beatonma.orbitalslivewallpaper.options
 import org.beatonma.orbitalslivewallpaper.updateOption
 
 
-class SettingsViewModel(
+open class SettingsViewModel(
     context: Context,
     settings: Settings,
 ) : AndroidViewModel(context.applicationContext as Application), OptionPersistence {
     private val prefsDatastore: DataStore<Preferences> = context.dataStore(settings)
 
-    fun getOptions(): Flow<Options> = getSavedOptions(prefsDatastore)
+    val options: Flow<Options>
+        get() = prefsDatastore.options()
 
     override fun <E : Enum<E>> updateOption(key: StringKey<E>, value: E) {
         savePreference(key.asPreferenceKey, value.name)
@@ -69,19 +70,19 @@ class SettingsViewModel(
 
     companion object {
         fun factory(context: Context, settings: Settings): ViewModelProvider.Factory =
-            SettingsViewModelFactory(context.applicationContext as Application, settings)
-    }
-}
+            OrbitalsViewModelFactory(context.applicationContext as Application, settings)
 
-private class SettingsViewModelFactory(
-    private val application: Application,
-    private val settings: Settings
-) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(SettingsViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return SettingsViewModel(application, settings) as T
+        private class OrbitalsViewModelFactory(
+            private val application: Application,
+            private val settings: Settings
+        ) : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                if (modelClass.isAssignableFrom(SettingsViewModel::class.java)) {
+                    @Suppress("UNCHECKED_CAST")
+                    return SettingsViewModel(application, settings) as T
+                }
+                throw IllegalArgumentException("Unknown ViewModel class")
+            }
         }
-        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
