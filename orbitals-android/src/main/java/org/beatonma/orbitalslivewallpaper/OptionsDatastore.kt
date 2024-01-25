@@ -58,12 +58,11 @@ fun getSavedColors(dataStore: DataStore<Preferences>): Flow<ColorOptions> {
     return dataStore.data.map { AndroidOptionsStore(it).loadColors() }
 }
 
-suspend fun <T> updateOption(
-    dataStore: DataStore<Preferences>,
+suspend fun <T> DataStore<Preferences>.updateOption(
     key: Preferences.Key<T>,
     value: T
 ) {
-    dataStore.edit { preferences ->
+    edit { preferences ->
         preferences[key] = value
     }
 }
@@ -86,6 +85,4 @@ val FloatKey.asPreferenceKey: Preferences.Key<Float> get() = floatPreferencesKey
 val IntKey.asPreferenceKey: Preferences.Key<Int> get() = intPreferencesKey(key)
 val StringKey<*>.asPreferenceKey: Preferences.Key<String> get() = stringPreferencesKey(key)
 val StringSetKey<*>.asPreferenceKey: Preferences.Key<Set<String>>
-    get() = stringSetPreferencesKey(
-        key
-    )
+    get() = stringSetPreferencesKey(key)

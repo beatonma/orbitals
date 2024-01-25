@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<org.beatonma.orbitalslivewallpaper.ui.orbitals.OrbitalsView xmlns:android="http://schemas.android.com/apk/res/android"
+<org.beatonma.orbitalslivewallpaper.ui.orbitals.OrbitalsView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:orbitals="http://schemas.android.com/apk/res-auto"
+    android:theme="@style/OrbitalsApp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
-
-</org.beatonma.orbitalslivewallpaper.ui.orbitals.OrbitalsView>
+    orbitals:settings="screensaver"
+    android:background="@color/transparent"
+    android:defaultFocusHighlightEnabled="false" />

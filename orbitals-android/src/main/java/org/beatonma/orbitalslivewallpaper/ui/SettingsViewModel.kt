@@ -5,6 +5,8 @@ import android.content.Context
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -21,6 +23,7 @@ import org.beatonma.orbitalslivewallpaper.Settings
 import org.beatonma.orbitalslivewallpaper.asPreferenceKey
 import org.beatonma.orbitalslivewallpaper.dataStore
 import org.beatonma.orbitalslivewallpaper.getSavedOptions
+import org.beatonma.orbitalslivewallpaper.updateOption
 
 
 class SettingsViewModel(
@@ -57,11 +60,28 @@ class SettingsViewModel(
 
     private fun <T> savePreference(key: Preferences.Key<T>, value: T) {
         viewModelScope.launch {
-            org.beatonma.orbitalslivewallpaper.updateOption(
-                prefsDatastore,
+            prefsDatastore.updateOption(
                 key,
                 value,
             )
         }
+    }
+
+    companion object {
+        fun factory(context: Context, settings: Settings): ViewModelProvider.Factory =
+            SettingsViewModelFactory(context.applicationContext as Application, settings)
+    }
+}
+
+private class SettingsViewModelFactory(
+    private val application: Application,
+    private val settings: Settings
+) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(SettingsViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return SettingsViewModel(application, settings) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

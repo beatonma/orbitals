@@ -4,13 +4,17 @@ import android.os.Build
 import android.service.dreams.DreamService
 import android.view.View
 import androidx.core.view.WindowInsetsCompat.Type
+import androidx.lifecycle.ViewModelStore
+import androidx.lifecycle.ViewModelStoreOwner
 import org.beatonma.orbitalslivewallpaper.R
 
-class ScreensaverService : DreamService() {
+class ScreensaverService : DreamService(), ViewModelStoreOwner {
+    override val viewModelStore: ViewModelStore = ViewModelStore()
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
 
+        window.decorView.setTag(R.id.view_tree_view_model_store_owner, this)
         isInteractive = true
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -26,5 +30,10 @@ class ScreensaverService : DreamService() {
         }
 
         setContentView(R.layout.orbitals_view)
+    }
+
+    override fun onDestroy() {
+        viewModelStore.clear()
+        super.onDestroy()
     }
 }

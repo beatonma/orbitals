@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="OrbitalsView">
+        <attr name="settings" format="enum">
+            <enum name="wallpaper" value="0" />
+            <enum name="screensaver" value="1" />
+        </attr>
+    </declare-styleable>
+</resources>
