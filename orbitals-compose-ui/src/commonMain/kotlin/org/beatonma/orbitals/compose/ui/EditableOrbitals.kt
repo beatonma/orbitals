@@ -97,7 +97,7 @@ fun EditableOrbitals(
     }
 
     BoxWithConstraints(
-        Modifier.keyboardHandler(engine, options, persistence) {
+        Modifier.keyboardHandler(engine, persistence) {
             onSettingsVisibleChange(!settingsVisible)
         }
     ) {
