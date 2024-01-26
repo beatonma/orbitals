@@ -13,9 +13,13 @@ import kotlin.random.Random
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
+
 object Config {
     // Multiplier to greatly exaggerate the real value of G.
     const val GravityScale = 1e12f
+
+    // Defines how much the engine universe extends beyond the observable size (in every direction).
+    const val UniverseOverflow = .2f
 
     // Minimum distance used in gravity calculations between bodies.
     val MinGravityDistance = 30f.metres

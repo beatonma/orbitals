@@ -67,7 +67,7 @@ data class Region(
  * Return a [Universe] centered on the region (0, 0, focusWidth, focusHeight) with a surrounding
  * margin of overflow * (width | height)
  */
-fun Universe(windowWidth: Int, windowHeight: Int, overflow: Float = .2f): Universe {
+fun Universe(windowWidth: Int, windowHeight: Int, overflow: Float = Config.UniverseOverflow): Universe {
     val overflowWidth = (overflow * windowWidth).roundToInt()
     val overflowHeight = (overflow * windowHeight).roundToInt()
 
