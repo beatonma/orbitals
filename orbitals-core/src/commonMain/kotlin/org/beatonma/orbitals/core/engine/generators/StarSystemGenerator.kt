@@ -44,42 +44,11 @@ internal val StarSystemGenerator = Generator { space, bodies, physics ->
     }
 }
 
-internal val IdealStarSystemGenerator = Generator { space, bodies, physics ->
-    val fixedBodies = bodies.fixedBodies
-    val useExistingStar = fixedBodies.isNotEmpty()
-
-    val sun = when {
-        useExistingStar -> fixedBodies.first()
-        else -> createStar("center", space.center, physics.bodyDensity)
-    }
-
-    val satellites = listOf<Body>(
-        satelliteOf(
-            sun,
-            (space.radius * .5f).metres,
-            Config.getAsteroidMass(),
-            physics.bodyDensity,
-            G = physics.G,
-        ),
-        satelliteOf(
-            sun,
-            (space.radius * .3f).metres,
-            Config.getPlanetMass(),
-            physics.bodyDensity,
-            G = physics.G,
-        )
-    )
-
-    when {
-        useExistingStar -> satellites
-        else -> listOf(sun) + satellites
-    }
-}
 
 /**
  * Try to find a random position that is at least [minDistance] away from any existing stars.
  */
-internal fun GeneratorScope.generateStarPosition(
+private fun GeneratorScope.generateStarPosition(
     space: Space,
     bodies: List<Body>,
     minDistance: Distance = Config.MinStarDistance,

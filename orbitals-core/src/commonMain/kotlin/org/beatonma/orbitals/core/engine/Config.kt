@@ -37,10 +37,10 @@ object Config {
     val DefaultDensity: Density = Density(1f)
 
     // Generated object mass ranges
-    fun getAsteroidMass(): Mass = Random.nextFloat(1f, 80f).kg
-    fun getPlanetMass(): Mass = Random.nextFloat(100f, 750f).kg
-    fun getStarMass(): Mass = Random.nextFloat(1_000f, 3_000f).kg
-    fun getGreatAttractorMass(): Mass = Random.nextFloat(7_500f, 20_000f).kg
+    fun getAsteroidMass(): Mass = Random.nextFloat(100f, 200f).kg
+    fun getPlanetMass(): Mass = Random.nextFloat(400f, 750f).kg
+    fun getStarMass(): Mass = Random.nextFloat(1_000f, 10_000f).kg
+    fun getGreatAttractorMass(): Mass = 200_000f.kg
 
     // Generated object distance ranges
     fun getAsteroidDistance(): Distance = Random.nextFloat(80f, 150f).metres
@@ -49,6 +49,6 @@ object Config {
     val MinStarDistance: Distance = 300f.metres
 
     // Generated object velocity ranges
-    private fun getSpeed(): Speed = Speed(Random.nextFloat(0f, 20f) * randomDirection)
-    fun getVelocity(): Velocity = Velocity(getSpeed(), getSpeed())
+    private fun getSpeed(): Speed = Speed(Random.nextFloat(0f, 20f))
+    fun getVelocity(): Velocity = Velocity(getSpeed() * randomDirection, getSpeed() * randomDirection)
 }

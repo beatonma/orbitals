@@ -15,8 +15,19 @@ internal val GreatAttractorGenerator = Generator { space, bodies, physics ->
             mass = Config.getGreatAttractorMass(),
             density = physics.bodyDensity,
             motion = Motion(
-                space.relativePosition(randomDirection(2f), randomDirection(2f))
+                space.relativePosition(
+                    position(),
+                    position()
+                )
             )
         )
     )
+}
+
+private fun position(): Float {
+    val where = randomDirection(Config.UniverseOverflow / 2f)
+    return when {
+        where < 0f -> where
+        else -> 1f + where
+    }
 }

@@ -4,10 +4,8 @@ import org.beatonma.orbitals.core.chance
 import org.beatonma.orbitals.core.engine.generators.AsteroidGenerator
 import org.beatonma.orbitals.core.engine.generators.GauntletGenerator
 import org.beatonma.orbitals.core.engine.generators.GreatAttractorGenerator
-import org.beatonma.orbitals.core.engine.generators.IdealStarSystemGenerator
 import org.beatonma.orbitals.core.engine.generators.RandomGenerator
 import org.beatonma.orbitals.core.engine.generators.StarSystemGenerator
-import org.beatonma.orbitals.core.engine.generators.debug.CollisionTestGenerator
 import org.beatonma.orbitals.core.options.PhysicsOptions
 import org.beatonma.orbitals.core.percent
 import org.beatonma.orbitals.core.physics.Body
@@ -92,12 +90,6 @@ internal object GeneratorScope {
 
 enum class SystemGenerator(private val generator: Generator) {
     /**
-     * Generate a simple StarSystem in the center of the given Space with a few satellites of fixed
-     * definition.
-     */
-    IdealStarSystem(IdealStarSystemGenerator),
-
-    /**
      * Generate a system of satellites orbiting a central star.
      */
     StarSystem(StarSystemGenerator),
@@ -108,24 +100,26 @@ enum class SystemGenerator(private val generator: Generator) {
     Randomized(RandomGenerator),
 
     /**
-     * Generate a series of [FixedBody]s for bodies to navigate through.
-     */
-    Gauntlet(GauntletGenerator),
-
-    /**
      * Generate lots of small bodies around an existing large body.
      */
     Asteroids(AsteroidGenerator),
 
     /**
+     * Generate a series of [FixedBody]s for bodies to navigate through.
+     */
+    Gauntlet(GauntletGenerator),
+
+    /**
      * Generate a large mass beyond the edge of our visible 'universe'.
      */
     GreatAttractor(GreatAttractorGenerator),
-
-    DebugCollisionTester(CollisionTestGenerator),
     ;
 
-    fun generate(space: Space, bodies: List<Body>, physics: PhysicsOptions): List<Body> {
+    fun generate(
+        space: Space,
+        bodies: List<Body>,
+        physics: PhysicsOptions
+    ): List<Body> {
         if (!space.isValid) {
             debug("Invalid space $space")
             return listOf()
