@@ -3,7 +3,14 @@ package org.beatonma.orbitalslivewallpaper.ui
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.SettingsSystemDaydream
+import androidx.compose.material.icons.filled.Wallpaper
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -22,7 +29,7 @@ fun App(
     viewmodel: SettingsViewModel = viewModel(
         factory = SettingsViewModel.factory(
             LocalContext.current.applicationContext,
-            Settings.Wallpaper,
+            Settings.Screensaver,
         )
     )
 ) {
@@ -34,7 +41,25 @@ fun App(
         settingsVisible = false
     }
 
-    Scaffold(contentWindowInsets = WindowInsets.safeDrawing) { insets ->
+    Scaffold(
+        bottomBar = {
+            NavigationBar {
+                NavigationBarItem(
+                    selected = viewmodel.settings == Settings.Screensaver,
+                    onClick = { viewmodel.settings = Settings.Screensaver },
+                    icon = { Icon(Icons.Default.SettingsSystemDaydream, "") },
+                    label = { Text(Settings.Screensaver.name) }
+                )
+                NavigationBarItem(
+                    selected = viewmodel.settings == Settings.Wallpaper,
+                    onClick = { viewmodel.settings = Settings.Wallpaper },
+                    icon = { Icon(Icons.Default.Wallpaper, "") },
+                    label = { Text(Settings.Wallpaper.name) }
+                )
+            }
+        },
+        contentWindowInsets = WindowInsets.safeDrawing,
+    ) { insets ->
         EditableOrbitals(
             settingsEnabled = true,
             onSettingsEnabledChange = {},

@@ -20,6 +20,7 @@ dependencies {
     implementation(compose.ui)
     implementation(compose.foundation)
     implementation(compose.runtime)
+    implementation(compose.materialIconsExtended)
 
     implementation(Dependencies.Android.ActivityCompose)
     implementation(Dependencies.Android.ViewModelCompose)

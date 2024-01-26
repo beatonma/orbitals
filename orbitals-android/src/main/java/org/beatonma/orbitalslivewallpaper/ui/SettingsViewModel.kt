@@ -2,6 +2,9 @@ package org.beatonma.orbitalslivewallpaper.ui
 
 import android.app.Application
 import android.content.Context
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.AndroidViewModel
@@ -30,10 +33,16 @@ open class SettingsViewModel(
     context: Context,
     settings: Settings,
 ) : AndroidViewModel(context.applicationContext as Application), OptionPersistence {
-    private val prefsDatastore: DataStore<Preferences> = context.dataStore(settings)
-
-    val options: Flow<Options>
-        get() = prefsDatastore.options()
+    private var _settings by mutableStateOf(settings)
+    var settings: Settings
+        get() = _settings
+        set(value) {
+            _settings = value
+            prefsDatastore = getApplication<Application>().dataStore(value)
+            options = prefsDatastore.options()
+        }
+    private var prefsDatastore: DataStore<Preferences> by mutableStateOf(context.dataStore(settings))
+    var options: Flow<Options> by mutableStateOf(prefsDatastore.options())
 
     override fun <E : Enum<E>> updateOption(key: StringKey<E>, value: E) {
         savePreference(key.asPreferenceKey, value.name)
