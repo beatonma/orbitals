@@ -185,8 +185,9 @@ data class GreatAttractor(
 
 fun sizeOf(mass: Mass, density: Density): Distance {
     val volume = mass / density
-    val radius = ((volume * 3f).value.toDouble() / (4.0 * PI)).pow(1.0 / 3.0).toFloat()
-    return radius.metres
+
+    // Tweaked volume-of-a-sphere function for a steeper increase in volume -> radius.
+    return ((volume.value * 3f) / (4.0f * PI.toFloat())).pow(0.5f).metres
 }
 
 fun Body.inContactWith(other: Body): Boolean =

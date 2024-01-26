@@ -389,8 +389,8 @@ private fun LazyListScope.physicsSettings(physics: PhysicsOptions, persistence: 
         key = PhysicsKeys.Density,
         value = physics.bodyDensity.value,
         onValueChange = persistence::updateOption,
-        min = .05f,
-        max = 10f,
+        min = .01f,
+        max = 100f,
     )
 }
 
