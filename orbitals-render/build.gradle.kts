@@ -15,8 +15,8 @@ kotlin {
 
 dependencies {
     commonMainImplementation(project(Module.Core))
-    commonMainImplementation(Dependencies.CoroutinesCore)
+    commonMainImplementation(libs.kotlin.coroutines)
 
-    commonTestImplementation(Dependencies.KotlinTest)
+    commonTestImplementation(libs.kotlin.test)
     commonTestImplementation(project(Module.Test))
 }

@@ -14,6 +14,6 @@ kotlin {
 }
 
 dependencies {
-    commonMainImplementation(Dependencies.KotlinTest)
+    commonMainImplementation(libs.kotlin.test)
     commonMainImplementation(project(Module.Core))
 }

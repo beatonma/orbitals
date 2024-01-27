@@ -35,5 +35,5 @@ dependencies {
     commonMainImplementation(project(Module.ComposeUi))
 
     commonTestImplementation(project(Module.Test))
-    commonTestImplementation(Dependencies.KotlinTest)
+    commonTestImplementation(libs.kotlin.test)
 }

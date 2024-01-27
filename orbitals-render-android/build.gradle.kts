@@ -13,5 +13,5 @@ dependencies {
     implementation(project(Module.Core))
     implementation(project(Module.Render))
 
-    testImplementation(Dependencies.KotlinTest)
+    testImplementation(libs.kotlin.test)
 }

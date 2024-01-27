@@ -4,16 +4,10 @@ plugins {
     id("org.jetbrains.compose") version Versions.JetbrainsCompose
 }
 
-repositories {
-    mavenCentral()
-    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-    google()
-}
-
 
 dependencies {
-    implementation(Dependencies.CoroutinesCore)
-    implementation(Dependencies.Android.CoroutinesAndroid)
+    implementation(libs.kotlin.coroutines)
+    implementation(libs.android.coroutines)
 
     // Compose
     implementation(compose.material3)
@@ -22,12 +16,12 @@ dependencies {
     implementation(compose.runtime)
     implementation(compose.materialIconsExtended)
 
-    implementation(Dependencies.Android.ActivityCompose)
-    implementation(Dependencies.Android.ViewModelCompose)
-    implementation(Dependencies.Android.NavigationCompose)
-    implementation(Dependencies.Android.CoroutinesLifecycle)
+    implementation(libs.android.activity.compose)
+    implementation(libs.android.viewmodel.compose)
+    implementation(libs.android.navigation.compose)
+    implementation(libs.android.lifecycle.runtime)
 
-    implementation(Dependencies.Android.DataStore)
+    implementation(libs.android.datastore)
 
     implementation(project(Module.Core))
     implementation(project(Module.Render))
@@ -35,7 +29,7 @@ dependencies {
     implementation(project(Module.ComposeRender))
     implementation(project(Module.ComposeUi))
 
-    testImplementation(Dependencies.KotlinTest)
+    testImplementation(libs.kotlin.test)
 }
 
 android {
@@ -51,6 +45,10 @@ android {
         compose = true
     }
 
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.android.compose.extension.get()
+    }
+
     compileOptions {
         sourceCompatibility = Versions.Java
         targetCompatibility = Versions.Java
@@ -58,11 +56,7 @@ android {
 
     kotlinOptions {
         jvmTarget = Versions.Java.toString()
-        languageVersion = Versions.kotlinLanguage(project)
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = Versions.Android.ComposeExtension
+        languageVersion = libs.versions.kotlinLanguage.get()
     }
     namespace = "org.beatonma.orbitalslivewallpaper"
 }

@@ -28,12 +28,9 @@ object Git {
     }
 }
 
-private fun String?.letIfEmpty(fallback: String): String {
-    return if (isNullOrEmpty()) {
-        fallback
-    } else {
-        this
-    }
+private fun String?.letIfEmpty(fallback: String): String = when {
+    isNullOrEmpty() -> fallback
+    else -> this
 }
 
 private fun String?.execute(workingDir: File, fallback: String): String {

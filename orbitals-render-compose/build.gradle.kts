@@ -21,5 +21,5 @@ dependencies {
     commonMainImplementation(compose.material3)
     commonMainImplementation(compose.ui)
 
-    commonTestImplementation(Dependencies.KotlinTest)
+    commonTestImplementation(libs.kotlin.test)
 }
