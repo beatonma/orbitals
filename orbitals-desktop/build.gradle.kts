@@ -1,12 +1,12 @@
 plugins {
     kotlin("jvm")
-    id("org.jetbrains.compose") version Versions.JetbrainsCompose
+    alias(libs.plugins.compose)
 }
 
-repositories {
-    mavenCentral()
-    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-    google()
+compose.desktop {
+    application {
+        mainClass = "org.beatonma.orbitals.desktop.MainKt"
+    }
 }
 
 dependencies {
@@ -19,10 +19,4 @@ dependencies {
     implementation(project(Module.Render))
     implementation(project(Module.ComposeRender))
     implementation(project(Module.ComposeUi))
-}
-
-compose.desktop {
-    application {
-        mainClass = "org.beatonma.orbitals.desktop.MainKt"
-    }
 }

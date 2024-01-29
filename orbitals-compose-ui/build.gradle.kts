@@ -1,18 +1,9 @@
-import buildSrc.gradle.orbitalsLibrary
-
 plugins {
-    kotlin("multiplatform")
-    id("com.android.library")
-    id("org.jetbrains.compose") version Versions.JetbrainsCompose
+    id("orbitals.library-convention")
+    id("orbitals.android-library-convention")
+    alias(libs.plugins.compose)
 }
 
-android {
-    orbitalsLibrary("org.beatonma.orbitals.compose.ui")
-}
-
-kotlin {
-    orbitalsLibrary()
-}
 
 dependencies {
     commonMainImplementation(compose.ui)

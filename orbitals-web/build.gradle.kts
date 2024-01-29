@@ -1,6 +1,6 @@
 plugins {
     kotlin("multiplatform")
-    id("org.jetbrains.compose") version Versions.JetbrainsCompose
+    alias(libs.plugins.compose)
 }
 
 compose.experimental {

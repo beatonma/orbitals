@@ -1,16 +1,5 @@
-import buildSrc.gradle.orbitalsLibrary
-
 plugins {
-    kotlin("multiplatform")
-    id("com.android.library")
-}
-
-android {
-    orbitalsLibrary("org.beatonma.orbitals.test")
-}
-
-kotlin {
-    orbitalsLibrary()
+    id("orbitals.library-convention")
 }
 
 dependencies {
