@@ -6,15 +6,14 @@ kotlinCoroutines = "1.7.3"
 
 #moko-shared-resources = "0.23.0"
 
-compose-multiplatform = "1.6.0-alpha01"
+compose-multiplatform = "1.6.0-beta01"
 
 android-activity-compose = "1.8.2"
-android-annotation = "1.2.0"
 android-compose-extension = "1.5.8"
 android-datastore = "1.0.0"
 android-navigation-compose = "2.7.6"
-android-viewmodel-compose = "2.6.2"
-android-lifecycle-runtime = "2.4.0"
+android-viewmodel-compose = "2.7.0"
+android-lifecycle-runtime = "2.7.0"
 
 
 [plugins]
@@ -25,13 +24,13 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 
+
 [libraries]
 kotlin-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinCoroutines" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 
 android-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinCoroutines" }
 android-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "android-activity-compose" }
-android-annotations = { module = "androidx.annotation:annotation", version.ref = "android-annotation" }
 android-datastore = { module = "androidx.datastore:datastore-preferences", version.ref = "android-datastore" }
 android-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "android-navigation-compose" }
 android-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "android-viewmodel-compose" }
