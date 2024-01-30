@@ -1,5 +1,5 @@
 plugins {
-    id("orbitals.library-convention")
+    conventionLibraryMultiplatform
 }
 
 dependencies {

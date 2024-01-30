@@ -1,5 +1,5 @@
 plugins {
-    id("orbitals.android-library-convention")
+    conventionLibraryAndroid
 }
 
 dependencies {

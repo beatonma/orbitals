@@ -1,6 +1,5 @@
 plugins {
-    id("orbitals.library-convention")
-    id("orbitals.android-library-convention")
+    conventionLibraryMultiplatform
     alias(libs.plugins.compose)
 }
 
