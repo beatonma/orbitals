@@ -3,6 +3,15 @@ plugins {
     alias(libs.plugins.compose)
 }
 
+// Based on https://github.com/Kotlin/kotlin-wasm-examples/blob/main/compose-imageviewer/webApp/build.gradle.kts
+val jsCopyResourcesWorkaround = tasks.register("jsCopyResourcesWorkaround", Copy::class) {
+    from(project(":${Module.ComposeApp}").file("src/commonMain/composeResources"))
+    into("build/processedResources/js/main")
+}
+afterEvaluate {
+    tasks.getByName("jsProcessResources").dependsOn(jsCopyResourcesWorkaround)
+}
+
 compose.experimental {
     web.application {}
 }
