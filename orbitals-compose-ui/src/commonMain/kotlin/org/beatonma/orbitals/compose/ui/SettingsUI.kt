@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalResourceApi::class)
+
 package org.beatonma.orbitals.compose.ui
 
 import androidx.compose.animation.AnimatedVisibility
@@ -33,6 +35,7 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
+import orbitals.`orbitals-compose-ui`.generated.resources.Res
 import org.beatonma.orbitals.compose.ui.components.DraggableColumn
 import org.beatonma.orbitals.compose.ui.settings.ColorSetting
 import org.beatonma.orbitals.compose.ui.settings.FloatSetting
@@ -60,6 +63,10 @@ import org.beatonma.orbitals.render.options.StringKey
 import org.beatonma.orbitals.render.options.StringSetKey
 import org.beatonma.orbitals.render.options.VisualKeys
 import org.beatonma.orbitals.render.options.VisualOptions
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.stringResource
+import kotlin.enums.EnumEntries
 
 
 private val MaxColumnWidth = 450.dp
@@ -169,6 +176,7 @@ private fun SettingsSingleColumn(
     }
 }
 
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 private fun SettingsOverlayButtons(
     onCloseUI: () -> Unit,
@@ -178,7 +186,7 @@ private fun SettingsOverlayButtons(
     Row(modifier, horizontalArrangement = Arrangement.spacedBy(Spacing, Alignment.End)) {
         onDisableUI?.let {
             ExtendedFloatingActionButton(
-                text = { Text("Disable settings UI") },
+                text = { Text(stringResource(Res.string.settings__ui__disable_ui)) },
                 icon = { Icon(Icons.Default.Delete, "") },
                 onClick = it,
                 containerColor = colorScheme.surface,
@@ -187,7 +195,7 @@ private fun SettingsOverlayButtons(
         }
 
         ExtendedFloatingActionButton(
-            text = { Text("Close settings") },
+            text = { Text(stringResource(Res.string.settings__ui__close_ui)) },
             icon = { Icon(Icons.Default.Close, "") },
             onClick = onCloseUI,
         )
@@ -267,30 +275,31 @@ private fun SettingsThreeColumns(
     }
 }
 
+@OptIn(ExperimentalResourceApi::class)
 private fun LazyListScope.visualSettings(
     visualOptions: VisualOptions,
     persistence: OptionPersistence,
 ) {
-    settingsGroup("Visual")
+    settingsGroup(Res.string.settings__group_title__visual)
     multiSelectSetting(
-        name = "Layers",
+        name = Res.string.settings__visual__render_layers,
         key = VisualKeys.RenderLayers,
         value = visualOptions.renderLayers,
-        values = RenderLayer.entries.toTypedArray(),
+        values = RenderLayer.entries,
         onValueChange = persistence::updateOption,
     )
 
     singleSelectSetting(
-        name = "Style",
+        name = Res.string.settings__visual__drawstyle,
         key = VisualKeys.DrawStyle,
         value = visualOptions.drawStyle,
-        values = DrawStyle.entries.toTypedArray(),
+        values = DrawStyle.entries,
         onValueChange = persistence::updateOption,
     )
 
     conditional(visualOptions.drawStyle == DrawStyle.Wireframe) {
         FloatSetting(
-            name = "Stroke width",
+            name = stringResource(Res.string.settings__visual__stroke_width),
             key = VisualKeys.StrokeWidth,
             value = visualOptions.strokeWidth,
             onValueChange = persistence::updateOption,
@@ -301,7 +310,7 @@ private fun LazyListScope.visualSettings(
 
     conditional(RenderLayer.Trails in visualOptions.renderLayers) {
         IntegerSetting(
-            name = "History length",
+            name = stringResource(Res.string.settings__visual__render_layers__trails_history_length),
             key = VisualKeys.TraceLength,
             value = visualOptions.traceLineLength,
             onValueChange = persistence::updateOption,
@@ -312,23 +321,23 @@ private fun LazyListScope.visualSettings(
 }
 
 private fun LazyListScope.colorSettings(options: ColorOptions, persistence: OptionPersistence) {
-    settingsGroup("Colors")
+    settingsGroup(Res.string.settings__group_title__color)
 
     colorSetting(
-        name = "Background color",
+        name = Res.string.settings__color__background,
         key = ColorKeys.BackgroundColor,
         value = options.background,
         onValueChange = persistence::updateOption,
     )
     multiSelectSetting(
-        name = "Object colors",
+        name = Res.string.settings__color__objects,
         key = ColorKeys.Colors,
         value = options.bodies,
-        values = ObjectColors.entries.toTypedArray(),
+        values = ObjectColors.entries,
         onValueChange = persistence::updateOption,
     )
     floatSetting(
-        name = "Opacity",
+        name = Res.string.settings__color__opacity,
         key = ColorKeys.BodyAlpha,
         value = options.foregroundAlpha,
         onValueChange = persistence::updateOption,
@@ -338,16 +347,16 @@ private fun LazyListScope.colorSettings(options: ColorOptions, persistence: Opti
 }
 
 private fun LazyListScope.physicsSettings(physics: PhysicsOptions, persistence: OptionPersistence) {
-    settingsGroup("Physics")
+    settingsGroup(Res.string.settings__group_title__physics)
 
     switchSetting(
-        "Auto-add bodies",
+        Res.string.settings__physics__auto_add,
         key = PhysicsKeys.AutoAddBodies,
         value = physics.autoAddBodies,
         onValueChange = persistence::updateOption,
     )
     integerSetting(
-        name = "Maximum population",
+        name = Res.string.settings__physics__maximum_population,
         key = PhysicsKeys.MaxEntities,
         value = physics.maxEntities,
         onValueChange = persistence::updateOption,
@@ -355,15 +364,15 @@ private fun LazyListScope.physicsSettings(physics: PhysicsOptions, persistence: 
         max = 200,
     )
     integerSetting(
-        name = "Maximum age of fixed bodies (seconds)",
-        key = PhysicsKeys.MaxFixedBodyAgeSeconds,
-        value = physics.maxFixedBodyAge.inWholeSeconds.toInt(),
+        name = Res.string.settings__physics__min_fixedbody_age,
+        key = PhysicsKeys.MinFixedBodyAgeSeconds,
+        value = physics.minFixedBodyAge.inWholeSeconds.toInt(),
         onValueChange = persistence::updateOption,
-        min = 10,
+        min = 1,
         max = 300,
     )
     floatSetting(
-        name = "Gravity multiplier",
+        name = Res.string.settings__physics__gravity,
         key = PhysicsKeys.GravityMultiplier,
         value = physics.gravityMultiplier,
         onValueChange = persistence::updateOption,
@@ -371,21 +380,21 @@ private fun LazyListScope.physicsSettings(physics: PhysicsOptions, persistence: 
         max = 10f,
     )
     multiSelectSetting(
-        name = "System generators",
+        name = Res.string.settings__physics__system_generators,
         key = PhysicsKeys.Generators,
         value = physics.systemGenerators,
-        values = SystemGenerator.entries.toTypedArray(),
+        values = SystemGenerator.entries,
         onValueChange = persistence::updateOption,
     )
     singleSelectSetting(
-        name = "Collision style",
+        name = Res.string.settings__physics__collision_style,
         key = PhysicsKeys.CollisionStyle,
         value = physics.collisionStyle,
-        values = CollisionStyle.entries.toTypedArray(),
+        values = CollisionStyle.entries,
         onValueChange = persistence::updateOption,
     )
     floatSetting(
-        name = "Object density",
+        name = Res.string.settings__physics__object_density,
         key = PhysicsKeys.Density,
         value = physics.bodyDensity.value,
         onValueChange = persistence::updateOption,
@@ -416,14 +425,14 @@ private fun LazyListScope.conditional(
 }
 
 private fun LazyListScope.colorSetting(
-    name: String,
+    name: StringResource,
     key: ColorKey,
     value: Color,
     onValueChange: (key: ColorKey, newValue: Color) -> Unit,
 ) {
     item {
         ColorSetting(
-            name = name,
+            name = stringResource(name),
             key = key,
             value = value,
             onValueChange = onValueChange,
@@ -433,7 +442,7 @@ private fun LazyListScope.colorSetting(
 }
 
 private fun LazyListScope.integerSetting(
-    name: String,
+    name: StringResource,
     key: IntKey,
     value: Int,
     onValueChange: (key: IntKey, newValue: Int) -> Unit,
@@ -442,7 +451,7 @@ private fun LazyListScope.integerSetting(
 ) {
     item {
         IntegerSetting(
-            name = name,
+            name = stringResource(name),
             key = key,
             value = value,
             onValueChange = onValueChange,
@@ -454,7 +463,7 @@ private fun LazyListScope.integerSetting(
 }
 
 private fun LazyListScope.floatSetting(
-    name: String,
+    name: StringResource,
     key: FloatKey,
     value: Float,
     onValueChange: (key: FloatKey, newValue: Float) -> Unit,
@@ -463,7 +472,7 @@ private fun LazyListScope.floatSetting(
 ) {
     item {
         FloatSetting(
-            name = name,
+            name = stringResource(name),
             key = key,
             value = value,
             onValueChange = onValueChange,
@@ -475,15 +484,15 @@ private fun LazyListScope.floatSetting(
 }
 
 private fun <E : Enum<E>> LazyListScope.singleSelectSetting(
-    name: String,
+    name: StringResource,
     key: StringKey<E>,
     value: E,
-    values: Array<out E>,
+    values: EnumEntries<E>,
     onValueChange: (key: StringKey<E>, newValue: E) -> Unit,
 ) {
     item {
         SingleSelectSetting(
-            name = name,
+            name = stringResource(name),
             key = key,
             value = value,
             values = values,
@@ -494,15 +503,15 @@ private fun <E : Enum<E>> LazyListScope.singleSelectSetting(
 }
 
 private fun <E : Enum<E>> LazyListScope.multiSelectSetting(
-    name: String,
+    name: StringResource,
     key: StringSetKey<E>,
     value: Set<E>,
-    values: Array<out E>,
+    values: EnumEntries<E>,
     onValueChange: (key: StringSetKey<E>, newValue: Set<E>) -> Unit,
 ) {
     item {
         MultiSelectSetting(
-            name = name,
+            name = stringResource(name),
             key = key,
             value = value,
             values = values,
@@ -513,14 +522,14 @@ private fun <E : Enum<E>> LazyListScope.multiSelectSetting(
 }
 
 private fun LazyListScope.switchSetting(
-    name: String,
+    name: StringResource,
     key: BooleanKey,
     value: Boolean,
     onValueChange: (key: BooleanKey, value: Boolean) -> Unit,
 ) {
     item {
         SwitchSetting(
-            name = name,
+            name = stringResource(name),
             key = key,
             value = value,
             onValueChange = onValueChange,
@@ -529,10 +538,10 @@ private fun LazyListScope.switchSetting(
     }
 }
 
-private fun LazyListScope.settingsGroup(title: String) {
+private fun LazyListScope.settingsGroup(title: StringResource) {
     item {
         Text(
-            title,
+            stringResource(title),
             style = typography.headlineMedium,
             modifier = Modifier.padding(top = Spacing).then(SettingModifier)
         )

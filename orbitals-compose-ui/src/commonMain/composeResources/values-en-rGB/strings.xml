@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+    <!-- Colors -->
+    <string name="settings__group_title__color">Colour</string>
+    <string name="settings__color__background">Background colour</string>
+    <string name="settings__color__objects">Object colours</string>
+</resources>

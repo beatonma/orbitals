@@ -1,3 +1,4 @@
+@file:OptIn(ExperimentalResourceApi::class)
 package org.beatonma.orbitals.compose.ui
 
 import androidx.compose.foundation.layout.size
@@ -10,12 +11,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
+import orbitals.`orbitals-compose-ui`.generated.resources.Res
 import org.beatonma.orbitals.compose.ui.components.SpacedColumn
 import org.beatonma.orbitals.compose.ui.components.SpacedRow
 import org.beatonma.orbitals.compose.ui.components.icons.OrbitalsIcons
 import org.beatonma.orbitals.compose.ui.components.icons.orbitals.Github
 import org.beatonma.orbitals.compose.ui.components.icons.orbitals.Mb
 import org.beatonma.orbitals.core.platform
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.stringResource
 
 
 @Composable
@@ -61,10 +65,12 @@ private fun InstanceLink(modifier: Modifier = Modifier) {
     if (platform.isWeb) return
 
     val uriHandler = LocalUriHandler.current
+    val url = stringResource(Res.string.about__orbitals__webapp_url)
+
     LinkButton(
-        text = "Web app",
+        text = stringResource(Res.string.about__orbitals__webapp),
         icon = OrbitalsIcons.Mb,
-        onClick = { uriHandler.openUri("https://beatonma.org/webapp/orbitals/") },
+        onClick = { uriHandler.openUri(url) },
         modifier = modifier,
     )
 }
@@ -72,10 +78,12 @@ private fun InstanceLink(modifier: Modifier = Modifier) {
 @Composable
 private fun GithubLink(modifier: Modifier = Modifier) {
     val uriHandler = LocalUriHandler.current
+    val url = stringResource(Res.string.about__orbitals__github_url)
+
     LinkButton(
-        text = "Github",
+        text = stringResource(Res.string.about__orbitals__github),
         icon = OrbitalsIcons.Github,
-        onClick = { uriHandler.openUri("https://github.com/beatonma/orbitals/") },
+        onClick = { uriHandler.openUri(url) },
         modifier = modifier,
     )
 }

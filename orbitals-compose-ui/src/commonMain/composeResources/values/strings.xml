@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  READ ME
+
+Many keys map directly to Enum classes defined in Kotlin.
+  - Always use `...__enum_myenum__value` pattern for these values to maintain clarity and
+    simplify any searching/refactoring.
+  - See [Localisation.stringResourceMap] for enum-to-resource mapping.
+  - e.g.
+    Kotlin: `enum class MyClass { One, Two }`
+    XML: `name="path__to__option__enum_myclass__one"`
+    Generated: `Res.strings.path__to__option__enum_myclass__one`
+-->
+
+<resources>
+    <!-- Settings UI -->
+    <string name="settings__ui__disable_ui">Disable settings UI</string>
+    <string name="settings__ui__close_ui">Close settings</string>
+
+    <!--
+    Physics settings
+    -->
+    <string name="settings__group_title__physics">Physics</string>
+    <string name="settings__physics__auto_add">Auto-add objects</string>
+    <string name="settings__physics__maximum_population">Maximum population</string>
+    <string name="settings__physics__min_fixedbody_age">Minimum age of fixed bodies (seconds)</string>
+    <string name="settings__physics__gravity">Gravity multiplier</string>
+    <string name="settings__physics__object_density">Density</string>
+
+    <string name="settings__physics__system_generators">System generators</string>
+    <string name="settings__physics__enum_systemgenerator__starsystem">Star system</string>
+    <string name="settings__physics__enum_systemgenerator__randomized">Randomized</string>
+    <string name="settings__physics__enum_systemgenerator__asteroids">Asteroids</string>
+    <string name="settings__physics__enum_systemgenerator__gauntlet">Gauntlet</string>
+    <string name="settings__physics__enum_systemgenerator__greatattractor">Great Attractor</string>
+
+    <string name="settings__physics__collision_style">Collision style</string>
+    <string name="settings__physics__enum_collisionstyle__none">None</string>
+    <string name="settings__physics__enum_collisionstyle__merge">Merge</string>
+    <string name="settings__physics__enum_collisionstyle__explode">Explode</string>
+    <string name="settings__physics__enum_collisionstyle__bouncy">Bouncy</string>
+    <string name="settings__physics__enum_collisionstyle__sticky">Sticky</string>
+
+    <!--
+    Render settings
+    -->
+    <string name="settings__group_title__visual">Visual</string>
+    <string name="settings__visual__stroke_width">Stroke width</string>
+
+    <string name="settings__visual__render_layers">Layers</string>
+    <string name="settings__visual__enum_renderlayer__default">Default</string>
+    <string name="settings__visual__enum_renderlayer__acceleration">Acceleration</string>
+    <string name="settings__visual__enum_renderlayer__trails">Trails</string>
+    <string name="settings__visual__render_layers__trails_history_length">Trail length</string>
+
+    <string name="settings__visual__drawstyle">Style</string>
+    <string name="settings__visual__enum_drawstyle__solid">Solid</string>
+    <string name="settings__visual__enum_drawstyle__wireframe">Outline</string>
+
+    <!--
+    Color settings
+    -->
+    <string name="settings__group_title__color">Color</string>
+    <string name="settings__color__background">Background color</string>
+    <string name="settings__color__opacity">Object opacity</string>
+    <string name="settings__color__objects">Object colors</string>
+    <string name="settings__color__enum_objectcolors__grey">Grey</string>
+    <string name="settings__color__enum_objectcolors__red">Red</string>
+    <string name="settings__color__enum_objectcolors__orange">Orange</string>
+    <string name="settings__color__enum_objectcolors__yellow">Yellow</string>
+    <string name="settings__color__enum_objectcolors__green">Green</string>
+    <string name="settings__color__enum_objectcolors__blue">Blue</string>
+    <string name="settings__color__enum_objectcolors__purple">Purple</string>
+    <string name="settings__color__enum_objectcolors__pink">Pink</string>
+    <string name="settings__color__enum_objectcolors__any">Any</string>
+
+    <!-- About -->
+    <string name="about__orbitals__github">Github</string>
+    <string name="about__orbitals__github_url" translateable="false">https://github.com/beatonma/orbitals/</string>
+    <string name="about__orbitals__webapp">Webapp</string>
+    <string name="about__orbitals__webapp_url" translateable="false">https://beatonma.org/webapp/orbitals/</string>
+</resources>
