@@ -21,12 +21,22 @@ fun main() {
                 isDark = true,
             ) {
                 EditableOrbitals(
-                    persistence.webOptions.enableSettingsUI,
-                    { persistence.updateOption(WebOptions.EnableSettingsUI, it) },
-                    persistence.webOptions.showSettingsUI,
-                    { persistence.updateOption(WebOptions.ShowSettingsUI, it) },
-                    persistence.options,
-                    persistence,
+                    settingsEnabled = persistence.webOptions.enableSettingsUI,
+                    onSettingsEnabledChange = {
+                        persistence.updateOption(
+                            WebOptions.EnableSettingsUI,
+                            it
+                        )
+                    },
+                    settingsVisible = persistence.webOptions.showSettingsUI,
+                    onSettingsVisibleChange = {
+                        persistence.updateOption(
+                            WebOptions.ShowSettingsUI,
+                            it
+                        )
+                    },
+                    options = persistence.options,
+                    persistence = persistence,
                     engine = engine
                 )
             }
