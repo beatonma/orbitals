@@ -41,7 +41,7 @@ object ColorKeys {
 }
 
 object PhysicsKeys {
-    val MaxFixedBodyAgeSeconds = IntKey("max_fixedbody_age_seconds")
+    val MinFixedBodyAgeSeconds = IntKey("max_fixedbody_age_seconds")
     val Generators = StringSetKey<SystemGenerator>("generators")
     val AutoAddBodies = BooleanKey("auto")
     val GravityMultiplier = FloatKey("gravity")

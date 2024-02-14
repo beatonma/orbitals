@@ -195,7 +195,7 @@ open class DefaultOrbitalsEngine(override var physics: PhysicsOptions) : Orbital
      * expelled by later interactions.
      */
     private fun pruneBodies(space: Universe = this.space) {
-        val (keep, destroy) = pruneBodies(bodies, space, physics.maxFixedBodyAge)
+        val (keep, destroy) = pruneBodies(bodies, space, physics.minFixedBodyAge)
         destroy.fastForEach { onBodyDestroyed(it.id) }
         bodies = keep
     }

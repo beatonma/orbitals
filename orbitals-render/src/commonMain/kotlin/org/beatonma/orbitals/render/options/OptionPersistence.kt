@@ -30,10 +30,10 @@ interface OptionsStore {
             maxEntities = this[PhysicsKeys.MaxEntities]
                 ?.coerceAtLeast(1)
                 ?: DefaultPhysics.maxEntities,
-            maxFixedBodyAge = this[PhysicsKeys.MaxFixedBodyAgeSeconds]
+            minFixedBodyAge = this[PhysicsKeys.MinFixedBodyAgeSeconds]
                 ?.coerceAtLeast(0)
                 ?.seconds
-                ?: DefaultPhysics.maxFixedBodyAge,
+                ?: DefaultPhysics.minFixedBodyAge,
             systemGenerators = this[PhysicsKeys.Generators]
                 ?.mapToEnumOrNull(SystemGenerator::valueOf)
                 ?: DefaultPhysics.systemGenerators,

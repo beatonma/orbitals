@@ -11,7 +11,7 @@ import kotlin.time.Duration.Companion.seconds
 
 data class PhysicsOptions(
     val autoAddBodies: Boolean = true,
-    val maxFixedBodyAge: Duration = 30.seconds,
+    val minFixedBodyAge: Duration = 30.seconds,
     val maxEntities: Int = when (platform) {
         Platform.Web -> 30
         else -> 50
