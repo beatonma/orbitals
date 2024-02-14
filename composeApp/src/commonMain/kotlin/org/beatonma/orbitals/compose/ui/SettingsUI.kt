@@ -35,7 +35,7 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
-import orbitals.`orbitals-compose-ui`.generated.resources.Res
+import orbitals.composeapp.generated.resources.Res
 import org.beatonma.orbitals.compose.ui.components.DraggableColumn
 import org.beatonma.orbitals.compose.ui.settings.ColorSetting
 import org.beatonma.orbitals.compose.ui.settings.FloatSetting

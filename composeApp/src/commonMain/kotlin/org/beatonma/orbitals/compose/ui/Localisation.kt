@@ -1,7 +1,7 @@
 package org.beatonma.orbitals.compose.ui
 
 import androidx.compose.runtime.Composable
-import orbitals.`orbitals-compose-ui`.generated.resources.Res
+import orbitals.composeapp.generated.resources.Res
 import org.beatonma.orbitals.core.engine.SystemGenerator
 import org.beatonma.orbitals.core.options.CollisionStyle
 import org.beatonma.orbitals.render.options.DrawStyle

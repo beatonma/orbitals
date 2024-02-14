@@ -32,7 +32,7 @@ dependencies {
     commonMainImplementation(project(Module.Core))
     commonMainImplementation(project(Module.Render))
     commonMainImplementation(project(Module.ComposeRender))
-    commonMainImplementation(project(Module.ComposeUi))
+    commonMainImplementation(project(Module.ComposeApp))
 
     commonTestImplementation(project(Module.Test))
     commonTestImplementation(libs.kotlin.test)

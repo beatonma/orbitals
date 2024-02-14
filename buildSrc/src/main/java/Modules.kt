@@ -3,17 +3,18 @@ import org.gradle.kotlin.dsl.project
 import org.jetbrains.kotlin.gradle.plugin.KotlinDependencyHandler
 
 enum class Module(private val moduleName: String) {
-    Android("orbitals-android"),
-    Desktop("orbitals-desktop"),
-    Web("orbitals-web"),
-    ComposeUi("orbitals-compose-ui"),
+    Core("orbitals-core"),
 
     Render("orbitals-render"),
     AndroidRender("orbitals-render-android"),
     ComposeRender("orbitals-render-compose"),
 
-    Core("orbitals-core"),
+    ComposeApp("composeApp"),
 
+    Android("orbitals-android"),
+    Desktop("orbitals-desktop"),
+    Web("orbitals-web"),
+    
     Test("test"),
     ;
 

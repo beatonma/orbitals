@@ -27,7 +27,7 @@ dependencies {
     implementation(project(Module.Render))
     implementation(project(Module.AndroidRender))
     implementation(project(Module.ComposeRender))
-    implementation(project(Module.ComposeUi))
+    implementation(project(Module.ComposeApp))
 
     testImplementation(libs.kotlin.test)
 }

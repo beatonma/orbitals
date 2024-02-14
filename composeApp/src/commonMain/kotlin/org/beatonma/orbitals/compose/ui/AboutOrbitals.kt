@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
-import orbitals.`orbitals-compose-ui`.generated.resources.Res
+import orbitals.composeapp.generated.resources.Res
 import org.beatonma.orbitals.compose.ui.components.SpacedColumn
 import org.beatonma.orbitals.compose.ui.components.SpacedRow
 import org.beatonma.orbitals.compose.ui.components.icons.OrbitalsIcons
