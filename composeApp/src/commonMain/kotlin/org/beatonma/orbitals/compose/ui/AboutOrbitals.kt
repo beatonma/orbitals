@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import orbitals.composeapp.generated.resources.Res
 import org.beatonma.orbitals.compose.ui.components.SpacedColumn
 import org.beatonma.orbitals.compose.ui.components.SpacedRow
+import org.beatonma.orbitals.compose.ui.components.TextBlock
 import org.beatonma.orbitals.compose.ui.components.icons.OrbitalsIcons
 import org.beatonma.orbitals.compose.ui.components.icons.orbitals.Github
 import org.beatonma.orbitals.compose.ui.components.icons.orbitals.Mb
@@ -25,12 +26,7 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun AboutOrbitals(modifier: Modifier = Modifier) {
     SpacedColumn(modifier) {
-        Text(
-            """Welcome to Orbitals: an N-body gravity playground.
-                |
-                |This multiplatform project is open source and written with Kotlin and Compose.
-        """.trimMargin()
-        )
+        TextBlock(stringResource(Res.string.about__blurb))
 
         SpacedRow(Modifier.align(Alignment.End)) {
             InstanceLink()

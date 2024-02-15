@@ -79,4 +79,9 @@ Many keys map directly to Enum classes defined in Kotlin.
     <string name="about__orbitals__github_url" translateable="false">https://github.com/beatonma/orbitals/</string>
     <string name="about__orbitals__webapp">Webapp</string>
     <string name="about__orbitals__webapp_url" translateable="false">https://beatonma.org/webapp/orbitals/</string>
+    <string name="about__blurb">
+Welcome to Orbitals: an N-body gravity playground.
+
+This multiplatform project is open source and written with Kotlin and Compose.
+    </string>
 </resources>
