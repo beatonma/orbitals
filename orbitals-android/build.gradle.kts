@@ -50,12 +50,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = Versions.Java
-        targetCompatibility = Versions.Java
+        sourceCompatibility(libs.versions.java.get())
+        targetCompatibility(libs.versions.java.get())
     }
 
     kotlinOptions {
-        jvmTarget = Versions.Java.toString()
+        jvmTarget = libs.versions.java.get()
         languageVersion = libs.versions.kotlinLanguage.get()
     }
     namespace = "org.beatonma.orbitalslivewallpaper"
