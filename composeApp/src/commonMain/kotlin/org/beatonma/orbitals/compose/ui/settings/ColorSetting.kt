@@ -19,7 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -121,9 +121,9 @@ private fun rememberHsl(color: Color): HslColor {
 }
 
 private class HslColor(h: Float, s: Float, l: Float) {
-    var hue by mutableStateOf(h)
-    var saturation by mutableStateOf(s)
-    var lightness by mutableStateOf(l)
+    var hue by mutableFloatStateOf(h)
+    var saturation by mutableFloatStateOf(s)
+    var lightness by mutableFloatStateOf(l)
 }
 
 @Composable
