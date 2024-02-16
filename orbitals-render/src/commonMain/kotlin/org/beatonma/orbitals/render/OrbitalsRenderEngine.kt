@@ -57,7 +57,10 @@ class OrbitalsRenderEngine<Canvas>(
 
     fun update(canvas: Canvas, delta: Duration) {
         engine.tick(delta)
+        render(canvas)
+    }
 
+    fun render(canvas: Canvas) {
         renderers.forEach {
             it.drawBackground(canvas, engine.bodies, bodyProps)
         }

@@ -1,6 +1,5 @@
 package org.beatonma.orbitals.core.engine
 
-import org.beatonma.orbitals.core.OrbitalsBuildConfig
 import org.beatonma.orbitals.core.chance
 import org.beatonma.orbitals.core.fastForEach
 import org.beatonma.orbitals.core.fastForEachIndexed
@@ -13,8 +12,6 @@ import org.beatonma.orbitals.core.physics.Inertial
 import org.beatonma.orbitals.core.physics.UniqueID
 import org.beatonma.orbitals.core.physics.contains
 import org.beatonma.orbitals.core.physics.toInertialBody
-import org.beatonma.orbitals.core.util.timeIt
-import org.beatonma.orbitals.core.util.warn
 import kotlin.time.Duration
 
 private val BodySortBy = Body::mass
@@ -122,54 +119,48 @@ open class DefaultOrbitalsEngine(override var physics: PhysicsOptions) : Orbital
     }
 
     override fun tick(timeDelta: Duration) {
-        val duration = timeIt(enabled = OrbitalsBuildConfig.DEBUG) {
-            bodies.fastForEach {
-                it.tick(timeDelta)
-            }
+        bodies.fastForEach {
+            it.tick(timeDelta)
+        }
 
-            bodies.fastForEachIndexed { index, body ->
-                for (i in (index + 1) until bodyCount) {
-                    val other = bodies[i]
-                    body.applyGravity(other, timeDelta, G = physics.G)
-                    other.applyGravity(body, timeDelta, G = physics.G)
+        bodies.fastForEachIndexed { index, body ->
+            for (i in (index + 1) until bodyCount) {
+                val other = bodies[i]
+                body.applyGravity(other, timeDelta, G = physics.G)
+                other.applyGravity(body, timeDelta, G = physics.G)
 
-                    applyCollision(
-                        body,
-                        other,
-                        physics.collisionStyle
-                    )?.let { (added, removed) ->
-                        addedBodies += added
-                        removedBodyIds += removed
-                    }
-
-                    if (body.mass < Config.MinObjectMass) {
-                        removedBodyIds += body.id
-                    }
-                    if (other.mass < Config.MinObjectMass) {
-                        removedBodyIds += other.id
-                    }
+                applyCollision(
+                    body,
+                    other,
+                    physics.collisionStyle
+                )?.let { (added, removed) ->
+                    addedBodies += added
+                    removedBodyIds += removed
                 }
 
-                if (body is Inertial && body.mass > Config.MaxObjectMass) {
-                    val added = body.explode()
-                    addedBodies += added
+                if (body.mass < Config.MinObjectMass) {
                     removedBodyIds += body.id
                 }
+                if (other.mass < Config.MinObjectMass) {
+                    removedBodyIds += other.id
+                }
             }
 
-            add(addedBodies)
-            addedBodies.clear()
-
-            remove(removedBodyIds)
-            removedBodyIds.clear()
-
-            prune()
-            autoAddBodies()
+            if (body is Inertial && body.mass > Config.MaxObjectMass) {
+                val added = body.explode()
+                addedBodies += added
+                removedBodyIds += body.id
+            }
         }
 
-        if (OrbitalsBuildConfig.DEBUG && duration > 15) {
-            warn("Frame took ${duration}ms ($bodyCount objects)")
-        }
+        add(addedBodies)
+        addedBodies.clear()
+
+        remove(removedBodyIds)
+        removedBodyIds.clear()
+
+        prune()
+        autoAddBodies()
     }
 
     private fun autoAddBodies() {

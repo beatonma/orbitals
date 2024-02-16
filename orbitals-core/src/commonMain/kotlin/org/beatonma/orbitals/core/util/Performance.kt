@@ -1,16 +1,19 @@
 @file:JvmName("Performance")
+
 package org.beatonma.orbitals.core.util
 
+import org.beatonma.orbitals.core.OrbitalsBuildConfig
 import kotlin.jvm.JvmName
 
 expect fun currentTimeMillis(): Long
 
 inline fun timeIt(
-    maxMillis: Int = 15,
     label: String = "action",
-    enabled: Boolean = false,
+    enabled: Boolean = OrbitalsBuildConfig.DEBUG,
+    debug: Boolean = false,
     warn: Boolean = false,
-    block: () -> Unit
+    warnMillis: Int = 15,
+    block: () -> Unit,
 ): Int {
     return if (!enabled) {
         block()
@@ -22,7 +25,10 @@ inline fun timeIt(
 
         val end = currentTimeMillis()
         val duration = end - start
-        if (warn && duration > maxMillis) {
+        if (debug) {
+            debug("$label took ${duration}ms")
+        }
+        if (warn && duration > warnMillis) {
             warn("$label took ${duration}ms!")
         }
         duration.toInt()

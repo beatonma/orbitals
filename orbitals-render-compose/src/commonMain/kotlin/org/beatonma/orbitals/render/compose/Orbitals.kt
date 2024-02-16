@@ -2,9 +2,13 @@ package org.beatonma.orbitals.render.compose
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme.shapes
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -14,13 +18,17 @@ import androidx.compose.runtime.withFrameMillis
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.input.pointer.PointerId
 import androidx.compose.ui.platform.LocalViewConfiguration
+import androidx.compose.ui.unit.dp
+import org.beatonma.orbitals.core.OrbitalsBuildConfig
 import org.beatonma.orbitals.render.OrbitalsRenderEngine
 import org.beatonma.orbitals.render.interaction.OrbitalsGestureHandler
 import org.beatonma.orbitals.render.options.Options
 import kotlin.math.roundToInt
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
 
@@ -44,7 +52,7 @@ fun Orbitals(
         orbitals.options = options
     }
 
-    val duration = frameMillis.milliseconds
+    val frameTime = currentFrameDelta()
 
     Canvas(
         modifier = modifier
@@ -53,8 +61,43 @@ fun Orbitals(
             .clipToBounds()
     ) {
         size = this.size
+        orbitals.update(this, frameTime)
+    }
 
-        orbitals.update(this, duration)
+    DebugOverlay(frameTime)
+}
+
+@Composable
+private fun currentFrameDelta(): Duration {
+    var frameMillis by remember { mutableLongStateOf(0L) }
+    LaunchedEffect(Unit) {
+        var previousFrameMillis = 0L
+        while (true) {
+            withFrameMillis { frameTime ->
+                frameMillis = frameTime - previousFrameMillis
+                previousFrameMillis = frameTime
+            }
+        }
+    }
+    return frameMillis.milliseconds
+}
+
+@Composable
+private fun DebugOverlay(frameTime: Duration) {
+    if (OrbitalsBuildConfig.DEBUG) {
+        val cacheSize = 30
+        var cacheIndex by remember { mutableIntStateOf(0) }
+        val cache = remember { LongArray(cacheSize) { 0L } }
+        cache[cacheIndex] = frameTime.inWholeMilliseconds
+        cacheIndex = (cacheIndex + 1) % cacheSize
+
+        val mean = (cache.reduce { acc, l -> acc + l } / cacheSize).coerceAtLeast(1L)
+
+        Text(
+            "${(1000L / mean)}fps",
+            Modifier.background(Color.Black, shapes.small).padding(4.dp),
+            color = Color.White
+        )
     }
 }
 
@@ -82,20 +125,3 @@ fun rememberOrbitalsRenderEngine(
 
     return engine
 }
-
-
-private val frameMillis: Long
-    @Composable
-    get() {
-        var previousFrameMillis by remember { mutableLongStateOf(0L) }
-        var frameMillis by remember { mutableLongStateOf(0L) }
-        LaunchedEffect(Unit) {
-            while (true) {
-                withFrameMillis { frameTime ->
-                    frameMillis = frameTime - previousFrameMillis
-                    previousFrameMillis = frameTime
-                }
-            }
-        }
-        return frameMillis
-    }
