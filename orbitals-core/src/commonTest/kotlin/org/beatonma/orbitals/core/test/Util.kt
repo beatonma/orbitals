@@ -1,5 +1,6 @@
 package org.beatonma.orbitals.core.test
 
+import org.beatonma.orbitals.core.physics.BodyState
 import org.beatonma.orbitals.core.physics.Density
 import org.beatonma.orbitals.core.physics.Distance
 import org.beatonma.orbitals.core.physics.FixedBody
@@ -29,13 +30,15 @@ fun inertialBody(
     velocity: Velocity = ZeroVelocity,
     motion: Motion = Motion(position, velocity),
     radius: Distance = sizeOf(mass, density),
-    age: Duration = 0.seconds
+    age: Duration = Duration.ZERO,
+    state: BodyState = BodyState.MainSequence,
 ) = InertialBody(
     mass,
     density,
     motion,
     radius,
     age = age,
+    state = state,
 )
 
 fun fixedBody(
@@ -44,13 +47,15 @@ fun fixedBody(
     position: Position = ZeroPosition,
     motion: Motion = Motion(position, ZeroVelocity),
     radius: Distance = sizeOf(mass, density),
-    age: Duration = 0.seconds
+    age: Duration = Duration.ZERO,
+    state: BodyState = BodyState.MainSequence,
 ) = FixedBody(
     mass,
     density,
     motion,
     radius,
     age = age,
+    state = state,
 )
 
 fun greatAttractor(
@@ -59,11 +64,13 @@ fun greatAttractor(
     position: Position = ZeroPosition,
     motion: Motion = Motion(position, ZeroVelocity),
     radius: Distance = sizeOf(mass, density),
-    age: Duration = 0.seconds
+    age: Duration = Duration.ZERO,
+    state: BodyState = BodyState.MainSequence,
 ) = GreatAttractor(
     mass,
     density,
     motion,
     radius,
     age = age,
+    state = state,
 )

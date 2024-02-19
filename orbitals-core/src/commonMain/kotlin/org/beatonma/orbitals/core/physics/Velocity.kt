@@ -28,6 +28,7 @@ data class Velocity internal constructor(
     operator fun times(multiplier: Float): Velocity = Velocity(x * multiplier, y * multiplier)
     operator fun times(mass: Mass) = Momentum(x * mass, y * mass)
     operator fun times(timeDelta: Duration) = Position(x * timeDelta, y * timeDelta)
+    operator fun div(factor: Float): Velocity = Velocity(x / factor, y / factor)
 
     override fun toString(): String = "Velocity($x, $y | $angle)"
 }
@@ -43,6 +44,8 @@ value class Speed internal constructor(override val value: Float) : Scalar {
 
     operator fun times(multiplier: Float): Speed = Speed(value * multiplier)
     operator fun times(mass: Mass): MomentumScalar = MomentumScalar(value * mass.value)
+
+    operator fun div(factor: Float): Speed = Speed(value / factor)
 
     operator fun plus(other: Speed) = Speed(value + other.value)
     operator fun minus(other: Speed) = Speed(value - other.value)

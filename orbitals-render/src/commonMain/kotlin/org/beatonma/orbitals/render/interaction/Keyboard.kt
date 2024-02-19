@@ -1,7 +1,6 @@
 package org.beatonma.orbitals.render.interaction
 
 import org.beatonma.orbitals.core.options.CollisionStyle
-import org.beatonma.orbitals.core.util.dump
 import org.beatonma.orbitals.render.OrbitalsRenderEngine
 import org.beatonma.orbitals.render.options.OptionPersistence
 import org.beatonma.orbitals.render.options.Options
@@ -43,7 +42,7 @@ class OrbitalsKeyboardHandler(
     }
 
     fun onKeyDown(key: Key): Boolean =
-        when (key.dump("keyDown")) {
+        when (key) {
             Key.Delete, Key.Backspace -> hotkey(engine::clear)
             Key.Insert, Key.Spacebar -> hotkey(engine::addBodies)
 

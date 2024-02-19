@@ -24,7 +24,7 @@ private fun assertConservationOfMomentum(
     val originalLarger = larger.copy()
     val originalSmaller = smaller.copy()
 
-    val result = applyCollision(larger, smaller, CollisionStyle.Merge, now = Long.MAX_VALUE)
+    val result = applyCollision(larger, smaller, CollisionStyle.Merge)
 
     assertEquals(originalMass, larger.mass + smaller.mass)
     assertEquals(originalMomentum, larger.momentum + smaller.momentum)

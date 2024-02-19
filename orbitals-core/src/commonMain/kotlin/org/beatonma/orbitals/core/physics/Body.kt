@@ -1,11 +1,9 @@
 package org.beatonma.orbitals.core.physics
 
 import org.beatonma.orbitals.core.engine.Config
-import org.beatonma.orbitals.core.util.currentTimeMillis
 import kotlin.math.PI
 import kotlin.math.pow
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.seconds
 
 
 val ZeroMass = 0f.kg
@@ -16,21 +14,74 @@ val ZeroVelocity = Velocity(0f.metresPerSecond, 0f.metresPerSecond)
 val ZeroMotion get() = Motion(ZeroPosition, ZeroVelocity)
 
 
-sealed interface Fixed
-sealed interface Inertial
-sealed interface Collider {
-    var lastCollision: Long
-    fun canCollide(now: Long = currentTimeMillis()): Boolean
+enum class BodyState {
+    // Body has just spawned
+    New,
+
+    MainSequence,
+
+    // Body has reached the end of its life
+    Collapsing,
+
+    // Body is being removed as soon as possible
+    Dead,
+    ;
 }
 
-sealed interface Body : Collider {
+sealed interface Fixed : Body {
+    override fun applyInertia(timeDelta: Duration) {}
+    override fun applyGravity(other: Body, timeDelta: Duration, G: Float) {}
+}
+
+sealed interface Inertial : Body {
+    override fun applyInertia(timeDelta: Duration) {
+        motion.applyInertia(timeDelta)
+    }
+
+    override fun applyGravity(other: Body, timeDelta: Duration, G: Float) {
+        if (mass == ZeroMass || other.mass == ZeroMass) return
+
+        val theta: Angle = position.angleTo(other.position)
+        val force: Force = calculateForce(other, G)
+        val acceleration: Acceleration = calculateAcceleration(force, theta)
+
+        velocity += (acceleration * timeDelta)
+        this.acceleration += acceleration
+    }
+
+    fun calculateForce(other: Body, G: Float): Force =
+        calculateGravitationalForce(this.mass, other.mass, distanceTo(other), G = G)
+
+    /**
+     * Calculate acceleration due to gravity.
+     */
+    fun calculateAcceleration(force: Force, angle: Angle): Acceleration =
+        Acceleration(force / mass, angle)
+}
+
+
+sealed interface Body {
     val id: UniqueID
     val density: Density
     var mass: Mass
     var radius: Distance
     val motion: Motion
+    var state: BodyState
 
+    fun updateState(state: BodyState) {
+        this.state = state
+        sinceStateChange = Duration.ZERO
+    }
+
+    /**
+     * Time since this body was created.
+     */
     var age: Duration
+
+    /**
+     * Time since this body changed to a different [BodyState].
+     */
+    var sinceStateChange: Duration
     var isMortal: Boolean
     val isImmortal: Boolean get() = !isMortal
 
@@ -53,12 +104,10 @@ sealed interface Body : Collider {
 
     val momentum: Momentum get() = mass * velocity
 
-    override var lastCollision: Long
-    override fun canCollide(now: Long): Boolean = mass != ZeroMass
-            && age > Config.CollisionMinimumAge
-
     fun applyInertia(timeDelta: Duration)
     fun applyGravity(other: Body, timeDelta: Duration, G: Float)
+
+    fun canCollide(): Boolean = mass != ZeroMass && state == BodyState.MainSequence
 
     fun distanceTo(other: Body): Distance = position.distanceTo(other.position)
 
@@ -66,7 +115,33 @@ sealed interface Body : Collider {
         acceleration = ZeroAcceleration
         applyInertia(duration)
         age += duration
+        sinceStateChange += duration
+
+        when (state) {
+            BodyState.New -> {
+                if (age > Config.CollisionMinimumAge) {
+                    updateState(BodyState.MainSequence)
+                }
+            }
+
+            BodyState.Collapsing -> {
+                if (sinceStateChange > Config.CollapseDuration) {
+                    updateState(BodyState.Dead)
+                }
+            }
+
+            else -> {}
+        }
     }
+
+    fun collapse() {
+        if (state == BodyState.MainSequence) {
+            updateState(BodyState.Collapsing)
+        }
+    }
+
+    fun isCollapsing() = this.state == BodyState.Collapsing
+    fun isDead() = this.state == BodyState.Dead
 
     fun toSimpleString(): String =
         "${this::class.simpleName} $mass $radius ${velocity.magnitude}"
@@ -83,6 +158,20 @@ sealed interface Body : Collider {
 }
 
 
+data class InertialBody(
+    override var mass: Mass,
+    override val density: Density,
+    override val motion: Motion = ZeroMotion,
+    override var radius: Distance = sizeOf(mass, density),
+    override var age: Duration = Duration.ZERO,
+    override val id: UniqueID = uniqueID("InertialBody"),
+    override var state: BodyState = BodyState.New,
+) : Inertial {
+    override var isMortal: Boolean = true
+    override var sinceStateChange: Duration = Duration.ZERO
+}
+
+
 /**
  * A body that stays in a fixed position.
  */
@@ -92,68 +181,15 @@ data class FixedBody(
     override val motion: Motion = ZeroMotion,
     override var radius: Distance = sizeOf(mass, density),
     override val id: UniqueID = uniqueID("FixedBody"),
-    override var age: Duration = 0.seconds
-) : Body, Fixed {
-    override var lastCollision: Long = currentTimeMillis()
+    override var age: Duration = Duration.ZERO,
+    override var state: BodyState = BodyState.New,
+) : Fixed {
     override var isMortal: Boolean = true
+    override var sinceStateChange: Duration = Duration.ZERO
 
-    override fun applyInertia(timeDelta: Duration) {
-        // N/A
+    init {
+        motion.velocity = ZeroVelocity
     }
-
-    override fun applyGravity(other: Body, timeDelta: Duration, G: Float) {
-        // N/A
-    }
-
-    override fun tick(duration: Duration) {
-        super.tick(duration)
-        age += duration
-    }
-}
-
-fun FixedBody.toInertialBody() = InertialBody(
-    id = id,
-    density = density,
-    mass = mass,
-    radius = radius,
-    motion = motion,
-    age = age,
-)
-
-data class InertialBody(
-    override var mass: Mass,
-    override val density: Density,
-    override val motion: Motion = ZeroMotion,
-    override var radius: Distance = sizeOf(mass, density),
-    override var age: Duration = 0.seconds,
-    override val id: UniqueID = uniqueID("InertialBody"),
-) : Body, Inertial {
-    override var lastCollision: Long = currentTimeMillis()
-    override var isMortal: Boolean = true
-
-    override fun applyInertia(timeDelta: Duration) {
-        motion.applyInertia(timeDelta)
-    }
-
-    override fun applyGravity(other: Body, timeDelta: Duration, G: Float) {
-        if (mass == ZeroMass || other.mass == ZeroMass) return
-
-        val theta: Angle = position.angleTo(other.position)
-        val force: Force = calculateForce(other, G)
-        val acceleration: Acceleration = calculateAcceleration(force, theta)
-
-        velocity += (acceleration * timeDelta)
-        this.acceleration += acceleration
-    }
-
-    internal fun calculateForce(other: Body, G: Float): Force =
-        calculateGravitationalForce(this.mass, other.mass, distanceTo(other), G = G)
-
-    /**
-     * Calculate acceleration due to gravity.
-     */
-    internal fun calculateAcceleration(force: Force, angle: Angle): Acceleration =
-        Acceleration(force / mass, angle)
 }
 
 
@@ -163,24 +199,66 @@ data class GreatAttractor(
     override val motion: Motion = ZeroMotion,
     override var radius: Distance = sizeOf(mass, density),
     override val id: UniqueID = uniqueID("GreatAttractor"),
-    override var age: Duration = 0.seconds
-) : Body, Fixed {
-    override var lastCollision: Long = currentTimeMillis()
+    override var age: Duration = Duration.ZERO,
+    override var state: BodyState = BodyState.New,
+) : Fixed {
     override var isMortal: Boolean = true
+    override var sinceStateChange: Duration = Duration.ZERO
 
-    override fun applyInertia(timeDelta: Duration) {
-        // N/A
-    }
-
-    override fun applyGravity(other: Body, timeDelta: Duration, G: Float) {
-        // N/A
-    }
-
-    override fun tick(duration: Duration) {
-        super.tick(duration)
-        age += duration
+    init {
+        motion.velocity = ZeroVelocity
     }
 }
+
+
+data class Supernova(
+    override var mass: Mass,
+    override val density: Density,
+    override val motion: Motion = ZeroMotion,
+    override var radius: Distance = sizeOf(mass, density),
+    override val id: UniqueID = uniqueID("Supernova"),
+    override var age: Duration = Duration.ZERO,
+    override var state: BodyState = BodyState.New,
+) : Inertial {
+    override var isMortal: Boolean = true
+    override var sinceStateChange: Duration = Duration.ZERO
+
+    override fun canCollide(): Boolean = false
+    override fun tick(duration: Duration) {
+        super.tick(duration)
+        if (age > Config.SupernovaDuration) {
+            updateState(BodyState.Dead)
+        }
+    }
+
+    override fun updateState(state: BodyState) {
+        if (state == BodyState.Dead) {
+            // Supernova should no
+            super.updateState(state)
+        }
+    }
+
+    override fun collapse() {}
+    override fun applyGravity(other: Body, timeDelta: Duration, G: Float) {}
+}
+
+
+fun Body.toInertialBody() = InertialBody(
+    id = id,
+    density = density,
+    mass = mass,
+    radius = radius,
+    motion = motion,
+    age = age,
+)
+
+
+fun Body.toSupernova() = Supernova(
+    mass = Config.MinObjectMass,
+    density = density,
+    motion = motion.apply { velocity /= 2f },
+    radius = radius,
+)
 
 
 fun sizeOf(mass: Mass, density: Density): Distance {

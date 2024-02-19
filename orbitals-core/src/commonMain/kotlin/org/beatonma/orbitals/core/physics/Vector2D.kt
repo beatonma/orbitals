@@ -1,5 +1,6 @@
 package org.beatonma.orbitals.core.physics
 
+import org.beatonma.orbitals.core.util.warn
 import kotlin.math.atan2
 
 
@@ -14,17 +15,16 @@ interface Vector2D<T : Scalar> : Comparable<Vector2D<T>> {
     val direction: Direction get() = angle.toDirection()
 
     override fun compareTo(other: Vector2D<T>): Int {
-        if (this::class == other::class) {
-
-            return when (val xResult = x.compareTo(other.x)) {
-                0 -> y.compareTo(other.y)
-                else -> xResult
-            }
+        if (this::class != other::class) {
+            throw IllegalArgumentException(
+                "Cannot compare different Vector2D implementations: ${this::class} vs ${other::class}"
+            )
         }
-
-        throw IllegalArgumentException(
-            "Cannot compare different Vector2D implementations: ${this::class} vs ${other::class}"
-        )
+        warn("Default Vector2D compareTo is only intended for use in tests.")
+        return when (val xResult = x.compareTo(other.x)) {
+            0 -> y.compareTo(other.y)
+            else -> xResult
+        }
     }
 }
 

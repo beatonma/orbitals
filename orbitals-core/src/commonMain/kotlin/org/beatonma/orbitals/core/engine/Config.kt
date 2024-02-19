@@ -28,6 +28,8 @@ object Config {
     // Allows a grace period for newly-created objects to move away
     // from each other without immediately colliding.
     val CollisionMinimumAge: Duration = 250.milliseconds
+    val CollapseDuration: Duration = 250.milliseconds
+    val SupernovaDuration: Duration = 2000.milliseconds
 
     // Objects that get too small will be removed from the simulation.
     val MinObjectMass: Mass = 1f.kg
@@ -46,9 +48,10 @@ object Config {
     fun getAsteroidDistance(): Distance = Random.nextFloat(80f, 150f).metres
 
     // Minimum distance from existing stars to generate a new star.
-    val MinStarDistance: Distance = 300f.metres
+    val MinStarDistance: Distance = 100f.metres
 
     // Generated object velocity ranges
     private fun getSpeed(): Speed = Speed(Random.nextFloat(0f, 20f))
-    fun getVelocity(): Velocity = Velocity(getSpeed() * randomDirection, getSpeed() * randomDirection)
+    fun getVelocity(): Velocity =
+        Velocity(getSpeed() * randomDirection, getSpeed() * randomDirection)
 }

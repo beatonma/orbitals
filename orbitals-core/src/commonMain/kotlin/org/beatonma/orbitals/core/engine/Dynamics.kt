@@ -17,15 +17,17 @@ import org.beatonma.orbitals.core.physics.Mass
 import org.beatonma.orbitals.core.physics.Momentum
 import org.beatonma.orbitals.core.physics.Motion
 import org.beatonma.orbitals.core.physics.Position
+import org.beatonma.orbitals.core.physics.Speed
 import org.beatonma.orbitals.core.physics.UniqueID
+import org.beatonma.orbitals.core.physics.Velocity
 import org.beatonma.orbitals.core.physics.degrees
 import org.beatonma.orbitals.core.physics.distanceTo
 import org.beatonma.orbitals.core.physics.divideUnevenly
 import org.beatonma.orbitals.core.physics.inContactWith
+import org.beatonma.orbitals.core.physics.metresPerSecond
 import org.beatonma.orbitals.core.physics.rangeTo
 import org.beatonma.orbitals.core.physics.rawDegrees
 import org.beatonma.orbitals.core.physics.rotateBy
-import org.beatonma.orbitals.core.util.currentTimeMillis
 import org.beatonma.orbitals.core.util.warn
 import kotlin.random.Random
 
@@ -35,23 +37,15 @@ internal fun applyCollision(
     b: Body,
     collisionStyle: CollisionStyle,
     reporter: CollisionLog = CollisionResultsImpl,
-    now: Long = currentTimeMillis(),
 ): CollisionResults? {
     if (collisionStyle == CollisionStyle.None) return null
     if (!a.inContactWith(b)) return null
 
-    if (!a.canCollide(now) || !b.canCollide(now)) {
+    if (!a.canCollide() || !b.canCollide()) {
         return null
-    } else {
-        a.lastCollision = now
-        b.lastCollision = now
     }
 
-    val (larger, smaller) = arrayOf(a, b).sortedByDescending { it.mass }
-    require(larger.mass >= smaller.mass) {
-        "Mass order wrong?! ${larger.mass} vs ${smaller.mass}"
-    }
-
+    val (larger, smaller) = arrayOf(a, b).sortedByDescending(Body::mass)
     try {
         reporter.clear()
         val collision: Collision = when (collisionStyle) {
@@ -103,7 +97,8 @@ fun explode(
     totalMomentum: Momentum,
     angleRange: ClosedFloatingPointRange<Angle> = 0f.degrees..360f.rawDegrees,
 ): List<Body> {
-    val ejectaCount = Random.nextInt(2, 20)
+    val minEjectaSpeed = 500f.metresPerSecond//getEscapeSpeed(totalMass, ZeroDistance, G)
+    val ejectaCount = Random.nextInt(10, 30)
 
     // Artificially reduce mass so we can dump more momentum into velocity.
     val mass = totalMass / (ejectaCount * 2.5f)
@@ -115,7 +110,7 @@ fun explode(
             density,
             motion = Motion(
                 position = position,
-                velocity = (momentum / mass).rotateBy(
+                velocity = (momentum / mass).coerceMinSpeed(minEjectaSpeed).rotateBy(
                     Random.nextFloat(
                         angleRange.start.asDegrees,
                         angleRange.endInclusive.asDegrees
@@ -127,6 +122,12 @@ fun explode(
 }
 
 fun Body.explode(): List<Body> = explode(position, mass, density, momentum)
+private fun Velocity.coerceMinSpeed(minSpeed: Speed): Velocity {
+    if (magnitude < minSpeed) {
+        return Velocity(minSpeed, angle)
+    }
+    return this
+}
 
 /**
  * Returns a 0..1 score of how much two bodies are overlapping each other.

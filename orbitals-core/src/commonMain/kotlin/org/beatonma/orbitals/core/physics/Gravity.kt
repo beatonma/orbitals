@@ -46,7 +46,7 @@ fun getOrbitalMotion(
 
     return Motion(
         position,
-        getVelocity(speed, tangentialAngle) + parent.velocity
+        Velocity(speed, tangentialAngle) + parent.velocity
     )
 }
 
@@ -65,8 +65,17 @@ fun getOrbitalMotion(
 
     return Motion(
         position,
-        getVelocity(speed, tangentialAngle)
+        Velocity(speed, tangentialAngle)
     )
+}
+
+fun getEscapeSpeed(
+    mass: Mass,
+    distance: Distance,
+    G: Float,
+): Speed {
+    val g = G * mass.value / distance.squared.value
+    return sqrt(2f * g * distance.value).metresPerSecond
 }
 
 private fun getOrbitalSpeed(
@@ -78,11 +87,6 @@ private fun getOrbitalSpeed(
     sqrt(
         (G * (firstMass + secondMass).value / distance.value).absoluteValue // G may be negative
     ).metresPerSecond
-
-private fun getVelocity(speed: Speed, tangentialAngle: Angle) = Velocity(
-    speed * cos(tangentialAngle),
-    speed * sin(tangentialAngle)
-)
 
 private fun getTangentialAngle(radialAngle: Angle, prograde: Boolean): Angle {
     val direction = if (prograde) 1 else -1

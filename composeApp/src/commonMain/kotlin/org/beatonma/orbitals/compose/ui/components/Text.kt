@@ -49,37 +49,23 @@ fun TextBlock(
         paragraphs.fastForEach {
             Text(
                 it,
-                modifier=modifier,
-                color=color,
-                fontSize=fontSize,
-                fontStyle=fontStyle,
-                fontWeight=fontWeight,
-                fontFamily=fontFamily,
-                letterSpacing=letterSpacing,
-                textDecoration=textDecoration,
-                textAlign=textAlign,
-                lineHeight=lineHeight,
-                overflow=overflow,
-                softWrap=softWrap,
-                maxLines=maxLines,
-                minLines=minLines,
-                onTextLayout=onTextLayout,
-                style=style,
+                modifier = modifier,
+                color = color,
+                fontSize = fontSize,
+                fontStyle = fontStyle,
+                fontWeight = fontWeight,
+                fontFamily = fontFamily,
+                letterSpacing = letterSpacing,
+                textDecoration = textDecoration,
+                textAlign = textAlign,
+                lineHeight = lineHeight,
+                overflow = overflow,
+                softWrap = softWrap,
+                maxLines = maxLines,
+                minLines = minLines,
+                onTextLayout = onTextLayout,
+                style = style,
             )
         }
     }
-
 }
-
-//private fun parseTextBlock(text: String) = buildAnnotatedString {
-//    val paragraphs = text.trimIndent().split("\n\n")
-//
-//    println(text)
-//    println(text.trimIndent())
-//    paragraphs.forEach {
-//        println(it)
-//        pushStyle(paragraphStyle)
-//        append(it)
-//        pop()
-//    }
-//}.dump()

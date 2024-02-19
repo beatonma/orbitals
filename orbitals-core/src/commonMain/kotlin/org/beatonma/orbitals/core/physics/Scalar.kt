@@ -18,7 +18,6 @@ interface Scalar : Comparable<Scalar> {
     fun isZero(): Boolean = value == 0f
 }
 
-private fun sqrt(scalar: Scalar): Float = sqrt(scalar.value)
 private fun squareOf(scalar: Scalar): Float = scalar.value * scalar.value
 internal fun <T : Scalar> magnitude(x: T, y: T): Float = sqrt(squareOf(x) + squareOf(y))
 

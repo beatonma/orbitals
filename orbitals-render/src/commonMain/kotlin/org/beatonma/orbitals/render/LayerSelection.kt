@@ -55,9 +55,9 @@ fun <Canvas> diffRenderers(
     bodies: List<Body>,
     delegate: CanvasDelegate<Canvas>,
 ): RenderSet<Canvas> {
-    val existingLayers = existing.map(::getLayerType).sortedBy { it.ordinal }
+    val existingLayers = existing.map(::getLayerType).sortedBy(RenderLayer::ordinal)
 
-    if (existingLayers == required.sortedBy { it.ordinal }) {
+    if (existingLayers == required.sortedBy(RenderLayer::ordinal)) {
         // No change to requirements
         return existing
     }

@@ -9,9 +9,11 @@ import org.beatonma.orbitals.core.physics.Body
 import org.beatonma.orbitals.core.physics.Fixed
 import org.beatonma.orbitals.core.physics.FixedBody
 import org.beatonma.orbitals.core.physics.Inertial
+import org.beatonma.orbitals.core.physics.Supernova
 import org.beatonma.orbitals.core.physics.UniqueID
 import org.beatonma.orbitals.core.physics.contains
 import org.beatonma.orbitals.core.physics.toInertialBody
+import org.beatonma.orbitals.core.physics.toSupernova
 import kotlin.time.Duration
 
 private val BodySortBy = Body::mass
@@ -137,30 +139,45 @@ open class DefaultOrbitalsEngine(override var physics: PhysicsOptions) : Orbital
                     addedBodies += added
                     removedBodyIds += removed
                 }
-
-                if (body.mass < Config.MinObjectMass) {
-                    removedBodyIds += body.id
-                }
-                if (other.mass < Config.MinObjectMass) {
-                    removedBodyIds += other.id
-                }
             }
 
-            if (body is Inertial && body.mass > Config.MaxObjectMass) {
-                val added = body.explode()
-                addedBodies += added
-                removedBodyIds += body.id
-            }
+            checkEndOfLife(body)
         }
-
-        add(addedBodies)
-        addedBodies.clear()
 
         remove(removedBodyIds)
         removedBodyIds.clear()
 
+        add(addedBodies)
+        addedBodies.clear()
+
         prune()
         autoAddBodies()
+    }
+
+    /**
+     * Destroy or change state if [body] has breached any end-of-life conditions.
+     */
+    private fun checkEndOfLife(body: Body) {
+        if (body.mass < Config.MinObjectMass) {
+            removedBodyIds += body.id
+            return
+        }
+
+        if (body is Supernova && body.isDead()) {
+            removedBodyIds += body.id
+            return
+        }
+
+        if (body.isDead()) {
+            removedBodyIds += body.id
+            addedBodies += body.toSupernova()
+            addedBodies += body.explode()
+            return
+        }
+
+        if (body is Inertial && body.mass > Config.MaxObjectMass) {
+            body.collapse()
+        }
     }
 
     private fun autoAddBodies() {
@@ -173,22 +190,18 @@ open class DefaultOrbitalsEngine(override var physics: PhysicsOptions) : Orbital
         }
     }
 
-    private fun prune() {
-        if (pruneCounter++ > pruneFrequency) {
-            pruneBodies()
-            pruneCounter = 0
-        }
-    }
-
     /**
      * Remove any bodies that leave the active region.
      * Any FixedBody that exceeds a maximum age is converted to an InertialBody so that it might be
      * expelled by later interactions.
      */
-    private fun pruneBodies(space: Universe = this.space) {
-        val (keep, destroy) = pruneBodies(bodies, space, physics.minFixedBodyAge)
-        destroy.fastForEach { onBodyDestroyed(it.id) }
-        bodies = keep
+    private fun prune() {
+        if (pruneCounter++ > pruneFrequency) {
+            val (keep, destroy) = pruneBodies(bodies, space, physics.minFixedBodyAge)
+            destroy.fastForEach { onBodyDestroyed(it.id) }
+            bodies = keep
+            pruneCounter = 0
+        }
     }
 }
 
@@ -199,7 +212,9 @@ internal fun pruneBodies(
     keepAgedRandomizer: () -> Boolean = { chance(10.percent) }
 ): Pair<List<Body>, List<Body>> {
     val (keep, furtherAction) = bodies.partition {
-        if (it.isImmortal) true else when (it) {
+        if (it.isImmortal) {
+            true
+        } else when (it) {
             is Inertial -> {
                 space.contains(it.position)
             }
@@ -210,13 +225,12 @@ internal fun pruneBodies(
         }
     }
 
-    val (toBeConverted, toDestroy) = furtherAction.partition {
+    val (toBeConverted, toBeDestroyed) = furtherAction.partition {
         it is FixedBody
     }
 
-    @Suppress("UNCHECKED_CAST")
     return Pair(
-        keep + (toBeConverted as List<FixedBody>).map(FixedBody::toInertialBody),
-        toDestroy
+        keep + toBeConverted.map(Body::toInertialBody),
+        toBeDestroyed
     )
 }
