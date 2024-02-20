@@ -34,8 +34,8 @@ object Config {
     // Objects that get too small will be removed from the simulation.
     val MinObjectMass: Mass = 1f.kg
 
-    // Objects that get too big will be removed from the simulation.
-    val MaxObjectMass: Mass = 20_000f.kg
+    // Objects that get too big will collapse and explode as supernovae.
+    val MaxObjectMass: Mass = 45_000f.kg
     val DefaultDensity: Density = Density(1f)
 
     // Generated object mass ranges

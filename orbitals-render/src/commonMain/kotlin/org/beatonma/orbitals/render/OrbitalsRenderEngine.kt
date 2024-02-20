@@ -36,7 +36,8 @@ class OrbitalsRenderEngine<Canvas>(
         override fun onBodyCreated(body: Body) {
             renderers.forEach { it.onBodyCreated(body) }
             bodyProps[body.id] = BodyProperties(
-                this@OrbitalsRenderEngine.options.visualOptions.colorOptions.colorFor(body)
+                body,
+                options.visualOptions.colorOptions
             )
         }
 

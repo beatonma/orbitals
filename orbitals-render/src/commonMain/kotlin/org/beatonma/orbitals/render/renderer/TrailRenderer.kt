@@ -1,25 +1,22 @@
 package org.beatonma.orbitals.render.renderer
 
-import org.beatonma.orbitals.render.options.DrawStyle
-import org.beatonma.orbitals.render.options.VisualOptions
+import org.beatonma.orbitals.core.fastForEach
 import org.beatonma.orbitals.core.physics.Body
+import org.beatonma.orbitals.core.physics.BodyState
 import org.beatonma.orbitals.core.physics.InertialBody
 import org.beatonma.orbitals.core.physics.Position
 import org.beatonma.orbitals.core.physics.UniqueID
-import org.beatonma.orbitals.core.physics.metres
 import org.beatonma.orbitals.render.CanvasDelegate
 import org.beatonma.orbitals.render.OrbitalsRenderer
-import org.beatonma.orbitals.render.options.CapStyle
+import org.beatonma.orbitals.render.options.VisualOptions
 
 class TrailRenderer<Canvas> internal constructor(
     override val delegate: CanvasDelegate<Canvas>,
     options: VisualOptions,
 ) : OrbitalsRenderer<Canvas> {
     private val bodyPaths: MutableMap<UniqueID, MutableList<Position>> = mutableMapOf()
-    private var trailTicks = 0
-    private val trailTickFrequency = 0
 
-    val maxAlpha: Float = .2f
+    val maxAlpha: Float = .3f
     var traceThickness: Float = options.strokeWidth
         private set
 
@@ -42,25 +39,25 @@ class TrailRenderer<Canvas> internal constructor(
         bodyPaths.remove(id)
     }
 
+    override fun drawForeground(canvas: Canvas, bodies: List<Body>, bodyProps: BodyPropertyMap) {}
     override fun drawBackground(canvas: Canvas, bodies: List<Body>, bodyProps: BodyPropertyMap) {
-        val remember = trailTicks++ > trailTickFrequency
-
-        bodies.forEach { body ->
-            if (remember && body is InertialBody) {
+        bodies.fastForEach { body ->
+            if (body.state >= BodyState.Supernova) {
+                println(body.state)
+                return@fastForEach
+            }
+            if (body is InertialBody) {
                 remember(body)
             }
-            val props = bodyProps[body.id] ?: return@forEach
+            val props = bodyProps[body.id] ?: return@fastForEach
             drawBody(canvas, body, props)
-        }
-        if (remember) {
-            trailTicks = 0
         }
     }
 
     private fun remember(body: Body) {
         val points = bodyPaths[body.id] ?: throw Exception("remember $body no path")
 
-        points.add(body.position.copy())
+        points.add(body.position)
         while (points.size > maxPoints) {
             points.removeAt(0)
         }
@@ -72,25 +69,23 @@ class TrailRenderer<Canvas> internal constructor(
 
         for (index in 0 until size) {
             when (index) {
-                0, size - 1 -> delegate.drawCircle(
+                0 -> {}
+
+                size - 1 -> delegate.drawLine(
                     canvas,
                     color = props.color.withOpacity((index.toFloat() / size.toFloat()) * maxAlpha),
-                    position = points[index],
-                    radius = maxOf(1f, traceThickness, body.radius.value / 10f).metres,
-                    strokeWidth = traceThickness,
-                    style = DrawStyle.Solid
+                    start = points[index],
+                    end = body.position,
+                    strokeWidth = maxOf(1f, traceThickness, body.radius.value / 10f),
                 )
 
-                else -> {
-                    delegate.drawLine(
-                        canvas,
-                        color = props.color.withOpacity((index.toFloat() / size.toFloat()) * maxAlpha),
-                        start = points[index - 1],
-                        end = points[index],
-                        strokeWidth = maxOf(1f, traceThickness, body.radius.value / 10f),
-                        cap = CapStyle.Round,
-                    )
-                }
+                else -> delegate.drawLine(
+                    canvas,
+                    color = props.color.withOpacity((index.toFloat() / size.toFloat()) * maxAlpha),
+                    start = points[index - 1],
+                    end = points[index],
+                    strokeWidth = maxOf(1f, traceThickness, body.radius.value / 10f),
+                )
             }
         }
     }

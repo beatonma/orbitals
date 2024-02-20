@@ -6,14 +6,13 @@ import org.beatonma.orbitals.core.fastForEachIndexed
 import org.beatonma.orbitals.core.options.PhysicsOptions
 import org.beatonma.orbitals.core.percent
 import org.beatonma.orbitals.core.physics.Body
+import org.beatonma.orbitals.core.physics.BodyState
 import org.beatonma.orbitals.core.physics.Fixed
 import org.beatonma.orbitals.core.physics.FixedBody
 import org.beatonma.orbitals.core.physics.Inertial
-import org.beatonma.orbitals.core.physics.Supernova
 import org.beatonma.orbitals.core.physics.UniqueID
 import org.beatonma.orbitals.core.physics.contains
 import org.beatonma.orbitals.core.physics.toInertialBody
-import org.beatonma.orbitals.core.physics.toSupernova
 import kotlin.time.Duration
 
 private val BodySortBy = Body::mass
@@ -163,15 +162,8 @@ open class DefaultOrbitalsEngine(override var physics: PhysicsOptions) : Orbital
             return
         }
 
-        if (body is Supernova && body.isDead()) {
-            removedBodyIds += body.id
-            return
-        }
-
-        if (body.isDead()) {
-            removedBodyIds += body.id
-            addedBodies += body.toSupernova()
-            addedBodies += body.explode()
+        if (body.stateEvent() == BodyState.Supernova) {
+            addedBodies += body.explodeSupernova()
             return
         }
 

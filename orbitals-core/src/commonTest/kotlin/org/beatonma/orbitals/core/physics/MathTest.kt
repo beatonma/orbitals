@@ -2,6 +2,7 @@ package org.beatonma.orbitals.core.physics
 
 import org.beatonma.orbitals.core.divideUnevenly
 import org.beatonma.orbitals.core.factorial
+import org.beatonma.orbitals.core.fastForEach
 import org.beatonma.orbitals.core.mapTo
 import org.beatonma.orbitals.test.shouldbe
 import org.beatonma.orbitals.test.shouldbePositive
@@ -34,7 +35,7 @@ class MathTest {
 
             divided.size shouldbe chunks
             divided.sum().shouldbe(total, delta = 0.001f)
-            divided.forEach(Float::shouldbePositive)
+            divided.fastForEach(Float::shouldbePositive)
             divided.groupBy { it }.size shouldbe chunks // Values should be different
         }
 

@@ -122,6 +122,7 @@ fun explode(
 }
 
 fun Body.explode(): List<Body> = explode(position, mass, density, momentum)
+fun Body.explodeSupernova(): List<Body> = explode(position, Config.MaxObjectMass, density, momentum)
 private fun Velocity.coerceMinSpeed(minSpeed: Speed): Velocity {
     if (magnitude < minSpeed) {
         return Velocity(minSpeed, angle)

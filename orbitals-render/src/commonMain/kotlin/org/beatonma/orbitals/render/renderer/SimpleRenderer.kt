@@ -7,7 +7,6 @@ import org.beatonma.orbitals.core.physics.Body
 import org.beatonma.orbitals.core.physics.BodyState
 import org.beatonma.orbitals.core.physics.Distance
 import org.beatonma.orbitals.core.physics.GreatAttractor
-import org.beatonma.orbitals.core.physics.Supernova
 import org.beatonma.orbitals.core.physics.coerceAtLeast
 import org.beatonma.orbitals.core.physics.metres
 import org.beatonma.orbitals.render.CanvasDelegate
@@ -29,18 +28,24 @@ class SimpleRenderer<Canvas> internal constructor(
     override val delegate: CanvasDelegate<Canvas>,
     override var options: VisualOptions,
 ) : OrbitalsRenderer<Canvas> {
+    override fun drawBackground(canvas: Canvas, bodies: List<Body>, bodyProps: BodyPropertyMap) {}
+    override fun drawForeground(canvas: Canvas, bodies: List<Body>, bodyProps: BodyPropertyMap) =
+        drawBodies(canvas, bodies, bodyProps)
+
     override fun drawBody(canvas: Canvas, body: Body, props: BodyProperties) {
         val collapseProgress = getCollapseProgress(body)
         val renderRadius = getRenderRadius(body, collapseProgress)
         val color = getRenderColor(body, props, collapseProgress)
 
         if (body.isCollapsing()) {
-            drawNova(canvas, body, props, collapseProgress, style = DrawStyle.Solid)
+            drawNova(canvas, body, props.color, collapseProgress, style = DrawStyle.Solid)
+        }
+
+        if (body.isSupernova()) {
+            return drawSupernova(canvas, body, props)
         }
 
         when (body) {
-            is Supernova -> drawSupernova(canvas, body, props)
-
             is GreatAttractor -> delegate.drawCircle(
                 canvas,
                 body.position,
@@ -67,13 +72,13 @@ class SimpleRenderer<Canvas> internal constructor(
     private fun drawNova(
         canvas: Canvas,
         body: Body,
-        props: BodyProperties,
+        color: Color,
         progress: Float,
         scale: Float = 3f,
         style: DrawStyle = DrawStyle.Wireframe,
     ) {
         val fadeProgress = 1f - progress
-        val (h, s, l, _) = props.color.hsla()
+        val (h, s, l, _) = color.hsla()
         val color = Color.hsla(
             h,
             s,
@@ -96,22 +101,28 @@ class SimpleRenderer<Canvas> internal constructor(
         body: Body,
         props: BodyProperties,
     ) {
-        val progress = scaleSupernova(progress(body.age, SupernovaMillis))
+        val progress = scaleSupernova(progress(body.sinceStateChange, SupernovaMillis))
         val seed = props.seed / 2f
-        drawNova(canvas, body, props, progress, scale = 6f)
+        drawNova(canvas, body, props.color, progress, scale = 6f)
 
         if (progress > .1f) {
             drawNova(
                 canvas,
                 body,
-                props,
+                props.color,
                 progress.normalizeIn(.1f, 1f),
                 scale = 4.5f,
                 DrawStyle.Solid
             )
         }
         if (progress > seed) {
-            drawNova(canvas, body, props, progress.normalizeIn(seed, 1f), scale = 3f)
+            drawNova(
+                canvas,
+                body,
+                props.colorAlt,
+                progress.normalizeIn(seed, 1f),
+                scale = 3f
+            )
         } else {
             delegate.drawCircle(
                 canvas,
@@ -143,7 +154,7 @@ private fun getRenderColor(body: Body, props: BodyProperties, collapseProgress: 
 
 private fun getRenderRadius(body: Body, collapseProgress: Float = 0f): Distance {
     return when (body.state) {
-        BodyState.MainSequence, BodyState.Dead -> body.radius
+        BodyState.MainSequence, BodyState.Supernova, BodyState.Dead -> body.radius
         BodyState.New -> {
             body.radius * easeRadius(body.age.inWholeMilliseconds / EnterAnimationMillis)
         }

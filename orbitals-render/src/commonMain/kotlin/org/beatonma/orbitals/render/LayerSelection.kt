@@ -1,5 +1,6 @@
 package org.beatonma.orbitals.render
 
+import org.beatonma.orbitals.core.fastForEach
 import org.beatonma.orbitals.core.physics.Body
 import org.beatonma.orbitals.render.options.RenderLayer
 import org.beatonma.orbitals.render.options.VisualOptions
@@ -68,7 +69,7 @@ fun <Canvas> diffRenderers(
     val newRenderers = getRenderers(newLayers, options, delegate)
 
     // Register existing bodies with new render layers
-    newRenderers.forEach { r -> bodies.forEach { b -> r.onBodyCreated(b) } }
+    newRenderers.forEach { r -> bodies.fastForEach { b -> r.onBodyCreated(b) } }
 
     return (
             existing.filter { getLayerType(it) in keepLayers }

@@ -15,15 +15,19 @@ val ZeroMotion get() = Motion(ZeroPosition, ZeroVelocity)
 
 
 enum class BodyState {
-    // Body has just spawned
+    /** Body is newly spawned and younger than [Config.CollisionMinimumAge] */
     New,
 
+    /** Body is in its 'normal' state. */
     MainSequence,
 
-    // Body has reached the end of its life
+    /** Body has grown too large (exceeding [Config.MaxObjectMass]) and is collapsing to a supernova. */
     Collapsing,
 
-    // Body is being removed as soon as possible
+    /** Body is 'dead' but kept as an anchor for death animations. */
+    Supernova,
+
+    /** Body is ready for removal from the simulation. */
     Dead,
     ;
 }
@@ -34,12 +38,12 @@ sealed interface Fixed : Body {
 }
 
 sealed interface Inertial : Body {
-    override fun applyInertia(timeDelta: Duration) {
-        motion.applyInertia(timeDelta)
-    }
+    override fun applyInertia(timeDelta: Duration) = motion.applyInertia(timeDelta)
 
     override fun applyGravity(other: Body, timeDelta: Duration, G: Float) {
         if (mass == ZeroMass || other.mass == ZeroMass) return
+        if (state >= BodyState.Supernova) return
+        if (age < Config.CollisionMinimumAge) return
 
         val theta: Angle = position.angleTo(other.position)
         val force: Force = calculateForce(other, G)
@@ -69,8 +73,27 @@ sealed interface Body {
     var state: BodyState
 
     fun updateState(state: BodyState) {
+        if (this.state >= state) return
         this.state = state
         sinceStateChange = Duration.ZERO
+
+        when (state) {
+            BodyState.Supernova -> {
+                motion.velocity /= 2f
+                mass = Config.MinObjectMass
+            }
+
+            BodyState.Dead -> {
+                mass = ZeroMass
+            }
+
+            else -> {}
+        }
+    }
+
+    fun stateEvent(): BodyState? = when (sinceStateChange) {
+        Duration.ZERO -> state
+        else -> null
     }
 
     /**
@@ -126,6 +149,12 @@ sealed interface Body {
 
             BodyState.Collapsing -> {
                 if (sinceStateChange > Config.CollapseDuration) {
+                    updateState(BodyState.Supernova)
+                }
+            }
+
+            BodyState.Supernova -> {
+                if (sinceStateChange > Config.SupernovaDuration) {
                     updateState(BodyState.Dead)
                 }
             }
@@ -141,6 +170,7 @@ sealed interface Body {
     }
 
     fun isCollapsing() = this.state == BodyState.Collapsing
+    fun isSupernova() = this.state == BodyState.Supernova
     fun isDead() = this.state == BodyState.Dead
 
     fun toSimpleString(): String =
@@ -211,53 +241,13 @@ data class GreatAttractor(
 }
 
 
-data class Supernova(
-    override var mass: Mass,
-    override val density: Density,
-    override val motion: Motion = ZeroMotion,
-    override var radius: Distance = sizeOf(mass, density),
-    override val id: UniqueID = uniqueID("Supernova"),
-    override var age: Duration = Duration.ZERO,
-    override var state: BodyState = BodyState.New,
-) : Inertial {
-    override var isMortal: Boolean = true
-    override var sinceStateChange: Duration = Duration.ZERO
-
-    override fun canCollide(): Boolean = false
-    override fun tick(duration: Duration) {
-        super.tick(duration)
-        if (age > Config.SupernovaDuration) {
-            updateState(BodyState.Dead)
-        }
-    }
-
-    override fun updateState(state: BodyState) {
-        if (state == BodyState.Dead) {
-            // Supernova should no
-            super.updateState(state)
-        }
-    }
-
-    override fun collapse() {}
-    override fun applyGravity(other: Body, timeDelta: Duration, G: Float) {}
-}
-
-
 fun Body.toInertialBody() = InertialBody(
     id = id,
     density = density,
     mass = mass,
     radius = radius,
-    motion = motion,
+    motion = motion.apply { velocity = ZeroVelocity },
     age = age,
-)
-
-
-fun Body.toSupernova() = Supernova(
-    mass = Config.MinObjectMass,
-    density = density,
-    motion = motion.apply { velocity /= 2f },
-    radius = radius,
 )
 
 

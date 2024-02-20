@@ -18,6 +18,10 @@ class AccelerationRenderer<Canvas> internal constructor(
 ) : OrbitalsRenderer<Canvas> {
     private val scale = 2e1F
 
+    override fun drawForeground(canvas: Canvas, bodies: List<Body>, bodyProps: BodyPropertyMap) {}
+    override fun drawBackground(canvas: Canvas, bodies: List<Body>, bodyProps: BodyPropertyMap) =
+        drawBodies(canvas, bodies, bodyProps)
+
     override fun drawBody(canvas: Canvas, body: Body, props: BodyProperties) {
         val scaledAcceleration = Acceleration(
             AccelerationScalar(log10(body.acceleration.magnitude.value) * scale),

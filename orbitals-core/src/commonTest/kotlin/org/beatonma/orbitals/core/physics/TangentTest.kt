@@ -1,5 +1,6 @@
 package org.beatonma.orbitals.core.physics
 
+import org.beatonma.orbitals.core.fastForEach
 import org.beatonma.orbitals.test.shouldbe
 import kotlin.test.Test
 
@@ -46,7 +47,7 @@ class TangentTest {
             Position(diagonal, -diagonal),
         )
 
-        result.zip(expected).forEach { (r, e) ->
+        result.zip(expected).fastForEach { (r, e) ->
             r shouldbe e
         }
     }
@@ -77,7 +78,7 @@ class TangentTest {
             Position(diagonal, -diagonal),
         )
 
-        result.zip(expected).forEach { (r, e) ->
+        result.zip(expected).fastForEach { (r, e) ->
             r shouldbe e
         }
     }
