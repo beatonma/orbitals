@@ -77,6 +77,7 @@ interface OptionsStore {
             strokeWidth = this[VisualKeys.StrokeWidth]
                 ?.coerceAtLeast(1f)
                 ?: DefaultVisuals.strokeWidth,
+            drawNovae = this[VisualKeys.drawNovae] ?: DefaultVisuals.drawNovae,
         )
     }
 

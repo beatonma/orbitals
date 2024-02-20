@@ -289,6 +289,17 @@ private fun LazyListScope.visualSettings(
         onValueChange = persistence::updateOption,
     )
 
+    conditional(RenderLayer.Trails in visualOptions.renderLayers) {
+        IntegerSetting(
+            name = stringResource(Res.string.settings__visual__render_layers__trails_history_length),
+            key = VisualKeys.TraceLength,
+            value = visualOptions.traceLineLength,
+            onValueChange = persistence::updateOption,
+            min = 1,
+            max = 120,
+        )
+    }
+
     singleSelectSetting(
         name = Res.string.settings__visual__drawstyle,
         key = VisualKeys.DrawStyle,
@@ -308,16 +319,12 @@ private fun LazyListScope.visualSettings(
         )
     }
 
-    conditional(RenderLayer.Trails in visualOptions.renderLayers) {
-        IntegerSetting(
-            name = stringResource(Res.string.settings__visual__render_layers__trails_history_length),
-            key = VisualKeys.TraceLength,
-            value = visualOptions.traceLineLength,
-            onValueChange = persistence::updateOption,
-            min = 1,
-            max = 120,
-        )
-    }
+    switchSetting(
+        name = Res.string.settings__visual__draw_novae,
+        key = VisualKeys.drawNovae,
+        value = visualOptions.drawNovae,
+        onValueChange = persistence::updateOption,
+    )
 }
 
 private fun LazyListScope.colorSettings(options: ColorOptions, persistence: OptionPersistence) {

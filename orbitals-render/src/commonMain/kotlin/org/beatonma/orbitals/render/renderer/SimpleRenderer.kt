@@ -77,9 +77,11 @@ class SimpleRenderer<Canvas> internal constructor(
         scale: Float = 3f,
         style: DrawStyle = DrawStyle.Wireframe,
     ) {
+        if (!options.drawNovae) return
+
         val fadeProgress = 1f - progress
         val (h, s, l, _) = color.hsla()
-        val color = Color.hsla(
+        val _color = Color.hsla(
             h,
             s,
             fadeProgress.mapTo(l, 1f),
@@ -89,7 +91,7 @@ class SimpleRenderer<Canvas> internal constructor(
             canvas,
             body.position,
             body.radius * scale * progress,
-            color = color,
+            color = _color,
             strokeWidth = options.strokeWidth * 4f,
             style = style,
             alpha = options.colorOptions.foregroundAlpha,

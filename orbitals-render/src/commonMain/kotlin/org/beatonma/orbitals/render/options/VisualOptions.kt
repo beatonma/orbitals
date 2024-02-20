@@ -8,6 +8,7 @@ data class VisualOptions(
     val drawStyle: DrawStyle = DrawStyle.Solid,
     val strokeWidth: Float = 1f,
     val colorOptions: ColorOptions = ColorOptions(),
+    val drawNovae: Boolean = true,
 )
 
 

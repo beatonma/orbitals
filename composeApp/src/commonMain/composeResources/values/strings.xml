@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!--
+<?xml version="1.0" encoding="UTF-8" ?><!--
   READ ME
 
 Many keys map directly to Enum classes defined in Kotlin.
@@ -46,6 +45,7 @@ Many keys map directly to Enum classes defined in Kotlin.
     -->
     <string name="settings__group_title__visual">Visual</string>
     <string name="settings__visual__stroke_width">Stroke width</string>
+    <string name="settings__visual__draw_novae">Novae effects</string>
 
     <string name="settings__visual__render_layers">Layers</string>
     <string name="settings__visual__enum_renderlayer__default">Default</string>

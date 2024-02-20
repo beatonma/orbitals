@@ -32,6 +32,7 @@ object VisualKeys {
     val TraceLength = IntKey("trace_length")
     val StrokeWidth = FloatKey("stroke_width")
     val RenderLayers = StringSetKey<RenderLayer>("layers")
+    val drawNovae = BooleanKey("draw_novae")
 }
 
 object ColorKeys {
