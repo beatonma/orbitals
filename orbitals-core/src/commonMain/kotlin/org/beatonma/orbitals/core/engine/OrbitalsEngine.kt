@@ -59,10 +59,17 @@ interface OrbitalsEngine {
         ids.fastForEach(::onBodyDestroyed)
     }
 
-    fun generateBodies(space: Space = this.space): List<Body> =
-        physics.systemGenerators
+    fun generateBodies(space: Space = this.space): List<Body> {
+        return physics.systemGenerators
+            .run {
+                when (space) {
+                    this@OrbitalsEngine.space -> this
+                    else -> filterNot { it == SystemGenerator.GreatAttractor }
+                }
+            }
             .random()
             .generate(space, bodies, physics)
+    }
 }
 
 
