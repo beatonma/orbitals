@@ -9,18 +9,18 @@ import org.beatonma.orbitals.render.options.BooleanKey
 @Composable
 fun SwitchSetting(
     name: String,
+    helpText: String?,
     key: BooleanKey,
     value: Boolean,
     onValueChange: (key: BooleanKey, value: Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    SettingLayout {
-        CheckableSettingLayout(
-            name,
-            modifier.fillMaxWidth(),
-            onClick = { onValueChange(key, !value) }
-        ) {
-            Switch(checked = value, onCheckedChange = { checked -> onValueChange(key, checked) })
-        }
+    CheckableSettingLayout(
+        name,
+        helpText,
+        modifier.fillMaxWidth(),
+        onClick = { onValueChange(key, !value) }
+    ) {
+        Switch(checked = value, onCheckedChange = { checked -> onValueChange(key, checked) })
     }
 }

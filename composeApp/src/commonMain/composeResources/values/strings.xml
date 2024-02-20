@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?><!--
   READ ME
 
+Any string used for a tooltip should have its name suffixed with "__help".
+
 Many keys map directly to Enum classes defined in Kotlin.
   - Always use `...__enum_myenum__value` pattern for these values to maintain clarity and
     simplify any searching/refactoring.
@@ -21,10 +23,14 @@ Many keys map directly to Enum classes defined in Kotlin.
     -->
     <string name="settings__group_title__physics">Physics</string>
     <string name="settings__physics__auto_add">Auto-add objects</string>
+    <string name="settings__physics__auto_add__help">If disabled, objects only spawn when you tap.</string>
+
     <string name="settings__physics__maximum_population">Maximum population</string>
-    <string name="settings__physics__min_fixedbody_age">Minimum age of fixed bodies (seconds)</string>
+    <string name="settings__physics__min_fixedbody_age">Minimum age of fixed objects (seconds)</string>
+    <string name="settings__physics__min_fixedbody_age__help">How long a fixed object will stay in its original position.</string>
     <string name="settings__physics__gravity">Gravity multiplier</string>
     <string name="settings__physics__object_density">Density</string>
+    <string name="settings__physics__object_density__help">Affects object size: lower density → larger objects</string>
 
     <string name="settings__physics__system_generators">System generators</string>
     <string name="settings__physics__enum_systemgenerator__starsystem">Star system</string>
@@ -32,13 +38,23 @@ Many keys map directly to Enum classes defined in Kotlin.
     <string name="settings__physics__enum_systemgenerator__asteroids">Asteroids</string>
     <string name="settings__physics__enum_systemgenerator__gauntlet">Gauntlet</string>
     <string name="settings__physics__enum_systemgenerator__greatattractor">Great Attractor</string>
+    <string name="settings__physics__enum_systemgenerator__starsystem__help">Create a star with satellites, or add satellites to an existing star.</string>
+    <string name="settings__physics__enum_systemgenerator__randomized__help">Create objects with random size and motion.</string>
+    <string name="settings__physics__enum_systemgenerator__asteroids__help">Add small satellites to an existing star.</string>
+    <string name="settings__physics__enum_systemgenerator__gauntlet__help">A series of fixed stars to make other objects do interesting things.</string>
+    <string name="settings__physics__enum_systemgenerator__greatattractor__help">Creates a massive object somewhere offscreen/</string>
 
     <string name="settings__physics__collision_style">Collision style</string>
     <string name="settings__physics__enum_collisionstyle__none">None</string>
+    <string name="settings__physics__enum_collisionstyle__none__help">Objects pass through each other</string>
     <string name="settings__physics__enum_collisionstyle__merge">Merge</string>
+    <string name="settings__physics__enum_collisionstyle__merge__help">Larger objects consume smaller ones, eventually resulting in supernovae</string>
     <string name="settings__physics__enum_collisionstyle__explode">Explode</string>
+    <string name="settings__physics__enum_collisionstyle__explode__help">Boom!</string>
     <string name="settings__physics__enum_collisionstyle__bouncy">Bouncy</string>
+    <string name="settings__physics__enum_collisionstyle__bouncy__help">Elastic collisions</string>
     <string name="settings__physics__enum_collisionstyle__sticky">Sticky</string>
+    <string name="settings__physics__enum_collisionstyle__sticky__help">Inelastic collisions</string>
 
     <!--
     Render settings

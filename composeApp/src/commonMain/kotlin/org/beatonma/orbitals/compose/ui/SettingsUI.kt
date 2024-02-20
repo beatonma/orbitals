@@ -43,6 +43,7 @@ import org.beatonma.orbitals.compose.ui.settings.IntegerSetting
 import org.beatonma.orbitals.compose.ui.settings.MultiSelectSetting
 import org.beatonma.orbitals.compose.ui.settings.SingleSelectSetting
 import org.beatonma.orbitals.compose.ui.settings.SwitchSetting
+import org.beatonma.orbitals.compose.ui.settings.maybeStringResource
 import org.beatonma.orbitals.core.engine.SystemGenerator
 import org.beatonma.orbitals.core.options.CollisionStyle
 import org.beatonma.orbitals.core.options.PhysicsOptions
@@ -292,6 +293,7 @@ private fun LazyListScope.visualSettings(
     conditional(RenderLayer.Trails in visualOptions.renderLayers) {
         IntegerSetting(
             name = stringResource(Res.string.settings__visual__render_layers__trails_history_length),
+            helpText = null,
             key = VisualKeys.TraceLength,
             value = visualOptions.traceLineLength,
             onValueChange = persistence::updateOption,
@@ -311,6 +313,7 @@ private fun LazyListScope.visualSettings(
     conditional(visualOptions.drawStyle == DrawStyle.Wireframe) {
         FloatSetting(
             name = stringResource(Res.string.settings__visual__stroke_width),
+            helpText = null,
             key = VisualKeys.StrokeWidth,
             value = visualOptions.strokeWidth,
             onValueChange = persistence::updateOption,
@@ -321,6 +324,7 @@ private fun LazyListScope.visualSettings(
 
     switchSetting(
         name = Res.string.settings__visual__draw_novae,
+        helpText = null,
         key = VisualKeys.drawNovae,
         value = visualOptions.drawNovae,
         onValueChange = persistence::updateOption,
@@ -345,6 +349,7 @@ private fun LazyListScope.colorSettings(options: ColorOptions, persistence: Opti
     )
     floatSetting(
         name = Res.string.settings__color__opacity,
+        helpText = null,
         key = ColorKeys.BodyAlpha,
         value = options.foregroundAlpha,
         onValueChange = persistence::updateOption,
@@ -356,36 +361,6 @@ private fun LazyListScope.colorSettings(options: ColorOptions, persistence: Opti
 private fun LazyListScope.physicsSettings(physics: PhysicsOptions, persistence: OptionPersistence) {
     settingsGroup(Res.string.settings__group_title__physics)
 
-    switchSetting(
-        Res.string.settings__physics__auto_add,
-        key = PhysicsKeys.AutoAddBodies,
-        value = physics.autoAddBodies,
-        onValueChange = persistence::updateOption,
-    )
-    integerSetting(
-        name = Res.string.settings__physics__maximum_population,
-        key = PhysicsKeys.MaxEntities,
-        value = physics.maxEntities,
-        onValueChange = persistence::updateOption,
-        min = 1,
-        max = 200,
-    )
-    integerSetting(
-        name = Res.string.settings__physics__min_fixedbody_age,
-        key = PhysicsKeys.MinFixedBodyAgeSeconds,
-        value = physics.minFixedBodyAge.inWholeSeconds.toInt(),
-        onValueChange = persistence::updateOption,
-        min = 1,
-        max = 300,
-    )
-    floatSetting(
-        name = Res.string.settings__physics__gravity,
-        key = PhysicsKeys.GravityMultiplier,
-        value = physics.gravityMultiplier,
-        onValueChange = persistence::updateOption,
-        min = -10f,
-        max = 10f,
-    )
     multiSelectSetting(
         name = Res.string.settings__physics__system_generators,
         key = PhysicsKeys.Generators,
@@ -400,8 +375,43 @@ private fun LazyListScope.physicsSettings(physics: PhysicsOptions, persistence: 
         values = CollisionStyle.entries,
         onValueChange = persistence::updateOption,
     )
+    switchSetting(
+        Res.string.settings__physics__auto_add,
+        helpText = Res.string.settings__physics__auto_add__help,
+        key = PhysicsKeys.AutoAddBodies,
+        value = physics.autoAddBodies,
+        onValueChange = persistence::updateOption,
+    )
+    integerSetting(
+        name = Res.string.settings__physics__maximum_population,
+        helpText = null,
+        key = PhysicsKeys.MaxEntities,
+        value = physics.maxEntities,
+        onValueChange = persistence::updateOption,
+        min = 1,
+        max = 200,
+    )
+    integerSetting(
+        name = Res.string.settings__physics__min_fixedbody_age,
+        helpText = Res.string.settings__physics__min_fixedbody_age__help,
+        key = PhysicsKeys.MinFixedBodyAgeSeconds,
+        value = physics.minFixedBodyAge.inWholeSeconds.toInt(),
+        onValueChange = persistence::updateOption,
+        min = 1,
+        max = 300,
+    )
+    floatSetting(
+        name = Res.string.settings__physics__gravity,
+        helpText = null,
+        key = PhysicsKeys.GravityMultiplier,
+        value = physics.gravityMultiplier,
+        onValueChange = persistence::updateOption,
+        min = -10f,
+        max = 10f,
+    )
     floatSetting(
         name = Res.string.settings__physics__object_density,
+        helpText = Res.string.settings__physics__object_density__help,
         key = PhysicsKeys.Density,
         value = physics.bodyDensity.value,
         onValueChange = persistence::updateOption,
@@ -450,6 +460,7 @@ private fun LazyListScope.colorSetting(
 
 private fun LazyListScope.integerSetting(
     name: StringResource,
+    helpText: StringResource?,
     key: IntKey,
     value: Int,
     onValueChange: (key: IntKey, newValue: Int) -> Unit,
@@ -459,6 +470,7 @@ private fun LazyListScope.integerSetting(
     item {
         IntegerSetting(
             name = stringResource(name),
+            helpText = maybeStringResource(helpText),
             key = key,
             value = value,
             onValueChange = onValueChange,
@@ -471,6 +483,7 @@ private fun LazyListScope.integerSetting(
 
 private fun LazyListScope.floatSetting(
     name: StringResource,
+    helpText: StringResource?,
     key: FloatKey,
     value: Float,
     onValueChange: (key: FloatKey, newValue: Float) -> Unit,
@@ -480,6 +493,7 @@ private fun LazyListScope.floatSetting(
     item {
         FloatSetting(
             name = stringResource(name),
+            helpText = maybeStringResource(helpText),
             key = key,
             value = value,
             onValueChange = onValueChange,
@@ -530,6 +544,7 @@ private fun <E : Enum<E>> LazyListScope.multiSelectSetting(
 
 private fun LazyListScope.switchSetting(
     name: StringResource,
+    helpText: StringResource?,
     key: BooleanKey,
     value: Boolean,
     onValueChange: (key: BooleanKey, value: Boolean) -> Unit,
@@ -537,6 +552,7 @@ private fun LazyListScope.switchSetting(
     item {
         SwitchSetting(
             name = stringResource(name),
+            helpText = maybeStringResource(helpText),
             key = key,
             value = value,
             onValueChange = onValueChange,

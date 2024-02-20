@@ -15,6 +15,7 @@ import kotlin.math.roundToInt
 @Composable
 fun IntegerSetting(
     name: String,
+    helpText: String?,
     key: IntKey,
     value: Int,
     onValueChange: (key: IntKey, newValue: Int) -> Unit,
@@ -24,6 +25,7 @@ fun IntegerSetting(
 ) {
     NumberSettingLayout(
         name = name,
+        helpText = helpText,
         value = value,
         onOffsetChange = { offset -> onValueChange(key, offset.roundToInt()) },
         min = min,
@@ -36,6 +38,7 @@ fun IntegerSetting(
 @Composable
 fun FloatSetting(
     name: String,
+    helpText: String?,
     key: FloatKey,
     value: Float,
     onValueChange: (key: FloatKey, newValue: Float) -> Unit,
@@ -45,6 +48,7 @@ fun FloatSetting(
 ) {
     NumberSettingLayout(
         name = name,
+        helpText = helpText,
         value = value,
         onOffsetChange = { offset -> onValueChange(key, offset) },
         min = min,
@@ -57,13 +61,14 @@ fun FloatSetting(
 @Composable
 private fun <N : Number> NumberSettingLayout(
     name: String,
+    helpText: String?,
     value: N,
     onOffsetChange: (Float) -> Unit,
     min: N,
     max: N,
     modifier: Modifier,
 ) {
-    SettingLayout {
+    SettingLayout(helpText = helpText) {
         Column(
             modifier,
             verticalArrangement = Arrangement.Center,

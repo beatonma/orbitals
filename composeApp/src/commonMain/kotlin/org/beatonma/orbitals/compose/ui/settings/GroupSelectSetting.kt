@@ -30,11 +30,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.unit.dp
-import org.beatonma.orbitals.compose.ui.Localisation.getString
+import org.beatonma.orbitals.compose.ui.Localisation.helpStringResourceMap
 import org.beatonma.orbitals.compose.ui.Localisation.stringResourceMap
 import org.beatonma.orbitals.render.options.StringKey
 import org.beatonma.orbitals.render.options.StringSetKey
 import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.stringResource
 import kotlin.enums.EnumEntries
 
 
@@ -49,13 +50,15 @@ fun <E : Enum<E>> SingleSelectSetting(
     modifier: Modifier = Modifier,
 ) {
     val resourceMap = remember { value::class.stringResourceMap }
+    val helpResourceMap = remember { value::class.helpStringResourceMap }
 
     CollapsibleGroup(name, modifier) {
         for (v in values) {
             val onClick = { onValueChange(key, v) }
 
             CheckableSettingLayout(
-                resourceMap.getString(v),
+                stringResource(resourceMap.getValue(v)),
+                helpText = maybeStringResource(helpResourceMap?.getValue(v)),
                 onClick = onClick,
             ) {
                 RadioButton(
@@ -79,7 +82,8 @@ fun <E : Enum<E>> MultiSelectSetting(
     defaultValue: E = values.first(),
     allowEmptySet: Boolean = false,
 ) {
-    val resourceMap = remember { values[0]::class.stringResourceMap }
+    val resourceMap = remember { defaultValue::class.stringResourceMap }
+    val helpResourceMap = remember { defaultValue::class.helpStringResourceMap }
 
     CollapsibleGroup(name, modifier) {
         for (v in values) {
@@ -97,7 +101,8 @@ fun <E : Enum<E>> MultiSelectSetting(
             }
 
             CheckableSettingLayout(
-                resourceMap.getString(v),
+                stringResource(resourceMap.getValue(v)),
+                helpText = maybeStringResource(helpResourceMap?.getValue(v)),
                 onClick = onClick,
             ) {
                 Checkbox(
