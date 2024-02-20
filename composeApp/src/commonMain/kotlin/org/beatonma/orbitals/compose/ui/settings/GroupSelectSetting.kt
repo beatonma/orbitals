@@ -115,7 +115,7 @@ private fun CollapsibleGroup(
     modifier: Modifier,
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    var expanded by remember { mutableStateOf(false) }
+    var expanded by remember { mutableStateOf(true) }
     val iconRotation by animateFloatAsState(targetValue = if (expanded) 180f else 0f)
     val onClick = { expanded = !expanded }
 
