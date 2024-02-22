@@ -19,8 +19,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
+
+private val DefaultColumnSpacing = 16.dp
+private val DefaultRowSpacing = 16.dp
 
 /**
  * A LazyRow which can be scrolled with a mouse on desktop environments.
@@ -57,9 +61,10 @@ internal fun DraggableRow(
 @Composable
 internal fun SpacedRow(
     modifier: Modifier = Modifier,
+    spacing: Dp = DefaultRowSpacing,
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
     horizontalArrangement: Arrangement.Horizontal = Arrangement.spacedBy(
-        16.dp,
+        spacing,
         horizontalAlignment
     ),
     verticalAlignment: Alignment.Vertical = Alignment.Top,
@@ -108,9 +113,10 @@ internal fun DraggableColumn(
 @Composable
 internal fun SpacedColumn(
     modifier: Modifier = Modifier,
+    spacing: Dp = DefaultColumnSpacing,
     verticalAlignment: Alignment.Vertical = Alignment.Top,
     verticalArrangement: Arrangement.Vertical = Arrangement.spacedBy(
-        16.dp,
+        spacing,
         verticalAlignment
     ),
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,

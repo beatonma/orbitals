@@ -23,8 +23,6 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
@@ -36,7 +34,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import orbitals.composeapp.generated.resources.Res
+import org.beatonma.orbitals.compose.ui.components.ButtonData
 import org.beatonma.orbitals.compose.ui.components.DraggableColumn
+import org.beatonma.orbitals.compose.ui.components.DraggableRow
+import org.beatonma.orbitals.compose.ui.components.Fab
+import org.beatonma.orbitals.compose.ui.components.TonalButton
 import org.beatonma.orbitals.compose.ui.settings.ColorSetting
 import org.beatonma.orbitals.compose.ui.settings.FloatSetting
 import org.beatonma.orbitals.compose.ui.settings.IntegerSetting
@@ -45,6 +47,7 @@ import org.beatonma.orbitals.compose.ui.settings.SingleSelectSetting
 import org.beatonma.orbitals.compose.ui.settings.SwitchSetting
 import org.beatonma.orbitals.compose.ui.settings.maybeStringResource
 import org.beatonma.orbitals.core.engine.SystemGenerator
+import org.beatonma.orbitals.core.fastForEach
 import org.beatonma.orbitals.core.options.CollisionStyle
 import org.beatonma.orbitals.core.options.PhysicsOptions
 import org.beatonma.orbitals.render.color.Color
@@ -70,29 +73,11 @@ import org.jetbrains.compose.resources.stringResource
 import kotlin.enums.EnumEntries
 
 
-private val MaxColumnWidth = 450.dp
-private val Spacing = 16.dp
-
-private val ColumnModifier = Modifier.widthIn(max = MaxColumnWidth)
-
-private val SettingModifier: Modifier
-    @Composable get() = Modifier
-        .background(colorScheme.settingsScrim)
-        .padding(Spacing)
-        .fillMaxWidth()
-
-@Composable
-private operator fun PaddingValues.plus(other: PaddingValues): PaddingValues {
-    val layoutDirection = LocalLayoutDirection.current
-    return PaddingValues(
-        start = this.calculateStartPadding(layoutDirection) + other.calculateStartPadding(
-            layoutDirection
-        ),
-        top = this.calculateTopPadding() + other.calculateTopPadding(),
-        end = this.calculateEndPadding(layoutDirection) + other.calculateEndPadding(layoutDirection),
-        bottom = this.calculateBottomPadding() + other.calculateBottomPadding()
-    )
-}
+internal class SettingsUiActions(
+    val onCloseUI: () -> Unit,
+    val onDisableUI: (() -> Unit)?,
+    val extras: List<ButtonData>? = null,
+)
 
 
 @Composable
@@ -103,8 +88,7 @@ internal fun SettingsUI(
     persistence: OptionPersistence,
     insets: PaddingValues = PaddingValues(),
     modifier: Modifier = Modifier,
-    onCloseUI: () -> Unit,
-    onDisableUI: (() -> Unit)?
+    actions: SettingsUiActions,
 ) {
     when {
         availableWidth < (MaxColumnWidth + Spacing) * 2 ->
@@ -118,8 +102,7 @@ internal fun SettingsUI(
                     start = Spacing,
                     end = Spacing
                 ),
-                onCloseUI,
-                onDisableUI
+                actions,
             )
 
 
@@ -129,8 +112,7 @@ internal fun SettingsUI(
                 persistence,
                 modifier,
                 PaddingValues(bottom = 32.dp),
-                onCloseUI,
-                onDisableUI
+                actions,
             )
 
 
@@ -140,8 +122,7 @@ internal fun SettingsUI(
                 persistence,
                 modifier,
                 PaddingValues(bottom = 32.dp),
-                onCloseUI,
-                onDisableUI
+                actions,
             )
     }
 }
@@ -153,8 +134,7 @@ private fun SettingsSingleColumn(
     persistence: OptionPersistence,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(),
-    onCloseUI: () -> Unit,
-    onDisableUI: (() -> Unit)?,
+    actions: SettingsUiActions,
 ) {
     DraggableColumn(
         modifier.then(ColumnModifier),
@@ -163,8 +143,7 @@ private fun SettingsSingleColumn(
         item {
             Box(Modifier.fillMaxWidth()) {
                 SettingsOverlayButtons(
-                    onCloseUI = onCloseUI,
-                    onDisableUI = onDisableUI,
+                    actions = actions,
                     modifier = Modifier.align(Alignment.BottomEnd).padding(vertical = Spacing)
                 )
             }
@@ -180,34 +159,46 @@ private fun SettingsSingleColumn(
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 private fun SettingsOverlayButtons(
-    onCloseUI: () -> Unit,
-    onDisableUI: (() -> Unit)?,
+    actions: SettingsUiActions,
     modifier: Modifier = Modifier,
 ) {
-    Row(modifier, horizontalArrangement = Arrangement.spacedBy(Spacing, Alignment.End)) {
-        onDisableUI?.let {
-            ExtendedFloatingActionButton(
-                text = { Text(stringResource(Res.string.settings__ui__disable_ui)) },
-                icon = { Icon(Icons.Default.Delete, "") },
-                onClick = it,
-                containerColor = colorScheme.surface,
-                contentColor = colorScheme.onSurface,
-            )
+    DraggableRow(
+        modifier,
+        horizontalArrangement = Arrangement.spacedBy(Spacing, Alignment.End),
+        verticalAlignment = Alignment.Bottom,
+    ) {
+        actions.extras?.fastForEach { button ->
+            item {
+                TonalButton(button)
+            }
         }
 
-        ExtendedFloatingActionButton(
-            text = { Text(stringResource(Res.string.settings__ui__close_ui)) },
-            icon = { Icon(Icons.Default.Close, "") },
-            onClick = onCloseUI,
-        )
+        actions.onDisableUI?.let { onClick ->
+            item {
+                Fab(
+                    Icons.Default.Delete,
+                    stringResource(Res.string.settings__ui__disable_ui),
+                    null,
+                    onClick
+                )
+            }
+        }
+
+        item {
+            Fab(
+                Icons.Default.Close,
+                stringResource(Res.string.settings__ui__close_ui),
+                iconContentDescription = null,
+                onClick = actions.onCloseUI,
+            )
+        }
     }
 }
 
 @Composable
 private fun MultiColumn(
     modifier: Modifier = Modifier,
-    onCloseUI: () -> Unit,
-    onDisableUI: (() -> Unit)?,
+    actions: SettingsUiActions,
     content: @Composable () -> Unit,
 ) {
     Column(
@@ -215,8 +206,7 @@ private fun MultiColumn(
         verticalArrangement = Arrangement.spacedBy(Spacing)
     ) {
         SettingsOverlayButtons(
-            onCloseUI = onCloseUI,
-            onDisableUI = onDisableUI,
+            actions = actions,
             modifier = Modifier.align(Alignment.End).padding(top = Spacing)
         )
 
@@ -235,10 +225,9 @@ private fun SettingsTwoColumns(
     persistence: OptionPersistence,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues,
-    onCloseUI: () -> Unit,
-    onDisableUI: (() -> Unit)?,
+    actions: SettingsUiActions,
 ) {
-    MultiColumn(modifier, onCloseUI, onDisableUI) {
+    MultiColumn(modifier, actions) {
         DraggableColumn(ColumnModifier, contentPadding = contentPadding) {
             visualSettings(options.visualOptions, persistence)
             colorSettings(options.visualOptions.colorOptions, persistence)
@@ -257,10 +246,9 @@ private fun SettingsThreeColumns(
     persistence: OptionPersistence,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues,
-    onCloseUI: () -> Unit,
-    onDisableUI: (() -> Unit)?,
+    actions: SettingsUiActions,
 ) {
-    MultiColumn(modifier, onCloseUI, onDisableUI) {
+    MultiColumn(modifier, actions) {
         DraggableColumn(ColumnModifier, contentPadding = contentPadding) {
             visualSettings(options.visualOptions, persistence)
         }
@@ -569,4 +557,28 @@ private fun LazyListScope.settingsGroup(title: StringResource) {
             modifier = Modifier.padding(top = Spacing).then(SettingModifier)
         )
     }
+}
+
+private val MaxColumnWidth = 450.dp
+private val Spacing = 16.dp
+
+private val ColumnModifier = Modifier.widthIn(max = MaxColumnWidth)
+
+private val SettingModifier: Modifier
+    @Composable get() = Modifier
+        .background(colorScheme.settingsScrim)
+        .padding(Spacing)
+        .fillMaxWidth()
+
+@Composable
+private operator fun PaddingValues.plus(other: PaddingValues): PaddingValues {
+    val layoutDirection = LocalLayoutDirection.current
+    return PaddingValues(
+        start = this.calculateStartPadding(layoutDirection) + other.calculateStartPadding(
+            layoutDirection
+        ),
+        top = this.calculateTopPadding() + other.calculateTopPadding(),
+        end = this.calculateEndPadding(layoutDirection) + other.calculateEndPadding(layoutDirection),
+        bottom = this.calculateBottomPadding() + other.calculateBottomPadding()
+    )
 }

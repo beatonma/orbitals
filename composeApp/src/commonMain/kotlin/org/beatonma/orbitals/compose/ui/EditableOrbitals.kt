@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import org.beatonma.orbitals.compose.ui.components.ButtonData
 import org.beatonma.orbitals.core.Platform
 import org.beatonma.orbitals.core.platform
 import org.beatonma.orbitals.render.OrbitalsRenderEngine
@@ -45,6 +46,7 @@ fun EditableOrbitals(
     persistence: OptionPersistence,
     insets: PaddingValues = PaddingValues(),
     engine: OrbitalsRenderEngine<DrawScope>,
+    uiButtons: List<ButtonData>? = null,
 ) {
     var settingsVisible by remember { mutableStateOf(false) }
 
@@ -57,6 +59,7 @@ fun EditableOrbitals(
         persistence,
         insets,
         engine,
+        uiButtons,
     )
 }
 
@@ -70,6 +73,7 @@ fun EditableOrbitals(
     persistence: OptionPersistence,
     insets: PaddingValues = PaddingValues(),
     engine: OrbitalsRenderEngine<DrawScope>,
+    uiButtons: List<ButtonData>? = null,
 ) {
     if (!settingsEnabled) {
         // Short-circuit if settings UI is disabled
@@ -81,6 +85,19 @@ fun EditableOrbitals(
     }
 
     var onBackgroundColor by remember { mutableStateOf(Color.Black) }
+    val actions = remember {
+        SettingsUiActions(
+            onCloseUI = { onSettingsVisibleChange(false) },
+            onDisableUI = when (platform) {
+                Platform.Web -> {
+                    { onSettingsEnabledChange(false) }
+                }
+
+                else -> null
+            },
+            extras = uiButtons,
+        )
+    }
 
     LaunchedEffect(options.visualOptions.colorOptions.background) {
         onBackgroundColor = if (options.visualOptions
@@ -114,14 +131,7 @@ fun EditableOrbitals(
                     options,
                     persistence,
                     insets = insets,
-                    onCloseUI = { onSettingsVisibleChange(false) },
-                    onDisableUI = when (platform) {
-                        Platform.Web -> {
-                            { onSettingsEnabledChange(false) }
-                        }
-
-                        else -> null
-                    }
+                    actions = actions,
                 )
             }
         }
