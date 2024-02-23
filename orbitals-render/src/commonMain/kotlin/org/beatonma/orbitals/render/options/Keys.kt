@@ -28,7 +28,7 @@ value class ColorKey(override val key: String) : Key<Color>
 value class BooleanKey(override val key: String) : Key<Boolean>
 
 object VisualKeys {
-    val DrawStyle = StringKey<DrawStyle>("style")
+    val DrawStyle = StringKey<DrawStyle>("draw_style")
     val TraceLength = IntKey("trace_length")
     val StrokeWidth = FloatKey("stroke_width")
     val RenderLayers = StringSetKey<RenderLayer>("layers")
@@ -36,17 +36,17 @@ object VisualKeys {
 }
 
 object ColorKeys {
-    val BackgroundColor = ColorKey("background")
+    val BackgroundColor = ColorKey("background_color")
     val Colors = StringSetKey<ObjectColors>("colors")
     val BodyAlpha = FloatKey("alpha")
 }
 
 object PhysicsKeys {
-    val MinFixedBodyAgeSeconds = IntKey("max_fixedbody_age_seconds")
+    val MinFixedBodyAgeSeconds = IntKey("min_fixedbody_age_seconds")
     val Generators = StringSetKey<SystemGenerator>("generators")
     val AutoAddBodies = BooleanKey("auto")
     val GravityMultiplier = FloatKey("gravity")
-    val MaxEntities = IntKey("max")
+    val MaxEntities = IntKey("max_bodies")
     val CollisionStyle = StringKey<CollisionStyle>("collision")
     val Density = FloatKey("density")
 }
