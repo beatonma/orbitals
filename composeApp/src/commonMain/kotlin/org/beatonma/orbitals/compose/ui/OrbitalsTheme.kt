@@ -7,20 +7,22 @@ import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
 import androidx.compose.material3.Surface
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import org.beatonma.orbitals.render.color.Color
-import org.beatonma.orbitals.render.compose.toComposeColor
+import org.beatonma.orbitals.compose.ui.theme.blue.BlueColorScheme
+import org.beatonma.orbitals.compose.ui.theme.green.GreenColorScheme
+import org.beatonma.orbitals.compose.ui.theme.greyscale.GreyColorScheme
+import org.beatonma.orbitals.compose.ui.theme.orange.OrangeColorScheme
+import org.beatonma.orbitals.compose.ui.theme.pink.PinkColorScheme
+import org.beatonma.orbitals.compose.ui.theme.purple.PurpleColorScheme
+import org.beatonma.orbitals.compose.ui.theme.red.RedColorScheme
+import org.beatonma.orbitals.compose.ui.theme.yellow.YellowColorScheme
 import org.beatonma.orbitals.render.options.ColorOptions
 import org.beatonma.orbitals.render.options.ObjectColors
-import kotlin.random.Random
 
 val ColorScheme.settingsScrim @Composable get() = surface.copy(alpha = .7f)
 
@@ -30,13 +32,8 @@ fun OrbitalsTheme(
     isDark: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val uiColors by rememberColors(isDark, options.bodies)
-
     MaterialTheme(
-        colorScheme = when {
-            isDark -> darkColors(uiColors)
-            else -> lightColors(uiColors)
-        },
+        colorScheme = chooseColorScheme(options, isDark),
         shapes = Shapes(
             small = RoundedCornerShape(4.dp),
             medium = RoundedCornerShape(8.dp),
@@ -51,130 +48,26 @@ fun OrbitalsTheme(
 }
 
 @Composable
-private fun lightColors(
-    colors: UiColors
-): ColorScheme {
-    return lightColorScheme(
-        primary = colors.primary.toComposeColor(),
-        onPrimary = colors.onPrimary.toComposeColor(),
-        primaryContainer = colors.primaryContainer.toComposeColor(),
-        onPrimaryContainer = colors.onPrimaryContainer.toComposeColor(),
-        inversePrimary = colors.inversePrimary.toComposeColor(),
-        secondary = colors.secondary.toComposeColor(),
-        onSecondary = colors.onSecondary.toComposeColor(),
-        secondaryContainer = colors.secondaryContainer.toComposeColor(),
-        onSecondaryContainer = colors.onSecondaryContainer.toComposeColor(),
-        tertiary = colors.tertiary.toComposeColor(),
-        onTertiary = colors.onTertiary.toComposeColor(),
-        tertiaryContainer = colors.tertiaryContainer.toComposeColor(),
-        onTertiaryContainer = colors.onTertiaryContainer.toComposeColor(),
-    )
+private fun chooseColorScheme(options: ColorOptions, isDark: Boolean): ColorScheme {
+    val color by remember(options.bodies) { mutableStateOf(options.bodies.random()) }
+
+    return schemeForColor(color, isDark)
 }
+
 
 @Composable
-private fun darkColors(
-    colors: UiColors
-): ColorScheme {
-    return darkColorScheme(
-        primary = colors.primary.toComposeColor(),
-        onPrimary = colors.onPrimary.toComposeColor(),
-        primaryContainer = colors.primaryContainer.toComposeColor(),
-        onPrimaryContainer = colors.onPrimaryContainer.toComposeColor(),
-        inversePrimary = colors.inversePrimary.toComposeColor(),
-        secondary = colors.secondary.toComposeColor(),
-        onSecondary = colors.onSecondary.toComposeColor(),
-        secondaryContainer = colors.secondaryContainer.toComposeColor(),
-        onSecondaryContainer = colors.onSecondaryContainer.toComposeColor(),
-        tertiary = colors.tertiary.toComposeColor(),
-        onTertiary = colors.onTertiary.toComposeColor(),
-        tertiaryContainer = colors.tertiaryContainer.toComposeColor(),
-        onTertiaryContainer = colors.onTertiaryContainer.toComposeColor(),
-    )
-}
-
-@Composable
-private fun rememberColors(
-    isDark: Boolean,
-    objectColors: Set<ObjectColors>
-): MutableState<UiColors> = remember(isDark, objectColors) {
-    mutableStateOf(UiColors(isDark, objectColors))
-}
-
-private data class UiColors(
-    val primary: Color,
-    val onPrimary: Color,
-    val primaryContainer: Color,
-    val onPrimaryContainer: Color,
-    val inversePrimary: Color,
-    val secondary: Color,
-    val onSecondary: Color,
-    val secondaryContainer: Color,
-    val onSecondaryContainer: Color,
-    val tertiary: Color,
-    val onTertiary: Color,
-    val tertiaryContainer: Color,
-    val onTertiaryContainer: Color,
-)
-
-private fun UiColors(isDark: Boolean, objectColors: Set<ObjectColors>): UiColors {
-    val (primarySet, secondarySet, tertiarySet) = chooseColorSets(objectColors)
-
-    fun Array<ULong>.colorAt(index: Int) = Color(
-        when {
-            isDark -> this[size - index]
-            else -> this[index]
-        }
-    )
-
-    fun Array<ULong>.first() = Color(
-        when {
-            isDark -> this[size - 1]
-            else -> this[0]
-        }
-    )
-
-    fun Array<ULong>.last() = Color(
-        when {
-            isDark -> this[0]
-            else -> this[size - 1]
-        }
-    )
-
-    return UiColors(
-        primary = primarySet.colorAt(4),
-        onPrimary = primarySet.colorAt(8),
-        primaryContainer = primarySet.first(),
-        onPrimaryContainer = primarySet.last(),
-        inversePrimary = primarySet.colorAt(1),
-        secondary = secondarySet.colorAt(4),
-        onSecondary = secondarySet.colorAt(8),
-        secondaryContainer = secondarySet.first(),
-        onSecondaryContainer = secondarySet.last(),
-        tertiary = tertiarySet.colorAt(4),
-        onTertiary = tertiarySet.colorAt(8),
-        tertiaryContainer = tertiarySet.first(),
-        onTertiaryContainer = tertiarySet.last(),
-    )
-}
-
-private fun chooseColorSets(colors: Set<ObjectColors>): Triple<Array<ULong>, Array<ULong>, Array<ULong>> {
-    when (colors.size) {
-        1 -> {
-            val c = colors.first().colors
-            return Triple(c, c, c)
-        }
-
-        2 -> {
-            return Triple(colors.first().colors, colors.last().colors, colors.random().colors)
-        }
-
-        else -> {
-            val sets = colors.toMutableList()
-            return Triple(
-                sets.removeAt(Random.nextInt(sets.size)).colors,
-                sets.removeAt(Random.nextInt(sets.size)).colors,
-                sets.removeAt(Random.nextInt(sets.size)).colors,
-            )
-        }
+private fun schemeForColor(color: ObjectColors, isDark: Boolean): ColorScheme =
+    when (color) {
+        ObjectColors.Greyscale -> GreyColorScheme(isDark)
+        ObjectColors.Red -> RedColorScheme(isDark)
+        ObjectColors.Orange -> OrangeColorScheme(isDark)
+        ObjectColors.Yellow -> YellowColorScheme(isDark)
+        ObjectColors.Green -> GreenColorScheme(isDark)
+        ObjectColors.Blue -> BlueColorScheme(isDark)
+        ObjectColors.Purple -> PurpleColorScheme(isDark)
+        ObjectColors.Pink -> PinkColorScheme(isDark)
+        ObjectColors.Any -> schemeForColor(
+            ObjectColors.entries.filterNot { it == ObjectColors.Any }.random(),
+            isDark
+        )
     }
-}
