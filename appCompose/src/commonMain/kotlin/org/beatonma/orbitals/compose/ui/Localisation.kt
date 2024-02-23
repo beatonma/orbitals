@@ -1,6 +1,6 @@
 package org.beatonma.orbitals.compose.ui
 
-import orbitals.composeapp.generated.resources.Res
+import orbitals.appcompose.generated.resources.Res
 import org.beatonma.orbitals.core.engine.SystemGenerator
 import org.beatonma.orbitals.core.options.CollisionStyle
 import org.beatonma.orbitals.render.options.DrawStyle

@@ -30,7 +30,7 @@ fun inertialBody(
     velocity: Velocity = ZeroVelocity,
     motion: Motion = Motion(position, velocity),
     radius: Distance = sizeOf(mass, density),
-    age: Duration = Duration.ZERO,
+    age: Duration = DefaultColliderAge,
     state: BodyState = BodyState.MainSequence,
 ) = InertialBody(
     mass,
@@ -47,7 +47,7 @@ fun fixedBody(
     position: Position = ZeroPosition,
     motion: Motion = Motion(position, ZeroVelocity),
     radius: Distance = sizeOf(mass, density),
-    age: Duration = Duration.ZERO,
+    age: Duration = DefaultColliderAge,
     state: BodyState = BodyState.MainSequence,
 ) = FixedBody(
     mass,
@@ -64,7 +64,7 @@ fun greatAttractor(
     position: Position = ZeroPosition,
     motion: Motion = Motion(position, ZeroVelocity),
     radius: Distance = sizeOf(mass, density),
-    age: Duration = Duration.ZERO,
+    age: Duration = DefaultColliderAge,
     state: BodyState = BodyState.MainSequence,
 ) = GreatAttractor(
     mass,

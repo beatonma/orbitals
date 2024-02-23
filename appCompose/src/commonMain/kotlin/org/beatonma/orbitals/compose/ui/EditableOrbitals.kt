@@ -24,7 +24,7 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import orbitals.composeapp.generated.resources.Res
+import orbitals.appcompose.generated.resources.Res
 import org.beatonma.orbitals.compose.ui.components.ButtonData
 import org.beatonma.orbitals.compose.ui.components.HintButton
 import org.beatonma.orbitals.core.Platform

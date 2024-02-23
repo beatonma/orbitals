@@ -18,12 +18,12 @@ dependencyResolutionManagement {
     }
 }
 
-include(":orbitals-core")
-include(":orbitals-render")
-include(":orbitals-render-android")
-include(":orbitals-render-compose")
-include(":composeApp")
-include(":orbitals-android")
-include(":orbitals-desktop")
-include(":orbitals-web")
+include(":core")
+include(":render")
+include(":renderAndroid")
+include(":renderCompose")
+include(":appCompose")
+include(":appAndroid")
+include(":appDesktop")
+include(":appWebJs")
 include(":test")

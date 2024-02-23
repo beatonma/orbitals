@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
-import orbitals.composeapp.generated.resources.Res
+import orbitals.appcompose.generated.resources.Res
 import org.beatonma.orbitals.compose.ui.components.SpacedColumn
 import org.beatonma.orbitals.compose.ui.components.SpacedRow
 import org.beatonma.orbitals.compose.ui.components.TextBlock
