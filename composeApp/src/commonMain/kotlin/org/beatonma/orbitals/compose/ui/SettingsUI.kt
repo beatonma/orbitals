@@ -1,32 +1,37 @@
-@file:OptIn(ExperimentalResourceApi::class)
-
 package org.beatonma.orbitals.compose.ui
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.shapes
 import androidx.compose.material3.MaterialTheme.typography
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -34,11 +39,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import orbitals.composeapp.generated.resources.Res
+import org.beatonma.orbitals.compose.ui.components.Button
 import org.beatonma.orbitals.compose.ui.components.ButtonData
 import org.beatonma.orbitals.compose.ui.components.DraggableColumn
-import org.beatonma.orbitals.compose.ui.components.DraggableRow
-import org.beatonma.orbitals.compose.ui.components.Fab
-import org.beatonma.orbitals.compose.ui.components.TonalButton
+import org.beatonma.orbitals.compose.ui.components.HintButton
 import org.beatonma.orbitals.compose.ui.settings.ColorSetting
 import org.beatonma.orbitals.compose.ui.settings.FloatSetting
 import org.beatonma.orbitals.compose.ui.settings.IntegerSetting
@@ -105,7 +109,6 @@ internal fun SettingsUI(
                 actions,
             )
 
-
         availableWidth < (MaxColumnWidth + Spacing) * 3 ->
             SettingsTwoColumns(
                 options,
@@ -114,7 +117,6 @@ internal fun SettingsUI(
                 PaddingValues(bottom = 32.dp),
                 actions,
             )
-
 
         else ->
             SettingsThreeColumns(
@@ -128,64 +130,36 @@ internal fun SettingsUI(
 }
 
 
-@Composable
-private fun SettingsSingleColumn(
-    options: Options,
-    persistence: OptionPersistence,
-    modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(),
-    actions: SettingsUiActions,
-) {
-    DraggableColumn(
-        modifier.then(ColumnModifier),
-        contentPadding = contentPadding,
-    ) {
-        item {
-            Box(Modifier.fillMaxWidth()) {
-                SettingsOverlayButtons(
-                    actions = actions,
-                    modifier = Modifier.align(Alignment.BottomEnd).padding(vertical = Spacing)
-                )
-            }
-        }
-
-        aboutOrbitals()
-        visualSettings(options.visualOptions, persistence)
-        colorSettings(options.visualOptions.colorOptions, persistence)
-        physicsSettings(options.physics, persistence)
-    }
-}
-
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-private fun SettingsOverlayButtons(
+private fun ActionBar(
+    expanded: Boolean,
     actions: SettingsUiActions,
     modifier: Modifier = Modifier,
 ) {
-    DraggableRow(
-        modifier,
-        horizontalArrangement = Arrangement.spacedBy(Spacing, Alignment.End),
-        verticalAlignment = Alignment.Bottom,
-    ) {
-        actions.extras?.fastForEach { button ->
-            item {
-                TonalButton(button)
-            }
-        }
+    val backgroundColor by animateColorAsState(if (expanded) colorScheme.scrim else colorScheme.tertiaryContainer)
 
-        actions.onDisableUI?.let { onClick ->
-            item {
-                Fab(
+    Surface(modifier, shape = shapes.medium, color = backgroundColor) {
+        Row(
+            Modifier.padding(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(Spacing, Alignment.End),
+            verticalAlignment = Alignment.Bottom,
+        ) {
+            actions.extras?.fastForEach { button ->
+                Button(button)
+            }
+
+            actions.onDisableUI?.let { onClick ->
+                Button(
                     Icons.Default.Delete,
                     stringResource(Res.string.settings__ui__disable_ui),
                     null,
-                    onClick
+                    onClick = onClick
                 )
             }
-        }
 
-        item {
-            Fab(
+            HintButton(
+                expanded,
                 Icons.Default.Close,
                 stringResource(Res.string.settings__ui__close_ui),
                 iconContentDescription = null,
@@ -195,28 +169,58 @@ private fun SettingsOverlayButtons(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
+private fun LazyListScope.actionBar(
+    actions: SettingsUiActions,
+    state: LazyListState,
+    modifier: Modifier = Modifier,
+) {
+    stickyHeader(key = "menu_actions") {
+        Box(modifier.fillMaxWidth()) {
+            ActionBar(
+                state.firstVisibleItemIndex == 0 && state.firstVisibleItemScrollOffset == 0,
+                actions,
+                Modifier.align(Alignment.BottomEnd).padding(bottom = Spacing, top = Spacing * 2)
+            )
+        }
+    }
+}
+
+
+@Composable
+private fun SettingsSingleColumn(
+    options: Options,
+    persistence: OptionPersistence,
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(),
+    actions: SettingsUiActions,
+) {
+    val state = rememberLazyListState()
+    DraggableColumn(
+        modifier.then(ColumnModifier),
+        state = state,
+        contentPadding = contentPadding,
+    ) {
+        actionBar(actions, state)
+
+        aboutOrbitals()
+        visualSettings(options.visualOptions, persistence)
+        colorSettings(options.visualOptions.colorOptions, persistence)
+        physicsSettings(options.physics, persistence)
+    }
+}
+
 @Composable
 private fun MultiColumn(
     modifier: Modifier = Modifier,
-    actions: SettingsUiActions,
-    content: @Composable () -> Unit,
+    content: @Composable RowScope.() -> Unit,
 ) {
-    Column(
+    Row(
         modifier.padding(horizontal = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(Spacing)
-    ) {
-        SettingsOverlayButtons(
-            actions = actions,
-            modifier = Modifier.align(Alignment.End).padding(top = Spacing)
-        )
-
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(Spacing),
-            verticalAlignment = Alignment.Bottom
-        ) {
-            content()
-        }
-    }
+        horizontalArrangement = Arrangement.spacedBy(Spacing),
+        verticalAlignment = Alignment.Bottom,
+        content = content,
+    )
 }
 
 @Composable
@@ -227,13 +231,20 @@ private fun SettingsTwoColumns(
     contentPadding: PaddingValues,
     actions: SettingsUiActions,
 ) {
-    MultiColumn(modifier, actions) {
+    val primaryColumnState = rememberLazyListState()
+
+    MultiColumn(modifier) {
         DraggableColumn(ColumnModifier, contentPadding = contentPadding) {
             visualSettings(options.visualOptions, persistence)
             colorSettings(options.visualOptions.colorOptions, persistence)
         }
 
-        DraggableColumn(ColumnModifier, contentPadding = contentPadding) {
+        DraggableColumn(
+            ColumnModifier,
+            state = primaryColumnState,
+            contentPadding = contentPadding
+        ) {
+            actionBar(actions, primaryColumnState)
             aboutOrbitals()
             physicsSettings(options.physics, persistence)
         }
@@ -248,7 +259,9 @@ private fun SettingsThreeColumns(
     contentPadding: PaddingValues,
     actions: SettingsUiActions,
 ) {
-    MultiColumn(modifier, actions) {
+    val primaryColumnState = rememberLazyListState()
+
+    MultiColumn(modifier) {
         DraggableColumn(ColumnModifier, contentPadding = contentPadding) {
             visualSettings(options.visualOptions, persistence)
         }
@@ -257,7 +270,12 @@ private fun SettingsThreeColumns(
             colorSettings(options.visualOptions.colorOptions, persistence)
         }
 
-        DraggableColumn(ColumnModifier, contentPadding = contentPadding) {
+        DraggableColumn(
+            ColumnModifier,
+            state = primaryColumnState,
+            contentPadding = contentPadding
+        ) {
+            actionBar(actions, primaryColumnState)
             aboutOrbitals()
             physicsSettings(options.physics, persistence)
         }
@@ -409,22 +427,22 @@ private fun LazyListScope.physicsSettings(physics: PhysicsOptions, persistence: 
 }
 
 private fun LazyListScope.aboutOrbitals() {
-    item {
+    item(key = "about") {
         AboutOrbitals(SettingModifier)
     }
 }
 
 private fun LazyListScope.conditional(
     condition: Boolean,
-    content: @Composable AnimatedVisibilityScope.() -> Unit
+    content: @Composable AnimatedVisibilityScope.() -> Unit,
 ) {
     item {
         AnimatedVisibility(
             visible = condition,
+            modifier = SettingModifier,
             enter = fadeIn() + expandVertically(),
             exit = fadeOut() + shrinkVertically(),
             content = content,
-            modifier = SettingModifier
         )
     }
 }
@@ -435,7 +453,7 @@ private fun LazyListScope.colorSetting(
     value: Color,
     onValueChange: (key: ColorKey, newValue: Color) -> Unit,
 ) {
-    item {
+    item(key = key.key, contentType = ContentType.Color) {
         ColorSetting(
             name = stringResource(name),
             key = key,
@@ -455,7 +473,7 @@ private fun LazyListScope.integerSetting(
     min: Int,
     max: Int,
 ) {
-    item {
+    item(key = key.key, contentType = ContentType.Integer) {
         IntegerSetting(
             name = stringResource(name),
             helpText = maybeStringResource(helpText),
@@ -478,7 +496,7 @@ private fun LazyListScope.floatSetting(
     min: Float,
     max: Float,
 ) {
-    item {
+    item(key = key.key, contentType = ContentType.Float) {
         FloatSetting(
             name = stringResource(name),
             helpText = maybeStringResource(helpText),
@@ -499,7 +517,7 @@ private fun <E : Enum<E>> LazyListScope.singleSelectSetting(
     values: EnumEntries<E>,
     onValueChange: (key: StringKey<E>, newValue: E) -> Unit,
 ) {
-    item {
+    item(key = key.key, contentType = ContentType.SingleSelect) {
         SingleSelectSetting(
             name = stringResource(name),
             key = key,
@@ -518,7 +536,7 @@ private fun <E : Enum<E>> LazyListScope.multiSelectSetting(
     values: EnumEntries<E>,
     onValueChange: (key: StringSetKey<E>, newValue: Set<E>) -> Unit,
 ) {
-    item {
+    item(key = key.key, contentType = ContentType.MultiSelect) {
         MultiSelectSetting(
             name = stringResource(name),
             key = key,
@@ -537,7 +555,7 @@ private fun LazyListScope.switchSetting(
     value: Boolean,
     onValueChange: (key: BooleanKey, value: Boolean) -> Unit,
 ) {
-    item {
+    item(key = key.key, contentType = ContentType.Switch) {
         SwitchSetting(
             name = stringResource(name),
             helpText = maybeStringResource(helpText),
@@ -550,7 +568,7 @@ private fun LazyListScope.switchSetting(
 }
 
 private fun LazyListScope.settingsGroup(title: StringResource) {
-    item {
+    item(contentType = ContentType.Title) {
         Text(
             stringResource(title),
             style = typography.headlineMedium,
@@ -581,4 +599,15 @@ private operator fun PaddingValues.plus(other: PaddingValues): PaddingValues {
         end = this.calculateEndPadding(layoutDirection) + other.calculateEndPadding(layoutDirection),
         bottom = this.calculateBottomPadding() + other.calculateBottomPadding()
     )
+}
+
+
+private enum class ContentType {
+    Title,
+    Color,
+    Switch,
+    Integer,
+    Float,
+    SingleSelect,
+    MultiSelect,
 }

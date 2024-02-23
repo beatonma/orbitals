@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 private val DefaultColumnSpacing = 16.dp
@@ -36,20 +37,18 @@ internal fun DraggableRow(
     contentPadding: PaddingValues = PaddingValues(),
     horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,
     verticalAlignment: Alignment.Vertical = Alignment.Top,
-    content: LazyListScope.() -> Unit
+    scope: CoroutineScope = rememberCoroutineScope(),
+    content: LazyListScope.() -> Unit,
 ) {
-    val scope = rememberCoroutineScope()
-
     LazyRow(
-        modifier
-            .draggable(
-                orientation = Orientation.Horizontal,
-                state = rememberDraggableState { delta ->
-                    scope.launch {
-                        state.scrollBy(-delta)
-                    }
-                },
-            ),
+        modifier.draggable(
+            orientation = Orientation.Horizontal,
+            state = rememberDraggableState { delta ->
+                scope.launch {
+                    state.scrollBy(-delta)
+                }
+            },
+        ),
         verticalAlignment = verticalAlignment,
         horizontalArrangement = horizontalArrangement,
         state = state,
@@ -68,7 +67,7 @@ internal fun SpacedRow(
         horizontalAlignment
     ),
     verticalAlignment: Alignment.Vertical = Alignment.Top,
-    content: @Composable RowScope.() -> Unit
+    content: @Composable RowScope.() -> Unit,
 ) {
     Row(
         modifier,
@@ -88,20 +87,19 @@ internal fun DraggableColumn(
     contentPadding: PaddingValues = PaddingValues(),
     verticalArrangement: Arrangement.Vertical = Arrangement.Top,
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
-    content: LazyListScope.() -> Unit
+    scope: CoroutineScope = rememberCoroutineScope(),
+    content: LazyListScope.() -> Unit,
 ) {
-    val scope = rememberCoroutineScope()
 
     LazyColumn(
-        modifier
-            .draggable(
-                orientation = Orientation.Vertical,
-                state = rememberDraggableState { delta ->
-                    scope.launch {
-                        state.scrollBy(-delta)
-                    }
-                },
-            ),
+        modifier.draggable(
+            orientation = Orientation.Vertical,
+            state = rememberDraggableState { delta ->
+                scope.launch {
+                    state.scrollBy(-delta)
+                }
+            },
+        ),
         state = state,
         contentPadding = contentPadding,
         verticalArrangement = verticalArrangement,
@@ -120,7 +118,7 @@ internal fun SpacedColumn(
         verticalAlignment
     ),
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
-    content: @Composable ColumnScope.() -> Unit
+    content: @Composable ColumnScope.() -> Unit,
 ) {
     Column(
         modifier,

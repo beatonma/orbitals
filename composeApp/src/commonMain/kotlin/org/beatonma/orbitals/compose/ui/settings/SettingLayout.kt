@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.shapes
 import androidx.compose.material3.Text
@@ -19,6 +20,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
@@ -45,19 +48,21 @@ internal fun CheckableSettingLayout(
     name: String,
     helpText: String? = null,
     modifier: Modifier = Modifier,
+    style: TextStyle = LocalTextStyle.current,
     onClick: (() -> Unit),
-    content: @Composable () -> Unit
+    role: Role,
+    content: @Composable () -> Unit,
 ) {
     TooltipLayout(helpText) {
         Row(
             modifier
-                .clickable(onClick = onClick)
                 .fillMaxWidth()
+                .clickable(onClick = onClick, role = role)
                 .padding(horizontal = 8.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(name)
+            Text(name, style = style)
 
             content()
         }
@@ -80,7 +85,7 @@ internal fun OutlinedSettingLayout(
 
 
 @Composable
-fun TooltipLayout(text: String?, content: @Composable () -> Unit) {
+internal fun TooltipLayout(text: String?, content: @Composable () -> Unit) {
     text?.let {
         TooltipBox(
             rememberPlainTooltipPositionProvider(0.dp),
@@ -104,4 +109,5 @@ private fun Tooltip(text: String) {
 
 
 @Composable
-internal fun maybeStringResource(resource: StringResource?) = resource?.let { stringResource(it) }
+internal fun maybeStringResource(resource: StringResource?): String? =
+    resource?.let { stringResource(it) }

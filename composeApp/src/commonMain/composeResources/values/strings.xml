@@ -15,6 +15,7 @@ Many keys map directly to Enum classes defined in Kotlin.
 
 <resources>
     <!-- Settings UI -->
+    <string name="settings">Settings</string>
     <string name="settings__ui__disable_ui">Disable settings UI</string>
     <string name="settings__ui__close_ui">Close settings</string>
 

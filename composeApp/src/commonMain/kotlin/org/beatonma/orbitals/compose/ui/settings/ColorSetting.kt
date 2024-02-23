@@ -46,7 +46,7 @@ fun ColorSetting(
 ) {
     val scope = rememberCoroutineScope()
     val hsl = rememberHsl(value)
-    val colors = MaterialColorSwatch
+    val colors = remember { MaterialColorSwatch }
     val swatchState = rememberLazyListState()
 
     LaunchedEffect(hsl.hue, hsl.saturation, hsl.lightness) {
@@ -114,16 +114,17 @@ fun ColorSetting(
 }
 
 @Composable
-private fun rememberHsl(color: Color): HslColor {
-    val (h, s, l) = color.hsl()
-
-    return remember { HslColor(h, s, l) }
-}
+private fun rememberHsl(color: Color): HslColor = remember { color.toHslColor() }
 
 private class HslColor(h: Float, s: Float, l: Float) {
     var hue by mutableFloatStateOf(h)
     var saturation by mutableFloatStateOf(s)
     var lightness by mutableFloatStateOf(l)
+}
+
+private fun Color.toHslColor(): HslColor {
+    val (h, s, l) = hsl()
+    return HslColor(h, s, l)
 }
 
 @Composable

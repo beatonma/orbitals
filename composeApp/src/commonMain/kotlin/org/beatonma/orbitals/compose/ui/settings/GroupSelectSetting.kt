@@ -6,13 +6,8 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Checkbox
@@ -20,16 +15,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.RadioButton
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.semantics.Role
 import org.beatonma.orbitals.compose.ui.Localisation.helpStringResourceMap
 import org.beatonma.orbitals.compose.ui.Localisation.stringResourceMap
 import org.beatonma.orbitals.render.options.StringKey
@@ -60,6 +53,7 @@ fun <E : Enum<E>> SingleSelectSetting(
                 stringResource(resourceMap.getValue(v)),
                 helpText = maybeStringResource(helpResourceMap?.getValue(v)),
                 onClick = onClick,
+                role = Role.RadioButton,
             ) {
                 RadioButton(
                     selected = value == v,
@@ -104,6 +98,7 @@ fun <E : Enum<E>> MultiSelectSetting(
                 stringResource(resourceMap.getValue(v)),
                 helpText = maybeStringResource(helpResourceMap?.getValue(v)),
                 onClick = onClick,
+                role = Role.Checkbox,
             ) {
                 Checkbox(
                     checked = v in value,
@@ -120,24 +115,18 @@ private fun CollapsibleGroup(
     modifier: Modifier,
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    var expanded by remember { mutableStateOf(true) }
+    var expanded by remember { mutableStateOf(false) }
     val iconRotation by animateFloatAsState(targetValue = if (expanded) 180f else 0f)
     val onClick = { expanded = !expanded }
 
     OutlinedSettingLayout(modifier) {
-        Row(
-            modifier = Modifier
-                .clickable(onClick = onClick)
-                .fillMaxWidth()
-                .padding(start = 8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
+        CheckableSettingLayout(
+            name,
+            style = typography.headlineSmall,
+            onClick = onClick,
+            role = Role.DropdownList,
         ) {
-            Text(name, style = typography.headlineSmall)
-
-            IconButton(
-                onClick = onClick,
-            ) {
+            IconButton(onClick = onClick) {
                 Icon(
                     Icons.Default.ArrowDropDown,
                     "Show ${if (expanded) "more" else "less"}",

@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Switch
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.Role
 import org.beatonma.orbitals.render.options.BooleanKey
 
 @Composable
@@ -19,7 +20,8 @@ fun SwitchSetting(
         name,
         helpText,
         modifier.fillMaxWidth(),
-        onClick = { onValueChange(key, !value) }
+        onClick = { onValueChange(key, !value) },
+        role = Role.Switch,
     ) {
         Switch(checked = value, onCheckedChange = { checked -> onValueChange(key, checked) })
     }

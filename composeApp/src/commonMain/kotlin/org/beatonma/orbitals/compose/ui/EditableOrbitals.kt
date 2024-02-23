@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -21,13 +19,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import orbitals.composeapp.generated.resources.Res
 import org.beatonma.orbitals.compose.ui.components.ButtonData
+import org.beatonma.orbitals.compose.ui.components.HintButton
 import org.beatonma.orbitals.core.Platform
 import org.beatonma.orbitals.core.platform
 import org.beatonma.orbitals.render.OrbitalsRenderEngine
@@ -35,6 +34,7 @@ import org.beatonma.orbitals.render.compose.Orbitals
 import org.beatonma.orbitals.render.compose.toComposeColor
 import org.beatonma.orbitals.render.options.OptionPersistence
 import org.beatonma.orbitals.render.options.Options
+import org.jetbrains.compose.resources.stringResource
 
 
 private val ContentPadding = 16.dp
@@ -84,7 +84,7 @@ fun EditableOrbitals(
         )
     }
 
-    var onBackgroundColor by remember { mutableStateOf(Color.Black) }
+    var onBackgroundColor by remember { mutableStateOf(Color.White) }
     val actions = remember {
         SettingsUiActions(
             onCloseUI = { onSettingsVisibleChange(false) },
@@ -145,14 +145,11 @@ fun EditableOrbitals(
             enter = fadeIn(),
             exit = fadeOut()
         ) {
-            IconButton({ onSettingsVisibleChange(true) }) {
-                Icon(
-                    Icons.Default.Menu,
-                    "Show settings",
-                    Modifier.alpha(.4f),
-                    tint = onBackgroundColor
-                )
-            }
+            HintButton(
+                Icons.Default.Menu,
+                stringResource(Res.string.settings),
+                null
+            ) { onSettingsVisibleChange(true) }
         }
     }
 }
