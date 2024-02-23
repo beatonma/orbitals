@@ -15,7 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -31,11 +31,11 @@ fun App(
             LocalContext.current.applicationContext,
             Settings.Screensaver,
         )
-    )
+    ),
 ) {
     val options by viewmodel.options.collectAsState(initial = Options())
     val engine = rememberOrbitalsRenderEngine(options = options)
-    var settingsVisible by remember { mutableStateOf(false) }
+    var settingsVisible by rememberSaveable { mutableStateOf(false) }
 
     BackHandler(enabled = settingsVisible) {
         settingsVisible = false
@@ -47,13 +47,13 @@ fun App(
                 NavigationBarItem(
                     selected = viewmodel.settings == Settings.Screensaver,
                     onClick = { viewmodel.settings = Settings.Screensaver },
-                    icon = { Icon(Icons.Default.SettingsSystemDaydream, "") },
+                    icon = { Icon(Icons.Default.SettingsSystemDaydream, null) },
                     label = { Text(Settings.Screensaver.name) }
                 )
                 NavigationBarItem(
                     selected = viewmodel.settings == Settings.Wallpaper,
                     onClick = { viewmodel.settings = Settings.Wallpaper },
-                    icon = { Icon(Icons.Default.Wallpaper, "") },
+                    icon = { Icon(Icons.Default.Wallpaper, null) },
                     label = { Text(Settings.Wallpaper.name) }
                 )
             }
